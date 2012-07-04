@@ -4,8 +4,10 @@ require 'test_helper'
 # ResourceLogicのテストクラス
 class ResourceLogicTest < ActiveSupport::TestCase
   
-  fixtures :resources
-
+  include SetupMethods
+  # テスト前処理
+  setup :create_resource
+  
   # saveメソッド-追加のテスト
   test "save_create" do
     params = {
@@ -75,7 +77,7 @@ class ResourceLogicTest < ActiveSupport::TestCase
   test "save_update" do
     params = {
       :resource => {
-        :id => "1",
+        :id => 100001,
         :resource_type => "Rai",
         :name => "ほげほぎゃ",
         :memo => "メモらしいにょ",
@@ -90,7 +92,7 @@ class ResourceLogicTest < ActiveSupport::TestCase
     resource = resource_logic.save(params, "MyS", 1234)
     
     store_target = Resource.find_by_id(resource[:id])
-    assert_equal resource[:id], 1
+    assert_equal resource[:id], 100001
     assert_equal resource[:name], "ほげほぎゃ"
     assert_equal resource[:memo], "メモらしいにょ"
     assert_equal resource[:sort_num], 1
@@ -132,7 +134,7 @@ class ResourceLogicTest < ActiveSupport::TestCase
   test "save_update_ng_illegal_resource_type" do
     params = {
       :resource => {
-        :id => "1",
+        :id => "100001",
         :name => "ほげほぎゃ",
         :memo => "メモらしいにょ",
         :lock_version => "1"
@@ -244,7 +246,7 @@ class ResourceLogicTest < ActiveSupport::TestCase
   test "save_update_ng_validate_error" do
     params = {
       :resource => {
-        :id => "1",
+        :id => "100001",
         :name => "",
         :memo => "メモらしいにょ",
         :lock_version => "1"
@@ -268,7 +270,7 @@ class ResourceLogicTest < ActiveSupport::TestCase
   test "save_update_ng_2validates_error" do
     params = {
       :resource => {
-        :id => "1",
+        :id => "100001",
         :name => "",
         :memo => "",
         :lock_version => "1"
@@ -290,44 +292,44 @@ class ResourceLogicTest < ActiveSupport::TestCase
 
   # deleteのテスト
   test "delete" do
-    assert_not_nil Resource.find_by_id(1)
+    assert_not_nil Resource.find_by_id(100001)
     
     resource_logic = ResourceLogic.new
-    resource_logic.delete(1, "MyS", 1)
+    resource_logic.delete(100001, "MyS", 1)
     
-    assert_nil Resource.find_by_id(1)
+    assert_nil Resource.find_by_id(100001)
   end
 
   # deleteのテスト
   # バージョンが異なる
   test "delete_ng_illegal_lock_version" do
-    assert_not_nil Resource.find_by_id(1)
+    assert_not_nil Resource.find_by_id(100001)
     
     resource_logic = ResourceLogic.new
     begin
-      resource_logic.delete(1, "MyS", 9)
+      resource_logic.delete(100001, "MyS", 9)
       assert_fail
     rescue CustomException::NotFoundException => e
       assert true
     end
 
-    assert_not_nil Resource.find_by_id(1)
+    assert_not_nil Resource.find_by_id(100001)
   end
 
   # deleteのテスト
   # バージョンが数値でない
   test "delete_ng_illegal_lock_version_format" do
-    assert_not_nil Resource.find_by_id(1)
+    assert_not_nil Resource.find_by_id(100001)
     
     resource_logic = ResourceLogic.new
     begin
-      resource_logic.delete(1, "MyS", "abc")
+      resource_logic.delete(100001, "MyS", "abc")
       assert_fail
     rescue CustomException::NotFoundException => e
       assert true
     end
 
-    assert_not_nil Resource.find_by_id(1)
+    assert_not_nil Resource.find_by_id(100001)
   end
 
 end
