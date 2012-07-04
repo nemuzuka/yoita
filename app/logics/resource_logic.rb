@@ -82,4 +82,17 @@ class ResourceLogic
     end
     return resource
   end
+  
+  # リソース検索
+  # 検索条件に合致するリソース一覧を取得します
+  def find_by_conditions(params)
+    Resource.find_by_conditions(params)
+  end
+  
+  # リソースソート順更新
+  # 指定したidのソート順を変更します
+  def update_sort_num(ids, resource_type)
+    Resource.update_sort_num(ids, resource_type)
+  end
+  
 end
