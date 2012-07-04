@@ -3,19 +3,27 @@
 # SQL文組立の際に使用されるmodule
 module SqlHelper
 
+  # 定数
+  AND = 1
+  OR = 2
+
   # 検索条件結合
   # 項目を追加します
   # 検索条件が未設定の場合、引数の検索条件を戻り値の検索条件とします。
-  # 既に検索条件が存在する場合、引数の検索条件をandで繋ぎます。
-  def add_condition(base_condition, add_condition)
+  # 既に検索条件が存在する場合、引数の検索条件を指定Type(未指定の場合、and)で繋ぎます。
+  def add_condition(base_condition, add_condition, type=AND)
     
     result_condition = nil
     if base_condition == nil
       # 元の検索条件が未設定の場合、add対象の検索条件をそのまま帰す
       result_condition = add_condition
     else
-      # 元の検索条件が何かしら設定されている場合、andで検索条件を連結
-      result_condition = base_condition.and(add_condition)
+      # 元の検索条件が何かしら設定されている場合、検索条件を連結
+      if type == AND
+        result_condition = base_condition.and(add_condition)
+      else
+        result_condition = base_condition.or(add_condition)
+      end
     end
     return result_condition
   end
