@@ -7,15 +7,19 @@ class ResourceTest < ActiveSupport::TestCase
   # テスト前処理
   setup :create_resource
   
-  # 条件による検索のテスト
+  # 条件による検索のテスト(ページング無し)
   test "find_by_conditions" do
     # 全件取得
     resource_search_param = ResourceSearchParam.new
     actual_list = Resource.find_by_conditions(resource_search_param)
-    assert_equal actual_list.length, 7
+    assert_equal resource_search_param.total_count, 7
     assert_equal actual_list[0], FactoryGirl.build(:resource1)
     assert_equal actual_list[1], FactoryGirl.build(:resource3)
     assert_equal actual_list[2], FactoryGirl.build(:resource2)
+    assert_equal actual_list[3], FactoryGirl.build(:resource4)
+    assert_equal actual_list[4], FactoryGirl.build(:resource5)
+    assert_equal actual_list[5], FactoryGirl.build(:resource6)
+    assert_equal actual_list[6], FactoryGirl.build(:resource7)
     
     # resource_type設定
     resource_search_param = ResourceSearchParam.new
@@ -77,6 +81,70 @@ class ResourceTest < ActiveSupport::TestCase
     assert_equal actual_list[1], FactoryGirl.build(:resource5)
     assert_equal actual_list[2], FactoryGirl.build(:resource7)
   end
+
+  # 条件による検索のテスト(検索条件無し、ページング有り)
+  test "find_by_conditions_with_kaminari_no_param" do
+    # 全件取得(ページ指定有り 1ページ目)
+    resource_search_param = ResourceSearchParam.new
+    resource_search_param.page = 1
+    resource_search_param.per = 3
+    
+    actual_list = Resource.find_by_conditions(resource_search_param)
+    assert_equal resource_search_param.total_count, 7
+    assert_equal actual_list.length, 3
+    assert_equal actual_list[0], FactoryGirl.build(:resource1)
+    assert_equal actual_list[1], FactoryGirl.build(:resource3)
+    assert_equal actual_list[2], FactoryGirl.build(:resource2)
+
+    # 全件取得(ページ指定有り 2ページ目)    
+    resource_search_param = ResourceSearchParam.new
+    resource_search_param.page = 2
+    resource_search_param.per = 3
+    
+    actual_list = Resource.find_by_conditions(resource_search_param)
+    assert_equal resource_search_param.total_count, 7
+    assert_equal actual_list.length, 3
+    assert_equal actual_list[0], FactoryGirl.build(:resource4)
+    assert_equal actual_list[1], FactoryGirl.build(:resource5)
+    assert_equal actual_list[2], FactoryGirl.build(:resource6)
+    
+    # 全件取得(ページ指定有り 3ページ目)    
+    resource_search_param = ResourceSearchParam.new
+    resource_search_param.page = 3
+    resource_search_param.per = 3
+    
+    actual_list = Resource.find_by_conditions(resource_search_param)
+    assert_equal resource_search_param.total_count, 7
+    assert_equal actual_list.length, 1
+    assert_equal actual_list[0], FactoryGirl.build(:resource7)
+
+    # 全件取得(ページ指定有り 4ページ目、表示するレコード無し)    
+    resource_search_param = ResourceSearchParam.new
+    resource_search_param.page = 4
+    resource_search_param.per = 3
+    
+    actual_list = Resource.find_by_conditions(resource_search_param)
+    assert_equal resource_search_param.total_count, 7
+    assert_equal actual_list.length, 0
+    
+  end
+
+  # 条件による検索のテスト(検索条件有り、ページング有り)
+  test "find_by_conditions_with_kaminari_param" do
+    
+    # id指定
+    resource_search_param = ResourceSearchParam.new
+    resource_search_param.ids = [100010, 100005, 100001, 100007]
+    resource_search_param.page = 1
+    resource_search_param.per = 2
+    actual_list = Resource.find_by_conditions(resource_search_param)
+    assert_equal resource_search_param.total_count, 3
+    assert_equal actual_list.length, 2
+    assert_equal actual_list[0], FactoryGirl.build(:resource1)
+    assert_equal actual_list[1], FactoryGirl.build(:resource5)
+
+  end
+
   
   # ソート順更新のテスト
   test "update_sort_num" do

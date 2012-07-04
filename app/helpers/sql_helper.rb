@@ -45,7 +45,33 @@ module SqlHelper
       .gsub(/_/, '\_').gsub(/％/, '\％').gsub(/＿/, '\＿')
   end
 
+  # 検索処理実行
+  # where句の有り/無し
+  # ページングの有り/無し
+  # で発行するSQLを変更します
+  def executeSearch(param, model_class, condition, orders)
+    # 設定条件次第でSQL発行
+    result = nil
+    target = model_class
+    if condition != nil
+      target = model_class.where(condition)
+    end
+    
+    if param.per == nil
+      # ページングの指定が無い場合
+      result = target.order(orders).all
+      param.total_count = result.length
+    else
+      # ページングの指定がある場合
+      result = target.order(orders).page(param.page).per(param.per)
+      param.total_count = result.total_count
+    end
+
+    return result;
+  end
+
   module_function :add_condition
   module_function :replase_match_string
+  module_function :executeSearch
 
 end
