@@ -20,7 +20,7 @@ class ResourceLogic
       
       if !resource.save
         # エラーが存在するので、例外をthrow
-        raise ValidationException.new(resource.errors.full_messages)
+        raise CustomException::ValidationException.new(resource.errors.full_messages)
       end
       
     else
@@ -38,11 +38,11 @@ class ResourceLogic
 
         if result == false
           # エラーが存在するので、例外をthrow
-          raise ValidationException.new(resource.errors.full_messages)
+          raise CustomException::ValidationException.new(resource.errors.full_messages)
         end
       rescue ActiveRecord::StaleObjectError
         # lock_versionが不正の場合、該当レコード無しのExceptionをthrow
-        raise NotFoundException.new
+        raise CustomException::NotFoundException.new
       end
     end
     return resource
@@ -62,7 +62,7 @@ class ResourceLogic
       resource.destroy
     rescue ActiveRecord::StaleObjectError
       # lock_versionが不正の場合、該当レコード無しのExceptionをthrow
-      raise NotFoundException.new
+      raise CustomException::NotFoundException.new
     end
   end
 
@@ -74,11 +74,11 @@ class ResourceLogic
     resource = Resource.find_by_id(id)
     if resource == nil
       # 該当レコード無しのExceptionをthrow
-      raise NotFoundException.new
+      raise CustomException::NotFoundException.new
     end
     if resource[:resource_type] != resource_type
       # 更新前と更新後でリソース区分が異なる場合、Exceptionをthrow
-      raise IllegalParameterException.new
+      raise CustomException::IllegalParameterException.new
     end
     return resource
   end

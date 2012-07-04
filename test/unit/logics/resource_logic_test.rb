@@ -40,7 +40,7 @@ class ResourceLogicTest < ActiveSupport::TestCase
     begin
       resource_logic.save(params, ResourceType::USER, 1234)
       assert_fail
-    rescue ValidationException => e
+    rescue CustomException::ValidationException => e
       assert_equal e.msgs.length, 1
     end
   end
@@ -66,7 +66,7 @@ class ResourceLogicTest < ActiveSupport::TestCase
     begin
       resource_logic.save(params, ResourceType::USER, 1234)
       assert_fail
-    rescue ValidationException => e
+    rescue CustomException::ValidationException => e
       assert_equal e.msgs.length, 2
     end
   end
@@ -122,7 +122,7 @@ class ResourceLogicTest < ActiveSupport::TestCase
     begin
       resource_logic.save(params, "MyS", 1234)
       assert_fail
-    rescue NotFoundException => e
+    rescue CustomException::NotFoundException => e
       assert true
     end
   end
@@ -144,7 +144,7 @@ class ResourceLogicTest < ActiveSupport::TestCase
     begin
       resource_logic.save(params, "002", 1234)
       assert_fail
-    rescue IllegalParameterException => e
+    rescue CustomException::IllegalParameterException => e
       assert true
     end
   end
@@ -166,7 +166,7 @@ class ResourceLogicTest < ActiveSupport::TestCase
     begin
       resource_logic.save(params, "MyS", 1234)
       assert_fail
-    rescue NotFoundException => e
+    rescue CustomException::NotFoundException => e
       assert true
     end
   end
@@ -188,7 +188,7 @@ class ResourceLogicTest < ActiveSupport::TestCase
     begin
       resource_logic.save(params, "MyS", 1234)
       assert_fail
-    rescue NotFoundException => e
+    rescue CustomException::NotFoundException => e
       assert true
     end
   end
@@ -210,7 +210,7 @@ class ResourceLogicTest < ActiveSupport::TestCase
     begin
       resource_logic.save(params, "MyS", 1234)
       assert_fail
-    rescue NotFoundException => e
+    rescue CustomException::NotFoundException => e
       assert true
     end
   end
@@ -234,7 +234,7 @@ class ResourceLogicTest < ActiveSupport::TestCase
     begin
       resource_logic.save(params, "MyS", 1234)
       assert_fail
-    rescue NotFoundException => e
+    rescue CustomException::NotFoundException => e
       assert true
     end
   end
@@ -256,7 +256,7 @@ class ResourceLogicTest < ActiveSupport::TestCase
     begin
       resource_logic.save(params, "MyS", 1234)
       assert_fail
-    rescue ValidationException => e
+    rescue CustomException::ValidationException => e
       assert_equal e.msgs.length, 1
     end
     
@@ -283,7 +283,7 @@ class ResourceLogicTest < ActiveSupport::TestCase
     begin
       resource_logic.save(params, "MyS", 1234)
       assert_fail
-    rescue ValidationException => e
+    rescue CustomException::ValidationException => e
       assert_equal e.msgs.length, 2
     end
   end
@@ -307,7 +307,7 @@ class ResourceLogicTest < ActiveSupport::TestCase
     begin
       resource_logic.delete(1, "MyS", 9)
       assert_fail
-    rescue NotFoundException => e
+    rescue CustomException::NotFoundException => e
       assert true
     end
 
@@ -323,7 +323,7 @@ class ResourceLogicTest < ActiveSupport::TestCase
     begin
       resource_logic.delete(1, "MyS", "abc")
       assert_fail
-    rescue NotFoundException => e
+    rescue CustomException::NotFoundException => e
       assert true
     end
 
