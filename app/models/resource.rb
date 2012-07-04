@@ -41,11 +41,26 @@ class Resource < ActiveRecord::Base
     orders = [resources[:sort_num], resources[:id]];
     
     # 設定条件次第でSQL発行
-    if condition != nil
-      self.where(condition).order(orders).all
+    result = nil
+    
+    if(param.per == -1)
+      # ページングの指定が無い場合
+      if condition != nil
+        result = self.where(condition).order(orders).all
+      else
+        result = self.order(orders).all
+      end
+      param.total_count = result.length
     else
-      self.order(orders).all
+      # ページングの指定がある場合
+      if condition != nil
+        result = self.where(condition).order(orders).page(param.page).per(param.per)
+      else
+        result = self.order(orders).page(param.page).per(param.per)
+      end
+      param.total_count = result.total_count
     end
+    return result;
   end
 
   # ソート順更新
@@ -66,7 +81,21 @@ class Resource < ActiveRecord::Base
 
 end
 
+# 改ページが必要な場合の条件
+# total_count トータル件数 => output
+# page 表示ページ番号(0 start) => input
+# per 1ページ辺りの表示件数(-1の場合、全て出力) => input
+class DefaultPagerCondition
+  # output
+  attr_accessor :total_count,:page, :per
+  
+  # 初期値設定
+  def after_initialize
+    self.per = -1
+  end
+end
+
 # 検索条件のパラメータclass
-class ResourceSearchParam
+class ResourceSearchParam < DefaultPagerCondition
   attr_accessor :name, :resource_type, :ids
 end
