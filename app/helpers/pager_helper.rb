@@ -9,7 +9,9 @@ module PagerHelper
   # リンク文字列を生成します
   def crate_page_link(default_pager_condition, function_name, app_path)
     
-    if default_pager_condition.total_count == 0 || default_pager_condition.per == 0
+    if default_pager_condition.total_count == nil || default_pager_condition.total_count == 0 || 
+      default_pager_condition.per == nil || default_pager_condition.per == 0 ||
+      default_pager_condition.page == nil || default_pager_condition.page == 0
       return ""
     end
     
