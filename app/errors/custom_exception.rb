@@ -24,8 +24,9 @@ module CustomException
     
     #
     # コンストラクタ
-    # ==== Args
-    # _msgs_ :: エラーメッセージList
+    # ==== _Args_
+    # [msgs]
+    #   エラーメッセージList
     #
     def initialize msgs
       @msgs = msgs

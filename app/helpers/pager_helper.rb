@@ -1,7 +1,7 @@
 # encoding: utf-8
 
 #
-#ページリンク文字列を作成するヘルパー
+# ページリンク文字列を作成するヘルパー
 #
 module PagerHelper
   
@@ -11,11 +11,14 @@ module PagerHelper
   #
   # ページリンク文字列作成.
   # リンク文字列を生成します
-  # ==== Args
-  # _default_pager_condition_ :: ページリンク生成条件。<i>SqlHelper::DefaultPagerCondition</i>のサブクラスのインスタンスである必要があります。
-  # _function_name_ :: ページリンククリック時に呼ばれるjavascriptの関数名
-  # _app_path_ :: ページリンククリック時に呼ばれるpath名
-  # ==== Return
+  # ==== _Args_
+  # [default_pager_condition]
+  #   ページリンク生成条件。<i>SqlHelper::DefaultPagerCondition</i>のサブクラスのインスタンスである必要があります。
+  # [function_name]
+  #   ページリンククリック時に呼ばれるjavascriptの関数名
+  # [app_path]
+  #   ページリンククリック時に呼ばれるpath名
+  # ==== _Return_
   # ページリンク文字列(そのままhtml出力することを想定)
   # 
   def crate_page_link(default_pager_condition, function_name, app_path)
@@ -59,14 +62,16 @@ module PagerHelper
   protected
 
   #
-  # ページリンク構成情報を作成
+  # ページリンク構成情報作成
   # 現在のページに対して前後のページが存在するかを判断してページ情報を作成します。
   # 2ページ以上前後するページが存在する場合、「...」で置き換え、
   # 1ページ目または最終ページのリンクを表示します
-  # ==== Args
-  # _total_page_num_ :: 全取得件数、1ページあたりの表示件数を元に算出した、トータルページ数
-  # _current_page_num_ :: 表示対象ページ数(1から始まる)
-  # ==== Return
+  # ==== _Args_
+  # [total_page_num]
+  #   全取得件数と1ページあたりの表示件数を元に算出した、トータルページ数
+  # [current_page_num]
+  #   表示対象ページ数(1から始まる)
+  # ==== _Return_
   # ページリンク構成List
   # 
   def create_page_info_list(total_page_num, current_page_num)
@@ -117,7 +122,7 @@ module PagerHelper
   
   
   #
-  #アンカーリンク表示情報
+  # アンカーリンク表示情報
   #
   class LinkInfo
     # 表示文字列
@@ -127,9 +132,11 @@ module PagerHelper
     
     #
     # コンストラクタ
-    # ==== Args
-    # _view_str_ :: 表示文字列
-    # _link_ :: リンク表示する項目の場合、true/ラベル表示の場合、false
+    # ==== _Args_
+    # [view_str]
+    #   表示文字列
+    # [link]
+    #   リンク表示する項目の場合、true/ラベル表示の場合、false
     #
     def initialize(view_str, link)
       @view_str = view_str
@@ -138,7 +145,7 @@ module PagerHelper
     
     #
     # リンク表示する項目か？
-    # ==== Return
+    # ==== _Return_
     # リンク表示する場合、true
     #
     def link?
