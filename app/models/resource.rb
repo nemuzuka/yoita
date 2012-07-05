@@ -63,6 +63,6 @@ class Resource < ActiveRecord::Base
 end
 
 # 検索条件のパラメータclass
-class ResourceSearchParam < ApplicationHelper::DefaultPagerCondition
+class ResourceSearchParam < SqlHelper::DefaultPagerCondition
   attr_accessor :name, :resource_type, :ids
 end
