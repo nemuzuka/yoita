@@ -6,9 +6,9 @@
 module SqlHelper
 
   # AND条件
-  AND = 1
+  AND_JOIN = 1
   # OR条件
-  OR = 2
+  OR_JOIN = 2
   
   #
   # 検索条件結合
@@ -18,11 +18,11 @@ module SqlHelper
   # ==== Args
   # _base_condition_ :: 結合先検索条件
   # _add_condition_ :: 結合対象検索条件
-  # _type_ :: 指定Type(未指定の場合、AND条件)
+  # _type_ :: 指定Type(未指定の場合、AND条件  see. <i>SqlHelper.AND_JOIN</i> <i>SqlHelper.OR_JOIN</i> )
   # ==== Return
   # 結合後検索条件
   #
-  def add_condition(base_condition, add_condition, type=AND)
+  def add_condition(base_condition, add_condition, type=AND_JOIN)
     
     result_condition = nil
     if base_condition == nil
@@ -30,7 +30,7 @@ module SqlHelper
       result_condition = add_condition
     else
       # 元の検索条件が何かしら設定されている場合、検索条件を連結
-      if type == AND
+      if type == AND_JOIN
         result_condition = base_condition.and(add_condition)
       else
         result_condition = base_condition.or(add_condition)
