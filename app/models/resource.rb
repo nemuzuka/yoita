@@ -50,7 +50,7 @@ class Resource < ActiveRecord::Base
     orders = [resources[:sort_num], resources[:id]];
     
     # 設定条件次第でSQL発行
-    SqlHelper::executeSearch(param, self, condition, orders)
+    SqlHelper::execute_search(param, self, condition, orders)
   end
 
   #

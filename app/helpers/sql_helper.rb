@@ -76,7 +76,7 @@ module SqlHelper
   # ==== Return
   # 検索結果
   #
-  def executeSearch(param, model_class, condition, orders)
+  def execute_search(param, model_class, condition, orders)
     # 設定条件次第でSQL発行
     result = nil
     target = model_class
@@ -99,7 +99,7 @@ module SqlHelper
 
   module_function :add_condition
   module_function :replase_match_string
-  module_function :executeSearch
+  module_function :execute_search
 
   #
   #改ページが必要な場合の条件
