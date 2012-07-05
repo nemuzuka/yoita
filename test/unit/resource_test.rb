@@ -196,7 +196,7 @@ class ResourceTest < ActiveSupport::TestCase
 
     # memoが空文字でも登録できること
     resource = Resource.new
-    resource[:resource_type] = ResourceType::USERGROUP
+    resource[:resource_type] = ResourceType::USER_GROUP
     resource[:name] = "name123"
     resource[:memo] = ""
     resource[:sort_num] = 33
