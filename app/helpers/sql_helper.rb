@@ -1,16 +1,27 @@
 # encoding: utf-8
 
-# SQL文組立の際に使用されるmodule
+#
+#SQL文組立の際に使用されるヘルパーmodule
+#
 module SqlHelper
 
-  # 定数
+  # AND条件
   AND = 1
+  # OR条件
   OR = 2
-
+  
+  #
   # 検索条件結合
   # 項目を追加します
-  # 検索条件が未設定の場合、引数の検索条件を戻り値の検索条件とします。
-  # 既に検索条件が存在する場合、引数の検索条件を指定Type(未指定の場合、and)で繋ぎます。
+  # 結合先検索条件が未設定の場合、結合対象検索条件を戻り値の検索条件とします。
+  # 結合先検索条件が設定されている場合、結合対象検索条件を指定Type(未指定の場合、AND条件)で繋ぎます。
+  # ==== Args
+  # _base_condition_ :: 結合先検索条件
+  # _add_condition_ :: 結合対象検索条件
+  # _type_ :: 指定Type(未指定の場合、AND条件)
+  # ==== Return
+  # 結合後検索条件
+  #
   def add_condition(base_condition, add_condition, type=AND)
     
     result_condition = nil
@@ -27,13 +38,20 @@ module SqlHelper
     end
     return result_condition
   end
-
+  
+  # 
   # like検索時の文字列置換
+  # 引数の文字列に対してlike検索ができるように、「\」でエスケープします。
   # \→\\
   # %→\%
   # ％→\％
   # _→\_
   # ＿→\_
+  # ==== Args
+  # _target_ :: 置換対象文字列
+  # ==== Return
+  # 置換後文字列
+  # 
   def replase_match_string(target)
     if target == nil
       return ""
@@ -45,10 +63,19 @@ module SqlHelper
       .gsub(/_/, '\_').gsub(/％/, '\％').gsub(/＿/, '\＿')
   end
 
+  #
   # 検索処理実行
   # where句の有り/無し
   # ページングの有り/無し
   # で発行するSQLを変更します
+  # ==== Args
+  # _param_ :: <i>SqlHelper::DefaultPagerCondition</i>のサブクラスのインスタンスである必要があります。
+  # _model_class_ :: modelクラス
+  # _condition_ :: 検索条件
+  # _orders_ :: ソート順(必須)
+  # ==== Return
+  # 検索結果
+  #
   def executeSearch(param, model_class, condition, orders)
     # 設定条件次第でSQL発行
     result = nil
@@ -74,13 +101,16 @@ module SqlHelper
   module_function :replase_match_string
   module_function :executeSearch
 
-  # 改ページが必要な場合の条件
-  # total_count トータル件数 => output
-  # page 表示ページ番号(1 start) => input
-  # per 1ページ辺りの表示件数(nilの場合、全て出力) => input
+  #
+  #改ページが必要な場合の条件
+  # 
   class DefaultPagerCondition
-    # output
-    attr_accessor :total_count, :page, :per
+    # トータル件数(output)
+    attr_accessor :total_count
+    # 表示ページ番号 1から始まる(input)
+    attr_accessor :page
+    # 1ページ辺りの表示件数 nilの場合、全て出力(input)
+    attr_accessor :per
   end
 
 end

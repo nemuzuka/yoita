@@ -15,7 +15,7 @@ class Resource < ActiveRecord::Base
   # 検索条件に合致するレコードを抽出.
   # 検索条件として設定されている項目に対してのみWhere句に設定します。ページャ用の設定がされている場合、ページング処理を行います
   # ==== Args
-  # _param_ :: 検索条件パラメータ。<i>ResourceSearchParam</i>のインスタンスである必要があります。
+  # _param_ :: 検索条件パラメータ(see. <i>ResourceSearchParam</i>)
   # ==== Return
   # 該当レコード(存在しない場合、size=0のList)
   #

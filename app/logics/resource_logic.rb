@@ -1,10 +1,20 @@
-# リソースに対するLogic
+#
+#リソースに対するLogic
+#
 class ResourceLogic
+
+  #
   # リソース登録
   # DBの整合性に合致しない場合、不正な入力値の場合、例外をthrowします 
-  # ValidationException:validate時の例外
-  # IllegalParameterException:不正なパラメータを渡された場合
-  # NotFoundException:該当レコードが存在しない場合
+  # ==== Args
+  # _params_ :: リソース登録・更新情報
+  # _resource_type_ :: リソース区分(see. <i>ResourceType</i>)
+  # _action_resource_id_ :: 登録・更新処理実行ユーザリソースID
+  # ==== Raise
+  # CustomException::ValidationException :: validate時の例外
+  # CustomException::IllegalParameterException :: 不正なパラメータを渡された場合
+  # CustomException::NotFoundException :: 該当レコードが存在しない場合
+  #
   def save(params, resource_type, action_resource_id)
     
     resource = nil
@@ -48,11 +58,17 @@ class ResourceLogic
     return resource
   end
   
+  #
   # リソース削除
-  # DBの整合性に合致しない場合、不正な入力値の場合、例外をthrowします 
-  # ValidationException:validate時の例外
-  # IllegalParameterException:不正なパラメータを渡された場合
-  # NotFoundException:該当レコードが存在しない場合
+  # 指定データを削除します。
+  # ==== Args
+  # _id_ :: 削除対象のリソースID
+  # _resource_type_ :: リソース区分(see.<i>ResourceType</i>)
+  # _lock_version_ :: 対象バージョンNo
+  # ==== Raise
+  # CustomException::IllegalParameterException :: 不正なパラメータを渡された場合
+  # CustomException::NotFoundException :: 該当レコードが存在しない場合
+  # 
   def delete(id, resource_type, lock_version)
     # 更新の場合
     resource = get_resource(id, resource_type)
@@ -66,10 +82,16 @@ class ResourceLogic
     end
   end
 
+  #
   # リソース取得
   # idに紐付くリソース情報を取得します。
-  # ValidationException:validate時の例外
-  # IllegalParameterException:不正なパラメータを渡された場合
+  # ==== Args
+  # _id_ :: 削除対象のリソースID
+  # _resource_type_ :: リソース区分(see. <i>ResourceType</i>)
+  # ==== Raise
+  # CustomException::IllegalParameterException :: 不正なパラメータを渡された場合
+  # CustomException::NotFoundException :: 該当レコードが存在しない場合
+  #
   def get_resource(id, resource_type)
     resource = Resource.find_by_id(id)
     if resource == nil
@@ -83,8 +105,12 @@ class ResourceLogic
     return resource
   end
   
+  #
   # リソース検索
   # 検索条件に合致するリソース一覧を取得します
+  # ==== Args
+  # _params_ :: 検索条件(see. <i>ResourceSearchParam</i>)
+  #
   def find_by_conditions(params)
     Resource.find_by_conditions(params)
   end
