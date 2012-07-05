@@ -1,6 +1,8 @@
 # encoding: utf-8
 
-# Resourcesテーブルのmodel
+#
+#resourcesテーブルのmodel
+#
 class Resource < ActiveRecord::Base
   attr_accessible :entry_resource_id, :lock_version, :memo, :name, :resource_type, :sort_num, :update_resource_id
 
@@ -9,7 +11,14 @@ class Resource < ActiveRecord::Base
   validates :name, :length => { :maximum  => 128 } ,:presence => true
   validates :memo, :length => { :maximum  => 1024 }
 
-  # 検索条件に合致するレコードを抽出
+  #
+  # 検索条件に合致するレコードを抽出.
+  # 検索条件として設定されている項目に対してのみWhere句に設定します。ページャ用の設定がされている場合、ページング処理を行います
+  # ==== Args
+  # _param_ :: 検索条件パラメータ。<i>ResourceSearchParam</i>のインスタンスである必要があります。
+  # ==== Return
+  # 該当レコード(存在しない場合、size=0のList)
+  #
   def self.find_by_conditions(param)
     
     resources = Arel::Table.new :resources
@@ -44,7 +53,14 @@ class Resource < ActiveRecord::Base
     SqlHelper::executeSearch(param, self, condition, orders)
   end
 
-  # ソート順更新
+  #
+  # ソート順更新.
+  # 指定したidのlistの順番にソート順を更新します。idとリソース区分が合致するレコードが存在しない場合でも
+  # エラーにはなりません。
+  # ==== Args
+  # _ids_ :: 更新対象idList。この順番にソート順を1から採番します
+  # _resource_type_ :: リソース区分
+  #
   def self.update_sort_num(ids, resource_type)
     if ids == nil || ids.length == 0
       return
@@ -62,7 +78,14 @@ class Resource < ActiveRecord::Base
 
 end
 
-# 検索条件のパラメータclass
+#
+#Resourceの検索条件のパラメータclass
+#
 class ResourceSearchParam < SqlHelper::DefaultPagerCondition
-  attr_accessor :name, :resource_type, :ids
+  # 名称
+  attr_accessor :name
+  # リソース区分
+  attr_accessor :resource_type
+  # idのList
+  attr_accessor :ids
 end
