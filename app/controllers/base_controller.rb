@@ -29,22 +29,10 @@ module BaseController
             yield
           rescue => e
             logger.error e.message if logger
-            # TODO ログイン画面へリダイレクト
+            #TODO ログイン画面へリダイレクト
+            redirect_to :controller => "login"
           end
           
-        end
-      end
-    
-    private 
-      #
-      # Tokenチェック.
-      # Tokenチェックを行い、エラーが発生した際、ログイン画面へ遷移します。
-      #
-      def token_check
-        if super.verified_request? == false
-          # TODO ログイン画面へリダイレクト
-          # →今回の使い方では発生しないはず
-          return false
         end
       end
     
@@ -56,9 +44,23 @@ module BaseController
   #
   class HtmlController < HtmlNoLoginController
 
+    before_filter :token_check
     before_filter :login_check
     
     private
+      #
+      # Tokenチェック.
+      # Tokenチェックを行い、エラーが発生した際、ログイン画面へ遷移します。
+      #
+      def token_check
+        if super.verified_request? == false
+          # →今回の使い方では発生しないはず
+          #TODO ログイン画面へリダイレクト
+          redirect_to :controller => "login"
+          return false
+        end
+      end
+
       #
       # loginチェック.
       # SessionにUserInfoが存在するか判断し、
@@ -67,6 +69,7 @@ module BaseController
       def login_check
         if super.logined? == false
           # TODO ログイン画面へリダイレクト
+          redirect_to :controller => "login"
           return false
         end
       end

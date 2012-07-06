@@ -1,5 +1,8 @@
 Yoita::Application.routes.draw do
   resources :resources
+  resource :login
+  
+  root to: "login#index"
 
   # The priority is based upon order of creation:
   # first created -> highest priority.
