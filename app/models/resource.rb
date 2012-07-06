@@ -12,6 +12,16 @@ class Resource < ActiveRecord::Base
   validates :memo, :length => { :maximum  => 1024 }
 
   #
+  # json変換時処理.
+  # json変換時に出力する項目を設定します。
+  #
+  def as_json(options={})
+    options[:except] ||= [:created_at, :updated_at, 
+      :entry_resource_id, :update_resource_id, :sort_num, :resource_type]
+    super(options)
+  end
+
+  #
   # 検索条件に合致するレコードを抽出.
   # 検索条件として設定されている項目に対してのみWhere句に設定します。ページャ用の設定がされている場合、ページング処理を行います
   # ==== _Args_
