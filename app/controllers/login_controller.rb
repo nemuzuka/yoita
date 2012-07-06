@@ -8,7 +8,6 @@ class LoginController < BaseController::HtmlNoLoginController
   # ログイン画面を表示します
   #
   def index
-    format.html
   end
   
   #
