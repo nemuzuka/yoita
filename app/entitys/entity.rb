@@ -1,3 +1,5 @@
+# encoding: utf-8
+
 #
 # データを保持するEntity
 #
@@ -61,6 +63,22 @@ module Entity
     attr_accessor :name
     # リソースID
     attr_accessor :resource_id
+    # 管理者フラグ
+    attr_accessor :admin_flg
+    
+    #
+    # 管理者ユーザか
+    # ==== _Return_
+    # 管理者ユーザの場合、true
+    #
+    def admin?
+      if @admin_flg != nil && @admin_flg == true
+        return true
+      end
+
+      return false
+    end
+    
   end
 
 end
