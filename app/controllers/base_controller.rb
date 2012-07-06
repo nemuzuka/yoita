@@ -10,7 +10,6 @@ module BaseController
   # 主に、ログイン処理にて使用
   #
   class HtmlNoLoginController < ApplicationController
-    before_filter :token_check
 
     protected
       #
