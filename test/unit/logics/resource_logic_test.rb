@@ -8,7 +8,9 @@ class ResourceLogicTest < ActiveSupport::TestCase
   # テスト前処理
   setup :create_resource
   
+  #
   # saveメソッド-追加のテスト
+  #
   test "save_create" do
     params = {
       :resource => {
@@ -26,8 +28,10 @@ class ResourceLogicTest < ActiveSupport::TestCase
     assert_equal resource, store_target
   end
 
+  #
   # validateエラーの場合の処理
   # 名称空文字
+  #
   test "save_create_ng_validate_error" do
     params = {
       :resource => {
@@ -48,8 +52,10 @@ class ResourceLogicTest < ActiveSupport::TestCase
   end
 
 
+  #
   # validateエラーの場合の処理
   # 名称空文字、memo最大値超
+  #
   test "save_create_ng_2validates_error" do
     params = {
       :resource => {
@@ -73,7 +79,9 @@ class ResourceLogicTest < ActiveSupport::TestCase
     end
   end
 
+  #
   # saveメソッド-更新のテスト
+  #
   test "save_update" do
     params = {
       :resource => {
@@ -103,8 +111,10 @@ class ResourceLogicTest < ActiveSupport::TestCase
   end
 
 
+  #
   # saveメソッド-更新のテスト
   # 該当id存在無し
+  #
   test "save_update_ng_not_found_id" do
     params = {
       :resource => {
@@ -129,8 +139,10 @@ class ResourceLogicTest < ActiveSupport::TestCase
     end
   end
 
+  #
   # saveメソッド-更新のテスト
   # リソース区分がDBの値と異なる
+  #
   test "save_update_ng_illegal_resource_type" do
     params = {
       :resource => {
@@ -151,8 +163,10 @@ class ResourceLogicTest < ActiveSupport::TestCase
     end
   end
 
+  #
   # saveメソッド-更新のテスト
   # バージョンNoが期待値でない
+  #
   test "save_update_ng_illegal_lock_version" do
     params = {
       :resource => {
@@ -173,8 +187,10 @@ class ResourceLogicTest < ActiveSupport::TestCase
     end
   end
 
+  #
   # saveメソッド-更新のテスト
   # バージョンNoが英字である
+  #
   test "save_update_ng_illegal_lock_version_format" do
     params = {
       :resource => {
@@ -195,8 +211,10 @@ class ResourceLogicTest < ActiveSupport::TestCase
     end
   end
 
+  #
   # saveメソッド-更新のテスト
   # バージョンNoがnilである
+  #
   test "save_update_ng_illegal_lock_version_nil" do
     params = {
       :resource => {
@@ -218,9 +236,11 @@ class ResourceLogicTest < ActiveSupport::TestCase
   end
 
 
+  #
   # saveメソッド-更新のテスト
   # idが英字である
   # 該当レコード無しエラーになる模様
+  #
   test "save_update_ng_illegal_id_format" do
     params = {
       :resource => {
@@ -241,8 +261,10 @@ class ResourceLogicTest < ActiveSupport::TestCase
     end
   end
 
+  #
   # saveメソッド-更新のテスト
   # validateエラー
+  #
   test "save_update_ng_validate_error" do
     params = {
       :resource => {
@@ -264,9 +286,11 @@ class ResourceLogicTest < ActiveSupport::TestCase
     
   end
 
+  #
   # saveメソッド-更新のテスト
   # validateエラーの場合の処理
   # 名称空文字、memo最大値超
+  #
   test "save_update_ng_2validates_error" do
     params = {
       :resource => {
@@ -290,7 +314,9 @@ class ResourceLogicTest < ActiveSupport::TestCase
     end
   end
 
+  #
   # deleteのテスト
+  #
   test "delete" do
     assert_not_nil Resource.find_by_id(100001)
     
@@ -300,8 +326,10 @@ class ResourceLogicTest < ActiveSupport::TestCase
     assert_nil Resource.find_by_id(100001)
   end
 
+  #
   # deleteのテスト
   # バージョンが異なる
+  #
   test "delete_ng_illegal_lock_version" do
     assert_not_nil Resource.find_by_id(100001)
     
@@ -316,8 +344,10 @@ class ResourceLogicTest < ActiveSupport::TestCase
     assert_not_nil Resource.find_by_id(100001)
   end
 
+  #
   # deleteのテスト
   # バージョンが数値でない
+  #
   test "delete_ng_illegal_lock_version_format" do
     assert_not_nil Resource.find_by_id(100001)
     

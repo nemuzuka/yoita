@@ -16,7 +16,9 @@ end
 # Unitテストのセットアップ用モジュール群
 module SetupMethods
   
+  #
   # resourceテスト用
+  #
   def create_resource
     FactoryGirl.create(:resource1)
     FactoryGirl.create(:resource2)

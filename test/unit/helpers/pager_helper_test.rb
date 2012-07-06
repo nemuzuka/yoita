@@ -5,7 +5,9 @@ class PagerHelperTest < ActionView::TestCase
   
   include PagerHelper
   
+  #
   # ページャーによるリンク文字列のテスト
+  #
   test "pager_condition" do
     
     # トータル件数が0件の場合、リンク文字列は表示しない
@@ -42,8 +44,9 @@ class PagerHelperTest < ActionView::TestCase
     assert_equal crate_page_link(pager_condition, "func1", "/hige"), 
       "<a class='pagelink' title='Page 1' href='javascript:void(0)' onclick='func1(1, \"/hige\"); return false;'>1</a> <a class='pagelink' title='Page 2' href='javascript:void(0)' onclick='func1(2, \"/hige\"); return false;'>2</a> <span class='pagelink'><b>3</b></span>"
   end
-  
+  #
   # リンク情報作成のテスト
+  #
   test "create_page_info_list_next" do
     # トータル1ページで1ページ目表示
     # 1
@@ -99,7 +102,9 @@ class PagerHelperTest < ActionView::TestCase
     assert_equal actual[3].link, true
   end
 
+  #
   # リンク情報作成のテスト
+  #
   test "create_page_info_list_prev" do
     
     # トータル2ページで2ページ目表示
@@ -150,7 +155,9 @@ class PagerHelperTest < ActionView::TestCase
     
   end
   
+  #
   # リンク情報作成のテスト
+  #
   test "create_page_info_list_multiple" do
     
     # トータル3ページで2ページ目表示

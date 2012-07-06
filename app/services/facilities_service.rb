@@ -1,7 +1,7 @@
 #
 # 設備に対するService
 #
-class FacilitiesService
+class FacilitiesService < Service::Base
   
   #
   # 設備検索
@@ -13,9 +13,11 @@ class FacilitiesService
   # 該当レコード(存在しない場合、size=0のList)
   #
   def find_by_conditions(params)
-    params.resource_type = ResourceType.FACILITY
-    logic = ResourceLogic.new
-    logic.find_by_conditions(params)
+    transaction_handler do
+      params.resource_type = ResourceType::FACILITY
+      logic = ResourceLogic.new
+      logic.find_by_conditions(params)
+    end
   end
 
   #
@@ -31,8 +33,10 @@ class FacilitiesService
   #   該当レコードが存在しない場合
   #
   def get_resource(id)
-    logic = ResourceLogic.new
-    logic.get_resource(id, ResourceType.FACILITY)
+    transaction_handler do
+      logic = ResourceLogic.new
+      logic.get_resource(id, ResourceType::FACILITY)
+    end
   end
   
   #
@@ -52,8 +56,10 @@ class FacilitiesService
   #   該当レコードが存在しない場合
   #
   def save(params, action_resource_id)
-    logic = ResourceLogic.new
-    logic.save(params, ResourceType.FACILITY, action_resource_id)
+    transaction_handler do
+      logic = ResourceLogic.new
+      logic.save(params, ResourceType::FACILITY, action_resource_id)
+    end
   end
   
   #
@@ -71,8 +77,10 @@ class FacilitiesService
   #   該当レコードが存在しない場合
   # 
   def delete(id, lock_version)
-    logic = ResourceLogic.new
-    logic.delete(id, ResourceType.FACILITY, lock_version)
+    transaction_handler do
+      logic = ResourceLogic.new
+      logic.delete(id, ResourceType::FACILITY, lock_version)
+    end
   end
   
   #
@@ -83,8 +91,10 @@ class FacilitiesService
   #   更新対象idList。この順番にソート順を1から採番します
   #
   def update_sort_num(ids)
-    logic = ResourceLogic.new
-    logic.update_sort_num(ids, ResourceType.FACILITY)
+    transaction_handler do
+      logic = ResourceLogic.new
+      logic.update_sort_num(ids, ResourceType::FACILITY)
+    end
   end
   
 end

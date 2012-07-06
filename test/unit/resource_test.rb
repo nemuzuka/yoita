@@ -7,7 +7,9 @@ class ResourceTest < ActiveSupport::TestCase
   # テスト前処理
   setup :create_resource
   
+  #
   # 条件による検索のテスト(ページング無し)
+  #
   test "find_by_conditions" do
     # 全件取得
     resource_search_param = ResourceSearchParam.new
@@ -82,7 +84,9 @@ class ResourceTest < ActiveSupport::TestCase
     assert_equal actual_list[2], FactoryGirl.build(:resource7)
   end
 
+  #
   # 条件による検索のテスト(検索条件無し、ページング有り)
+  #
   test "find_by_conditions_with_kaminari_no_param" do
     # 全件取得(ページ指定有り 1ページ目)
     resource_search_param = ResourceSearchParam.new
@@ -129,7 +133,9 @@ class ResourceTest < ActiveSupport::TestCase
     
   end
 
+  #
   # 条件による検索のテスト(検索条件有り、ページング有り)
+  #
   test "find_by_conditions_with_kaminari_param" do
     
     # id指定
@@ -145,8 +151,10 @@ class ResourceTest < ActiveSupport::TestCase
 
   end
 
-  
+
+  #
   # ソート順更新のテスト
+  #
   test "update_sort_num" do
     ids = [100006,100004,100005,100007]
     Resource.update_sort_num(ids, "hog")
@@ -165,9 +173,11 @@ class ResourceTest < ActiveSupport::TestCase
     assert_equal actual_list[3].sort_num, 4
     
   end
-  
+
+  #
   # ソート順更新のテスト
   # idのフォーマットが英字
+  #
   test "update_sort_num_ng_illegal_ids" do
     ids = ["abc", 100006,100004,100005,100007]
     begin
@@ -177,9 +187,11 @@ class ResourceTest < ActiveSupport::TestCase
       assert true
     end
   end
-  
-  
+
+
+  #
   # 登録時のvalidateテスト(正常)
+  #
   test "validate_ok" do
     
     resource = Resource.new
@@ -209,7 +221,9 @@ class ResourceTest < ActiveSupport::TestCase
 
   end
   
-  # リresource_typeのテスト
+  #
+  # resource_typeのvalidateテスト
+  #
   test "validate_ng_resource_type" do
 
     # リソース区分がnil    
@@ -244,7 +258,9 @@ class ResourceTest < ActiveSupport::TestCase
 
   end
 
-  # nameのテスト
+  #
+  # nameのvalitdaeテスト
+  #
   test "validate_ng_name" do
     
     # nameが空文字
@@ -301,8 +317,9 @@ class ResourceTest < ActiveSupport::TestCase
 
   end
 
-
-  # memoのテスト
+  #
+  # memoのvalidateテスト
+  #
   test "validate_ng_memo" do
     
     # memo文字数超(1025文字)
