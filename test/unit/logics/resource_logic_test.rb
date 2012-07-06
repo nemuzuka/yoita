@@ -170,7 +170,7 @@ class ResourceLogicTest < ActiveSupport::TestCase
   test "save_update_ng_illegal_lock_version" do
     params = {
       :resource => {
-        :id => "1",
+        :id => "100001",
         :name => "ほげほぎゃ",
         :memo => "メモらしいにょ",
         :lock_version => "123"
@@ -182,7 +182,7 @@ class ResourceLogicTest < ActiveSupport::TestCase
     begin
       resource_logic.save(params, "MyS", 1234)
       assert_fail
-    rescue CustomException::NotFoundException => e
+    rescue CustomException::InvalidVersionException => e
       assert true
     end
   end
@@ -194,7 +194,7 @@ class ResourceLogicTest < ActiveSupport::TestCase
   test "save_update_ng_illegal_lock_version_format" do
     params = {
       :resource => {
-        :id => "1",
+        :id => "100001",
         :name => "ほげほぎゃ",
         :memo => "メモらしいにょ",
         :lock_version => "abc"
@@ -206,7 +206,7 @@ class ResourceLogicTest < ActiveSupport::TestCase
     begin
       resource_logic.save(params, "MyS", 1234)
       assert_fail
-    rescue CustomException::NotFoundException => e
+    rescue CustomException::InvalidVersionException => e
       assert true
     end
   end
@@ -218,7 +218,7 @@ class ResourceLogicTest < ActiveSupport::TestCase
   test "save_update_ng_illegal_lock_version_nil" do
     params = {
       :resource => {
-        :id => "1",
+        :id => "100001",
         :name => "ほげほぎゃ",
         :memo => "メモらしいにょ",
         :lock_version => nil
@@ -230,7 +230,7 @@ class ResourceLogicTest < ActiveSupport::TestCase
     begin
       resource_logic.save(params, "MyS", 1234)
       assert_fail
-    rescue CustomException::NotFoundException => e
+    rescue CustomException::InvalidVersionException => e
       assert true
     end
   end
@@ -337,7 +337,7 @@ class ResourceLogicTest < ActiveSupport::TestCase
     begin
       resource_logic.delete(100001, "MyS", 9)
       assert_fail
-    rescue CustomException::NotFoundException => e
+    rescue CustomException::InvalidVersionException => e
       assert true
     end
 
@@ -355,7 +355,7 @@ class ResourceLogicTest < ActiveSupport::TestCase
     begin
       resource_logic.delete(100001, "MyS", "abc")
       assert_fail
-    rescue CustomException::NotFoundException => e
+    rescue CustomException::InvalidVersionException => e
       assert true
     end
 

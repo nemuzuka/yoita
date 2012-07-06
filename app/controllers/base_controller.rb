@@ -98,6 +98,10 @@ module BaseController
             # 該当レコード無し
             render json: createJsonResult(Entity::JsonResult::NO_DATA, 
               ["該当レコードが存在しません"])
+          rescue CustomException::InvalidVersionException
+            # バージョン不正
+            render json: createJsonResult(Entity::JsonResult::VERSION_ERR, 
+              ["他のユーザに更新された可能性があります"])
           rescue CustomException::ValidationException => e
             # validateエラー
             render json: createJsonResult(Entity::JsonResult::STATUS_NG, 

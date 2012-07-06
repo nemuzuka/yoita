@@ -16,6 +16,12 @@ module CustomException
   end
 
   #
+  # バージョンエラーの時の例外
+  #
+  class InvalidVersionException < StandardError
+  end
+
+  #
   # validation時の例外
   #
   class ValidationException < StandardError

@@ -54,6 +54,8 @@ class FacilitiesService < Service::Base
   #   不正なパラメータを渡された場合
   # [CustomException::NotFoundException]
   #   該当レコードが存在しない場合
+  # [CustomException::InvalidVersionException]
+  #   バージョンが合わない場合(更新時)
   #
   def save(params, action_resource_id)
     transaction_handler do
@@ -75,6 +77,8 @@ class FacilitiesService < Service::Base
   #   不正なパラメータを渡された場合
   # [CustomException::NotFoundException]
   #   該当レコードが存在しない場合
+  # [CustomException::InvalidVersionException]
+  #   バージョンが合わない場合
   # 
   def delete(id, lock_version)
     transaction_handler do

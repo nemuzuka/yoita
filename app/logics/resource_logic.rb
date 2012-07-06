@@ -20,6 +20,8 @@ class ResourceLogic
   #   不正なパラメータを渡された場合
   # [CustomException::NotFoundException]
   #   該当レコードが存在しない場合
+  # [CustomException::InvalidVersionException]
+  #   バージョンが合わない場合(更新時)
   #
   def save(params, resource_type, action_resource_id)
     
@@ -57,8 +59,8 @@ class ResourceLogic
           raise CustomException::ValidationException.new(resource.errors.full_messages)
         end
       rescue ActiveRecord::StaleObjectError
-        # lock_versionが不正の場合、該当レコード無しのExceptionをthrow
-        raise CustomException::NotFoundException.new
+        # lock_versionが不正の場合、バージョンエラーのExceptionをthrow
+        raise CustomException::InvalidVersionException.new
       end
     end
     return resource
@@ -79,6 +81,8 @@ class ResourceLogic
   #   不正なパラメータを渡された場合
   # [CustomException::NotFoundException]
   #   該当レコードが存在しない場合
+  # [CustomException::InvalidVersionException]
+  #   バージョンが合わない場合
   # 
   def delete(id, resource_type, lock_version)
     # 更新の場合
@@ -89,7 +93,7 @@ class ResourceLogic
       resource.destroy
     rescue ActiveRecord::StaleObjectError
       # lock_versionが不正の場合、該当レコード無しのExceptionをthrow
-      raise CustomException::NotFoundException.new
+      raise CustomException::InvalidVersionException.new
     end
   end
 
