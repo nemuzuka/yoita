@@ -11,12 +11,15 @@ module Service
     
     #
     # トランザクションをかけるhandler.
-    # rollbackする為にはブロック内で例外を投げる必要があります
-    # ==== _Args_
-    # [args]
-    #   処理パラメータ
+    # rollbackする為にはブロック内で例外を投げる必要があります。
+    # Service側の呼び出しイメージは以下の通りです
+    #   def something_method(...)
+    #     transaction_handler do
+    #       ...Service本体の処理...
+    #     end
+    #   end
     #
-    def transaction_handler(*args)
+    def transaction_handler
       ActiveRecord::Base.transaction do
         
         if block_given?
