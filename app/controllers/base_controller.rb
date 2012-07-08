@@ -29,7 +29,7 @@ module BaseController
           rescue => e
             logger.error e.message if logger
             #TODO ログイン画面へリダイレクト
-            redirect_to :controller => "login"
+            redirect_to :controller => "login", :action => "index"
           end
           
         end
@@ -55,7 +55,7 @@ module BaseController
         if super.verified_request? == false
           # →今回の使い方では発生しないはず
           #TODO ログイン画面へリダイレクト
-          redirect_to :controller => "login"
+          redirect_to :controller => "login", :action => "index"
           return false
         end
       end
@@ -63,12 +63,14 @@ module BaseController
       #
       # loginチェック.
       # SessionにUserInfoが存在するか判断し、
-      # 存在しない場合、ログイン画面へ遷移します。
+      # 存在しない場合、リクエストのパスをflashに格納し、ログイン画面へ遷移します。
       #
       def login_check
         if super.logined? == false
+          super.reset_session
+          flash[:referer] = request.fullpath
           # TODO ログイン画面へリダイレクト
-          redirect_to :controller => "login"
+          redirect_to :controller => "login", :action => 'index'
           return false
         end
       end

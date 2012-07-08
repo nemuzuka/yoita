@@ -14,7 +14,7 @@ class LoginController < BaseController::HtmlNoLoginController
   # 認証処理.
   # 認証成功時、Sessionを破棄して再作成します。
   #
-  def execute
+  def auth
     exeption_handler do
       # TODO 認証に失敗した場合、エラーを表示して再度ログイン画面を表示
       
@@ -26,7 +26,15 @@ class LoginController < BaseController::HtmlNoLoginController
       user_info.admin_flg = true
       
       super.re_create_session(user_info)
-      render :controller => "schedule"
+      
+      # リクエストパラメータに遷移先が設定されている場合はそのURLへ
+      # 設定されていない場合、スケジューラの先頭へ遷移する
+      referer = params[:referer]
+      if(referer != nil && referer != '')
+        redirect_to referer
+      else
+        render :controller => "schedule", :action => "index"
+      end
     end
   end
   
