@@ -41,6 +41,21 @@ var adminFlg = true;
 
 $(function(){
 
+	var selectedMainMenu = $("#selected_main_menu").val();
+	$("#" + selectedMainMenu).addClass("active");
+
+	var selectedSubMenu = $("#selected_sub_menu").val();
+	$("#" + selectedSubMenu).addClass("active");
+
+	if(adminFlg) {
+		$("#main_menu2").show();
+		$("#admin_menu").show();
+
+		$("#admin_menu").click(function(){
+			moveUrl("/admin/users");
+		});
+
+	}
 });
 //-->
 </script>
