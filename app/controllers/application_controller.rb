@@ -72,4 +72,14 @@ class ApplicationController < ActionController::Base
       session[:user_info] = user_info
     end
 
+    #
+    # ユーザ情報取得.
+    # Session上に設定されている、ユーザ情報を取得します。
+    # ==== _Return_
+    # ユーザ情報(存在しない場合、nil see. <i>Entity::UserInfo</i>)
+    #
+    def get_user_info
+      return session[:user_info]
+    end
+
 end

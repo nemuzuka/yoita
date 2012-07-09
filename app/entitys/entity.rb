@@ -81,4 +81,20 @@ module Entity
     
   end
 
+  #
+  # 一覧を返すJsonオブジェクト
+  #
+  class ListResult
+    # 一覧
+    attr_accessor :list
+    
+    # リンク文字列(Htmlタグ)
+    attr_accessor :link
+    
+    # リンク文字列(Htmlタグ)
+    attr_accessor :total_count
+    
+  end
+
+
 end
