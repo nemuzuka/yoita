@@ -1,5 +1,9 @@
 <%= javascript_include_tag "admin/facilities"  %>
 
+<% content_for :extend_sub_menu do %>
+	<%= render :file => 'admin/_admin_sub_menu.html.erb' %>
+<% end %>
+
 <div class="widget">
 <form class="form-horizontal">
 
