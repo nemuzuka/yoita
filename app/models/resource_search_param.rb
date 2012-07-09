@@ -3,7 +3,7 @@
 #
 # Resourceの検索条件のパラメータclass
 #
-class ResourceSearchParam < SqlHelper::DefaultPagerCondition
+class ResourceSearchParam < SearchParam
   # 名称
   attr_accessor :name
   # リソース区分
