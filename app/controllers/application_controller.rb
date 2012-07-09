@@ -23,7 +23,7 @@ class ApplicationController < ActionController::Base
     #
     def logined?
       user_info = session[:user_info]
-      if user_info == nil || user_indo.login_id = nil
+      if user_info == nil || user_info.login_id = nil
         return false
       end
       return true

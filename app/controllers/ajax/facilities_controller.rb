@@ -1,18 +1,23 @@
-#
-# 管理者用機能のModule
-#
-module Admin #:nodoc:
+# encoding: utf-8
+require "resource_search_param"
 
+module Ajax #:nodoc:
   #
   # 設備管理のAjaxに関するController
   #
-  class FacilitiesAjaxController < BaseController::JsonController
+  class FacilitiesController < BaseController::JsonController
+
     #
     # 検索条件取得
     # Session上に格納されている検索条件を取得します
     #
     def get_serch_info
-      
+      exeption_handler do
+        search_param = session[:resource_search_param]
+        result = Entity::JsonResult.new
+        result.result = search_param
+        render json: result
+      end
     end
   
     #
@@ -37,7 +42,7 @@ module Admin #:nodoc:
     # リクエストパラメータにリソースIDが設定されていればその情報、
     # そうでなければ新規データとしてレスポンスを返却します
     #
-    def get_edit_info
+    def show
       
     end
     
@@ -45,7 +50,7 @@ module Admin #:nodoc:
     # 登録・更新
     # リクエストパラメータを元に登録/更新を行います。
     #
-    def save
+    def update
       
     end
     
@@ -53,7 +58,7 @@ module Admin #:nodoc:
     # 削除
     # リクエストパラメータを元に削除を行います
     #
-    def delete
+    def destroy
       
     end
     

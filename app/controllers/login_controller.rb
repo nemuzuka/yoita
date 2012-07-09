@@ -8,6 +8,16 @@ class LoginController < BaseController::HtmlNoLoginController
   # ログイン画面を表示します
   #
   def index
+      user_info = Entity::UserInfo.new
+      user_info.login_id = "hogehogehoge"
+      user_info.name = "ababababa"
+      user_info.resource_id = 1234567
+      user_info.admin_flg = true
+      
+      p user_info
+
+      re_create_session(user_info)
+
   end
   
   #

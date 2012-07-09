@@ -29,7 +29,7 @@ module BaseController
           rescue => e
             logger.error e.message if logger
             #TODO ログイン画面へリダイレクト
-            redirect_to :controller => "login", :action => "index"
+            redirect_to :controller => "/login", :action => "index"
           end
           
         end
@@ -52,10 +52,10 @@ module BaseController
       # Tokenチェックを行い、エラーが発生した際、ログイン画面へ遷移します。
       #
       def token_check
-        if super.verified_request? == false
+        if verified_request? == false
           # →今回の使い方では発生しないはず
           #TODO ログイン画面へリダイレクト
-          redirect_to :controller => "login", :action => "index"
+          redirect_to :controller => "/login", :action => "index"
           return false
         end
       end
@@ -66,11 +66,12 @@ module BaseController
       # 存在しない場合、リクエストのパスをflashに格納し、ログイン画面へ遷移します。
       #
       def login_check
-        if super.logined? == false
-          super.reset_session
+        if logined? == false
+          p "not loggin"
+          reset_session
           flash[:referer] = request.fullpath
           # TODO ログイン画面へリダイレクト
-          redirect_to :controller => "login", :action => 'index'
+          redirect_to :controller => "/login", :action => 'index'
           return false
         end
       end
@@ -125,7 +126,7 @@ module BaseController
       # Tokenチェックを行い、エラーが発生した際、Tokenエラーを意味するJsonレスポンスを返します。
       #
       def token_check
-        if super.verified_request? == false
+        if verified_request? == false
           # TODO エラーメッセージをプロパティ化したい
           render json: createJsonResult(Entity::JsonResult::TOKEN_ERROR, 
             ["「戻る」ボタンを押されたか、他のブラウザによって変更されている可能性があります。もう一度読み込みなおしてから処理を行ってください。"])
@@ -139,7 +140,7 @@ module BaseController
       # 存在しない場合、Sessionタイムアウトを意味するJsonレスポンスを返します。
       #
       def login_check
-        if super.logined? == false
+        if logined? == false
           # TODO エラーメッセージをプロパティ化したい
           render json: createJsonResult(Entity::JsonResult::SESSION_TIMEOUT, 
             ["一定時間操作されなかったのでタイムアウトしました。"])

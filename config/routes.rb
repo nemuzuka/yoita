@@ -1,11 +1,12 @@
+# encoding: utf-8
+
 Yoita::Application.routes.draw do
-  resources :resources
   resource :login
   
-  namespace 'admin' do
+  namespace :admin do
     resources :facilities
   end
-
+  
   # The priority is based upon order of creation:
   # first created -> highest priority.
 
@@ -62,5 +63,9 @@ Yoita::Application.routes.draw do
 
   # This is a legacy wild controller route that's not recommended for RESTful applications.
   # Note: This route will make all actions in every controller accessible via GET requests.
+  
+  # module:Ajaxのリクエスト
+  match ':controller(/:action(/:id))', :controller => /ajax\/[^\/]+/
   match ':controller(/:action(/:id))(.:format)'
+
 end

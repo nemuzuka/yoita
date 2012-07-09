@@ -6,9 +6,29 @@
   <%= javascript_include_tag "application" %>
   <%= csrf_meta_tags %>
 </head>
-<body>
 
-<%= yield %>
+<body>
+<!-- メインメニュー -->
+<!-- <%= yield :extend_menu %> -->
+<!-- Contents -->
+<div class="container-fluid">
+  <div class="row-fluid">
+    <div class="span3">
+      <!--サイドコンテンツ-->
+      <div class="well sidebar-nav">
+		<!-- <%= yield :extend_sub_menu %> -->
+      </div>
+    </div>
+    <div class="span9">
+      <!--メインコンテンツ-->
+      <div class="well">
+		<%= yield %>
+      </div>
+    </div>
+  </div>
+</div>
+
+
 
 </body>
 </html>
