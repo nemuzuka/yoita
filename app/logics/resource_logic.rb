@@ -36,9 +36,10 @@ class ResourceLogic
       resource[:resource_type] = resource_type
       resource[:update_resource_id] = action_resource_id
       
-      if !resource.save
-        # エラーが存在するので、例外をthrow
-        raise CustomException::ValidationException.new(resource.errors.full_messages)
+      begin
+        resource.save!
+      rescue ActiveRecord::RecordInvalid => e
+        raise CustomException::ValidationException.new(e.record.errors.full_messages)
       end
       
     else
@@ -49,14 +50,14 @@ class ResourceLogic
       clone_pamam = params[:resource].clone
       clone_pamam[:update_resource_id] = action_resource_id
       begin
-        # 指定カラムに対して更新処理実行
-        result = resource.update_attributes(
-              clone_pamam.slice(:lock_version, :memo, :name, :update_resource_id))
-
-        if result == false
-          # エラーが存在するので、例外をthrow
-          raise CustomException::ValidationException.new(resource.errors.full_messages)
+        
+        begin
+          resource.update_attributes!(
+                clone_pamam.slice(:lock_version, :memo, :name, :update_resource_id))
+        rescue ActiveRecord::RecordInvalid => e
+          raise CustomException::ValidationException.new(e.record.errors.full_messages)
         end
+      
       rescue ActiveRecord::StaleObjectError
         # lock_versionが不正の場合、バージョンエラーのExceptionをthrow
         raise CustomException::InvalidVersionException.new
@@ -84,7 +85,6 @@ class ResourceLogic
   #   バージョンが合わない場合
   # 
   def delete(id, resource_type, lock_version)
-    # 更新の場合
     resource = get_resource(id, resource_type)
     resource[:lock_version] = lock_version
     begin
