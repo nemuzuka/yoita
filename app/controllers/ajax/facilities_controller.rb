@@ -43,7 +43,20 @@ module Ajax #:nodoc:
     # そうでなければ新規データとしてレスポンスを返却します
     #
     def show
-      
+      exeption_handler do
+        resource_id = params[:resource_id]
+        resource = nil
+        if(resource_id != nil && resource_id != "")
+          # 詳細データを取得
+          service = FacilitiesService.new
+          resource = service.get_resource(resource_id)
+        else
+          resource = Resource.new
+        end
+        result = Entity::JsonResult.new
+        result.result = resource
+        render json: result
+      end
     end
     
     #

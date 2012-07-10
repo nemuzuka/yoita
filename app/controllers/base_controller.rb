@@ -25,6 +25,7 @@ module BaseController
         if block_given?
 
           begin
+            expires_now
             yield
           rescue => e
             logger.error e.message if logger
@@ -98,6 +99,7 @@ module BaseController
         if block_given?
 
           begin
+            expires_now
             yield
           rescue CustomException::NotFoundException
             # 該当レコード無し

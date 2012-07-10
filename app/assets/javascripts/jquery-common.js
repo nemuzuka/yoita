@@ -28,6 +28,7 @@ function setAjaxDefault() {
 	$.ajaxSetup({
 		timeout: 30000,		//ミリ秒
 		ifModified: true,
+		cache: false,
 		async: true,		//非同期通信
 
 		//通信前の処理を定義
@@ -128,30 +129,11 @@ function viewToastMsg(msg) {
 }
 
 //Token再設定
-//idが'token'であるhiddenオブジェクトに対して、
-//新たにサーバ側で設定したtokenを設定します。
-function reSetToken() {
-	return executeReSetToken("/ajax/token");
+//metaタグ内に存在するtoken情報をリクエストパラメータに設定します
+//rails固有処理なので、一元化します
+function setToken(params) {
+	params["authenticity_token"] = $("meta[name=csrf-token]").attr("content");
 }
-
-//Token設定メイン
-function executeReSetToken(url) {
-	setAjaxDefault();
-	return $.ajax({
-		type: "POST",
-		url: url}).then(
-			function(data){
-
-				//共通エラーチェック
-				if(errorCheck(data) == false) {
-					return;
-				}
-	
-				$("#token").val(data.token);
-			}
-		);
-}
-
 
 /**
  * 指定したオブジェクトのonblur/onfocusに

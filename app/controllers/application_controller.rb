@@ -36,7 +36,7 @@ class ApplicationController < ActionController::Base
     # 設定Token値
     #
     def get_authenticity_token
-      super.form_authenticity_token
+      form_authenticity_token
       return session[:_csrf_token]
     end
 
