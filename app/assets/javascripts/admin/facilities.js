@@ -335,3 +335,35 @@ function validate(params) {
 	v.addRules({value:resource["memo"],option:'maxLength',error_args:"メモ", size:1024});
 	return v.execute();
 }
+
+//設備削除
+function deleteFacilities(id, version, name) {
+	if(window.confirm("設備「" + name + "」を削除します。本当によろしいですか？") == false) {
+		return;
+	}
+	
+	var params = {};
+	params["resource_id"] = id;
+	params["lock_version"] = version;
+	setToken(params)
+	
+	setAjaxDefault();
+	var task;
+	task = $.ajax({
+		type: "POST",
+		url: "/ajax/facilities/destroy",
+		data: params
+	});
+	
+	//後処理の登録
+	//
+	task.pipe(
+		function(data) {
+			//共通エラーチェック
+			errorCheck(data);
+			//メッセージを表示して、戻る
+			infoCheck(data);
+			return reSearchAndRender();
+		}
+	);
+}

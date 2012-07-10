@@ -130,7 +130,16 @@ module Ajax #:nodoc:
     # リクエストパラメータを元に削除を行います
     #
     def destroy
-      
+      exeption_handler do
+        service = FacilitiesService.new
+        resource_id = params[:resource_id]
+        lock_version = params[:lock_version]
+        service.delete(resource_id, lock_version)
+        
+        result = Entity::JsonResult.new
+        result.info_msgs.push("正常に終了しました");
+        render json: result
+      end
     end
     
     #
