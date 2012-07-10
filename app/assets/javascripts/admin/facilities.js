@@ -303,9 +303,7 @@ function execute() {
 					//※それ以外の場合、ダイアログをクローズして一覧再描画する
 					return;
 				}
-				return;
 			}
-			
 			//メッセージを表示して、戻る
 			infoCheck(data);
 			$("#facillitiesDialog").dialog("close");
