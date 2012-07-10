@@ -397,6 +397,22 @@ function removeDummyText(id) {
 	$("#" + id + "-dummy_area").remove();
 }
 
+//textArea項目表示時のエスケープ処理
+//・タグ情報をエスケープ
+//・改行コードを<br />タグに変更
+//・http/httpsで始まる文字列をaタグに変換
+//を行います
+function escapeTextArea(org) {
+	var ret = $("<div/>").text(org).html();
+	ret = ret.replace(/\r\n/g, "<br />");
+	ret = ret.replace(/(\n|\r)/g, "<br />");
+	
+	var re = /((http|https|ftp):\/\/[\w?=&.\/-;#~%-]+(?![\w\s?&.\/;#~%"=-]*>))/g;
+	ret = ret.replace(re, '<a href="$1" target="_blank">$1</a> ') 
+	
+	return ret;
+}
+
 //存在チェック
 if (String.prototype.format == undefined) {
 	/**

@@ -106,9 +106,7 @@ module SqlHelper
     return result;
   end
 
-  module_function :add_condition
-  module_function :replase_match_string
-  module_function :execute_search
+  module_function :add_condition, :replase_match_string, :execute_search
 
   #
   # 改ページが必要な場合の条件

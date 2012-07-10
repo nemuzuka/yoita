@@ -91,7 +91,7 @@ module Entity
     # リンク文字列(Htmlタグ)
     attr_accessor :link
     
-    # リンク文字列(Htmlタグ)
+    # トータル件数
     attr_accessor :total_count
     
   end

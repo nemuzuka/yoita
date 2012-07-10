@@ -1,3 +1,7 @@
+# encoding: utf-8
+require "constants"
+require "service"
+
 #
 # 設備に対するService
 #

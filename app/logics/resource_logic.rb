@@ -48,7 +48,6 @@ class ResourceLogic
       # 更新するカラムを指定して、更新を行う
       clone_pamam = params[:resource].clone
       clone_pamam[:update_resource_id] = action_resource_id
-      
       begin
         # 指定カラムに対して更新処理実行
         result = resource.update_attributes(
