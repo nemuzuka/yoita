@@ -149,7 +149,6 @@ function turnFacilities(pageNo, url) {
 			render(data);
 		}
 	);
-	
 }
 
 
@@ -363,6 +362,79 @@ function deleteFacilities(id, version, name) {
 			errorCheck(data);
 			//メッセージを表示して、戻る
 			infoCheck(data);
+			return reSearchAndRender();
+		}
+	);
+}
+
+//ソート処理
+function openSortDialog() {
+	setAjaxDefault();
+	return $.ajax({
+		type: "GET",
+		url: "/ajax/facilities/get_sort_info"
+	}).then(
+		function(data) {
+			renderSortDialog(data);
+		}
+	);
+}
+
+//ソートダイアログデータ設定 & Open
+function renderSortDialog(data) {
+	$("#facillities_to").empty();
+
+	//共通エラーチェック
+	if(errorCheck(data) == false) {
+		return;
+	}
+	infoCheck(data);
+	
+	var result = data.result;
+	if(result.length == 0) {
+		return;
+	}
+
+	$.each(result, function(){
+		var resourceId = this.id;
+		var name = this.name;
+		$("#facillities_to").append($('<option />').attr({value:resourceId }).text(name));
+	});
+	reWriteSelect("facillities_to", new Array());
+	
+	prependDummyText("facillitiesSortDialog");
+	$("#facillitiesSortDialog").dialog("open");
+	removeDummyText("facillitiesSortDialog");
+}
+
+//ソート情報変更
+function executeSort() {
+	var params = {};
+	params["ids"] = getSelectArray("facillities_to");
+	setToken(params)
+
+	setAjaxDefault();
+	var task;
+	task = $.ajax({
+		type: "POST",
+		url: "/ajax/facilities/update_sort_order",
+		data: params
+	});
+	
+	//後処理の登録
+	//
+	task.pipe(
+		function(data) {
+			//共通エラーチェック
+			if(errorCheck(data) == false) {
+				if(data.status == -1 ) {
+					return;
+				}
+			}
+
+			//メッセージを表示して、ダイアログを閉じて、再検索
+			infoCheck(data);
+			$("#facillitiesSortDialog").dialog("close");
 			return reSearchAndRender();
 		}
 	);

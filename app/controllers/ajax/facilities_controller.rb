@@ -147,7 +147,16 @@ module Ajax #:nodoc:
     # 登録されている全ての情報を取得します
     #
     def get_sort_info
-      
+      exeption_handler do
+        # ページング無しで全件取得
+        search_param = ResourceSearchParam.new
+        service = FacilitiesService.new
+        list = service.find_by_conditions(search_param)
+        
+        result = Entity::JsonResult.new
+        result.result = list
+        render json: result
+      end
     end
     
     #
@@ -155,7 +164,15 @@ module Ajax #:nodoc:
     # 指定されているリソースIDの順番でソート順を更新します
     #
     def update_sort_order
-      
+      exeption_handler do
+        ids = params[:ids]
+        service = FacilitiesService.new
+        service.update_sort_num(ids)
+        
+        result = Entity::JsonResult.new
+        result.info_msgs.push("正常に終了しました");
+        render json: result
+      end
     end
 
     private
