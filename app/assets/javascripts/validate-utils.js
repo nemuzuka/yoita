@@ -77,6 +77,13 @@ Validate.prototype = {
 		var numRegExp = /^[0-9]+$/
 		return (numRegExp.test(value) == false);
 	},
+	//listチェック
+	requiredList:function(value){
+		if(value == null || value.length == 0) {
+			return false;
+		}
+		return true
+	},
 	//ルールの追加
 	addRules:function(rules){
 		this.rules_array.push(rules);
@@ -92,6 +99,18 @@ Validate.prototype = {
 					if (this.isEmpty(this.rules_array[i].value)){
 						if(this.rules_array[i].error == undefined) {
 							this.rules_array[i].error = "{0}は必須です。";
+						}
+						this.error_array.push(this.rules_array[i].error.format(
+								this.rules_array[i].error_args));
+						this.e = false;
+					}
+					break;
+
+				//必須List入力
+				case'requiredList':
+					if (this.isEmpty(this.rules_array[i].value)){
+						if(this.rules_array[i].error == undefined) {
+							this.rules_array[i].error = "{0}は1件以上選択してください。";
 						}
 						this.error_array.push(this.rules_array[i].error.format(
 								this.rules_array[i].error_args));

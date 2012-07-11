@@ -202,7 +202,7 @@ module Ajax #:nodoc:
         list_result = Entity::ListResult.new
         list_result.list = list
         list_result.link = PagerHelper.crate_page_link(
-          search_param, "turnFacilities", "/ajax/facilities/turn")
+          search_param, get_function_name, get_app_path)
         list_result.total_count = search_param.total_count
         
         json_result.result = list_result

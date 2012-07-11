@@ -76,7 +76,7 @@ function initDialog(){
 	});
 	
 	//登録・更新実行
-	$("#facilitiesDialog-add").click(function(){
+	$("#facilityGroupsDialog-add").click(function(){
 		execute();
 	});
 	
@@ -348,6 +348,7 @@ function createExecuteParams() {
 	resource["memo"] = $("#resource_memo").val();
 	resource["id"] = $("#resource_id").val();
 	resource["lock_version"] = $("#resource_lock_version").val();
+	params["child_ids"] = getSelectArray("target_facilities");
 	setToken(params)
 	return params;
 }
@@ -356,11 +357,12 @@ function createExecuteParams() {
 function validate(params) {
 	var v = new Validate();
 	var resource = params["resource"]
-	v.addRules({value:resource["name"],option:'required',error_args:"設備名"});
-	v.addRules({value:resource["name"],option:'maxLength',error_args:"設備名", size:128});
+	v.addRules({value:resource["name"],option:'required',error_args:"設備グループ名"});
+	v.addRules({value:resource["name"],option:'maxLength',error_args:"設備グループ名", size:128});
 
 	v.addRules({value:resource["memo"],option:'maxLength',error_args:"メモ", size:1024});
-	//TODO 選択済みリソースの入力チェックも！！
+	
+	v.addRules({value:params["child_ids"],option:'requiredList',error_args:"参加リソース"});
 	return v.execute();
 }
 
