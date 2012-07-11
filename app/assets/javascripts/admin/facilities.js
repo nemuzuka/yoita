@@ -8,7 +8,7 @@ $(function(){
 	//dialogの登録
 	initDialog();
 	
-	$("#addFacillitiesBtn").click(function(){
+	$("#addFacilitiesBtn").click(function(){
 		openEditDialog("");
 	});
 
@@ -37,15 +37,15 @@ $(function(){
 		}
 	);
 	
-	$("#searchFacillitiesBtn").click(function(){
-		searchFacillities();
+	$("#searchFacilitiesBtn").click(function(){
+		searchFacilities();
 	});
 
 });
 
 //ダイアログ初期化
 function initDialog(){
-	$("#facillitiesDialog").dialog({
+	$("#facilitiesDialog").dialog({
 		modal:true,
 		autoOpen:false,
 		width:600,
@@ -60,7 +60,7 @@ function initDialog(){
         hide: 'clip'
 	});
 
-	$("#facillitiesSortDialog").dialog({
+	$("#facilitiesSortDialog").dialog({
 		modal:true,
 		autoOpen:false,
 		width:600,
@@ -76,35 +76,35 @@ function initDialog(){
 	});
 	
 	//登録・更新実行
-	$("#facillitiesDialog-add").click(function(){
+	$("#facilitiesDialog-add").click(function(){
 		execute();
 	});
 	
-	$("#facillitiesDialog-cancel").click(function(){
-		$("#facillitiesDialog").dialog("close");
+	$("#facilitiesDialog-cancel").click(function(){
+		$("#facilitiesDialog").dialog("close");
 	});
 	
 
 	//ソートダイアログ
-	$("#sortFacillitiesBtn").click(function(){
+	$("#sortFacilitiesBtn").click(function(){
 		openSortDialog();
 	});
 	$("#sort_up").click(function(){
-		upItems("facillities_to");
+		upItems("facilities_to");
 	});
 	$("#sort_down").click(function(){
-		downItems("facillities_to");
+		downItems("facilities_to");
 	});
-	$("#facillitiesSortDialog-execute").click(function(){
+	$("#facilitiesSortDialog-execute").click(function(){
 		executeSort();
 	});
-	$("#facillitiesSortDialog-cancel").click(function(){
-		$("#facillitiesSortDialog").dialog("close");
+	$("#facilitiesSortDialog-cancel").click(function(){
+		$("#facilitiesSortDialog").dialog("close");
 	});
 }
 
 //設備検索
-function searchFacillities() {
+function searchFacilities() {
 	var params = {};
 	params["name"] = $("#search_name").val();
 	
@@ -231,9 +231,9 @@ function openEditDialog(resourceId) {
 		title = "設備変更";
 		buttonLabel = "変更する";
 	}
-	$("#ui-dialog-title-facillitiesDialog").empty();
-	$("#ui-dialog-title-facillitiesDialog").append(title);
-	$("#facillitiesDialog-add").attr({value:buttonLabel});
+	$("#ui-dialog-title-facilitiesDialog").empty();
+	$("#ui-dialog-title-facilitiesDialog").append(title);
+	$("#facilitiesDialog-add").attr({value:buttonLabel});
 	
 	var params = {};
 	params["resource_id"] = resourceId;
@@ -267,9 +267,9 @@ function openEditDialog(resourceId) {
 			$("#resource_lock_version").val(form.lock_version);
 			$("#resource_id").val(form.id);
 			
-			prependDummyText("facillitiesDialog");
-			$("#facillitiesDialog").dialog("open");
-			removeDummyText("facillitiesDialog");
+			prependDummyText("facilitiesDialog");
+			$("#facilitiesDialog").dialog("open");
+			removeDummyText("facilitiesDialog");
 			return;
 		}
 	);
@@ -305,7 +305,7 @@ function execute() {
 			}
 			//メッセージを表示して、戻る
 			infoCheck(data);
-			$("#facillitiesDialog").dialog("close");
+			$("#facilitiesDialog").dialog("close");
 			return reSearchAndRender();
 		}
 	);
@@ -382,7 +382,7 @@ function openSortDialog() {
 
 //ソートダイアログデータ設定 & Open
 function renderSortDialog(data) {
-	$("#facillities_to").empty();
+	$("#facilities_to").empty();
 
 	//共通エラーチェック
 	if(errorCheck(data) == false) {
@@ -398,19 +398,19 @@ function renderSortDialog(data) {
 	$.each(result, function(){
 		var resourceId = this.id;
 		var name = this.name;
-		$("#facillities_to").append($('<option />').attr({value:resourceId }).text(name));
+		$("#facilities_to").append($('<option />').attr({value:resourceId }).text(name));
 	});
-	reWriteSelect("facillities_to", new Array());
+	reWriteSelect("facilities_to", new Array());
 	
-	prependDummyText("facillitiesSortDialog");
-	$("#facillitiesSortDialog").dialog("open");
-	removeDummyText("facillitiesSortDialog");
+	prependDummyText("facilitiesSortDialog");
+	$("#facilitiesSortDialog").dialog("open");
+	removeDummyText("facilitiesSortDialog");
 }
 
 //ソート情報変更
 function executeSort() {
 	var params = {};
-	params["ids"] = getSelectArray("facillities_to");
+	params["ids"] = getSelectArray("facilities_to");
 	setToken(params)
 
 	setAjaxDefault();
@@ -434,7 +434,7 @@ function executeSort() {
 
 			//メッセージを表示して、ダイアログを閉じて、再検索
 			infoCheck(data);
-			$("#facillitiesSortDialog").dialog("close");
+			$("#facilitiesSortDialog").dialog("close");
 			return reSearchAndRender();
 		}
 	);

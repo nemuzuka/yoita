@@ -14,7 +14,7 @@ module Admin
     #
     def index
       exeption_handler do
-        user_info = get_user_info()
+        user_info = get_user_info
 
         # 検索条件の初期値を設定
         search_param = ResourceSearchParam.new
