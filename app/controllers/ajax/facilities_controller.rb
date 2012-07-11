@@ -51,7 +51,7 @@ module Ajax #:nodoc:
         search_param = ResourceSearchParam.new if search_param == nil
         
         json_result = nil
-        if search_param.click_search == true
+        if search_param.click_search != nil && search_param.click_search == true
           # 検索ボタンを押下されている場合のみ、検索を行う
           json_result = create_json_result(search_param)
         else
@@ -60,6 +60,7 @@ module Ajax #:nodoc:
           list_result.list = []
           list_result.link = ""
           list_result.total_count = 0
+          json_result = Entity::JsonResult.new
           json_result.result = list_result
         end
         render json: json_result
@@ -155,6 +156,9 @@ module Ajax #:nodoc:
         
         result = Entity::JsonResult.new
         result.result = list
+        if list.length == 0
+          result.info_msgs.push("一覧に表示するレコードが存在しません")
+        end
         render json: result
       end
     end
@@ -182,7 +186,8 @@ module Ajax #:nodoc:
       #
       def create_json_result(search_param)
         # 1ページ辺りの表示件数が未設定の場合
-        search_param.per = 3 if search_param.per == nil
+        user_info = get_user_info()
+        search_param.per = user_info.per_page if search_param.per == nil
 
         # 検索処理呼び出し
         service = FacilitiesService.new

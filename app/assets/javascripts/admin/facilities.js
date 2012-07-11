@@ -171,24 +171,24 @@ function render(data) {
 		$("<h2 />").addClass("title").text("検索結果"));
 	var $widgetContentDisp = $("<div />").addClass("widget-content");
 
-	var $pager = $("<div />").addClass("pager").append(
+	var $pager = $("<div />").addClass("pager-area").append(
 		$("<span />").addClass("count").text("全" + result.total_count + "件")).append(result.link);
 
-	var $table = $("<table />").attr({"id":"result_list"}).addClass("table1 result_table");
+	var $table = $("<table />").attr({"id":"result_list"}).addClass("result_table");
 	var $tbody = $("<tbody />");
 
 	//ヘッダ部分作成
 	var $thead = $("<thead />")
 		.append($("<tr />")
-			.append($("<th />").text("設備名").addClass("th1"))
-			.append($("<th />").text("メモ").addClass("th1"))
-			.append($("<th />").text("").addClass("th1"))
+			.append($("<th />").text("設備名").attr({width:"35%"}))
+			.append($("<th />").text("メモ"))
+			.append($("<th />").text("").attr({width:"50px"}))
 		);
 	$table.append($thead);
 
 	$.each(result.list, function() {
 
-		var $delButton = $("<input />").attr({type:'button', value:'削除'}).addClass("btn x-mini delete");
+		var $delButton = $("<input />").attr({type:'button', value:'削除'}).addClass("btn btn-danger btn-mini");
 		var resourceId = this.id;
 		var version = this.lock_version;
 		var name = this.name;
@@ -203,11 +203,11 @@ function render(data) {
 			deleteFacilities(resourceId, version, name);
 		});
 
-		//※printMemoは、サーバ側でエスケープしているので、html出力可
+		//※memo、エスケープしているので、html出力可
 		var $tr = $("<tr />");
-		$tr.append($("<td />").append($a).addClass("td1"))
-			.append($("<td />").html(memo).addClass("td1"))
-			.append($("<td />").append($delButton).addClass("td1"));
+		$tr.append($("<td />").append($a))
+			.append($("<td />").html(memo))
+			.append($("<td />").append($delButton));
 		$tbody.append($tr);
 	});
 

@@ -65,6 +65,9 @@ module Entity
     attr_accessor :resource_id
     # 管理者フラグ
     attr_accessor :admin_flg
+
+    # 1ページあたりの表示件数
+    attr_accessor :per_page
     
     #
     # 管理者ユーザか

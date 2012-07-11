@@ -13,6 +13,7 @@ class LoginController < BaseController::HtmlNoLoginController
       user_info.name = "ababababa"
       user_info.resource_id = 1234567
       user_info.admin_flg = true
+      user_info.per_page = 3
       
       p user_info
 
