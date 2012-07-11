@@ -2,8 +2,8 @@
   <li class="nav-header"></li>
   <li id="sub_menu1"><a href="javascript:void(0)" title="本システムにログインするユーザを管理します">ユーザ</a></li>
   <li id="sub_menu2"><a href="javascript:void(0)" title="設備情報を管理します">設備</a></li>
-  <li id="sub_menu3"><a href="javascript:void(0)" title="ユーザをグルーピングすることで管理しやすくします">ユーザグループ</a></li>
-  <li id="sub_menu4"><a href="javascript:void(0)" title="設備をグルーピングすることで管理しやすくします">設備グループ</a></li>
+  <li id="sub_menu3"><a href="javascript:void(0)" title="ユーザを部・課等の単位でグルーピングします">ユーザグループ</a></li>
+  <li id="sub_menu4"><a href="javascript:void(0)" title="設備をカテゴリ毎にグルーピングします">設備グループ</a></li>
 </ul>      
 
 <script type="text/javascript">
@@ -14,6 +14,12 @@ $(function(){
 	});
 	$("#sub_menu2").click(function(){
 		moveUrl("/admin/facilities");
+	});
+	$("#sub_menu3").click(function(){
+		moveUrl("/admin/userGroups");
+	});
+	$("#sub_menu4").click(function(){
+		moveUrl("/admin/facilityGroups");
 	});
 });
 //-->
