@@ -5,6 +5,7 @@ Yoita::Application.routes.draw do
   
   namespace :admin do
     resources :facilities
+    resources :facilityGroups
   end
   
   # The priority is based upon order of creation:
