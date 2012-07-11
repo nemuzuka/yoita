@@ -99,5 +99,23 @@ module Entity
     
   end
 
+  #
+  # Key - Valueを保持するオブジェクト
+  # 主にselectタグの構成情報として使用します
+  #
+  class LabelValueBean
+    # キー
+    attr_accessor :key
+    # 値
+    attr_accessor :value
+    
+    #
+    # コンストラクタ
+    #
+    def initialize(key, value)
+      @key = key
+      @value = value
+    end
+  end
 
 end

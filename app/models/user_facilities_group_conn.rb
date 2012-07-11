@@ -1,4 +1,5 @@
 # encoding: utf-8
+require "constants"
 
 #
 # user_facilities_group_connテーブルのmodel

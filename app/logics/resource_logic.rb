@@ -1,3 +1,6 @@
+# encoding: utf-8
+require "constants"
+
 #
 # リソースに対するLogic
 #
@@ -13,6 +16,8 @@ class ResourceLogic
   #   リソース区分(see. <i>ResourceType</i>)
   # [action_resource_id]
   #   登録・更新処理実行ユーザリソースID
+  # ==== _Return_
+  # 処理レコード
   # ==== _Raise_
   # [CustomException::ValidationException]
   #   validate時の例外
@@ -104,6 +109,8 @@ class ResourceLogic
   #   取得対象のリソースID
   # [resource_type]
   #   リソース区分(see. <i>ResourceType</i>)
+  # ==== _Return_
+  # 該当レコード
   # ==== _Raise_
   # [CustomException::IllegalParameterException]
   #   不正なパラメータを渡された場合
