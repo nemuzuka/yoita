@@ -18,7 +18,7 @@ class GroupLogic
   #   登録・更新処理実行ユーザリソースID
   # ==== _Return_
   # 処理リソース
-  # see. <i>ResourceLogic::save</i>
+  # see. <i>ResourceLogic#save(params, resource_type, action_resource_id)</i>
   #
   def save(params, resource_type, action_resource_id)
     # リソース情報を登録・更新
