@@ -133,4 +133,17 @@ class UserFacilitiesGroupConnTest < ActiveSupport::TestCase
 
   end
 
+  #
+  # insert_child_listのテスト
+  # サイズ0でもエラーにならないこと
+  #
+  test "insert_child_list2" do
+    ids = []
+    UserFacilitiesGroupConn.insert_child_list("1192", ids)
+
+    total_list = UserFacilitiesGroupConn.find(:all)
+    assert_equal total_list.length, 9
+
+  end
+
 end
