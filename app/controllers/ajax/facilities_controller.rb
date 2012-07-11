@@ -95,16 +95,10 @@ module Ajax #:nodoc:
     def show
       exeption_handler do
         resource_id = params[:resource_id]
-        resource = nil
-        if(resource_id != nil && resource_id != "")
-          # 詳細データを取得
-          service = FacilitiesService.new
-          resource = service.get_resource(resource_id)
-        else
-          resource = Resource.new
-        end
+        service = FacilitiesService.new
+          
         result = Entity::JsonResult.new
-        result.result = resource
+        result.result = service.get_resource(resource_id)
         render json: result
       end
     end

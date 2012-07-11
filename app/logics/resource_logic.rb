@@ -110,7 +110,7 @@ class ResourceLogic
   # [resource_type]
   #   リソース区分(see. <i>ResourceType</i>)
   # ==== _Return_
-  # 該当レコード
+  # 該当レコード(see. <i>Resource</i>)
   # ==== _Raise_
   # [CustomException::IllegalParameterException]
   #   不正なパラメータを渡された場合

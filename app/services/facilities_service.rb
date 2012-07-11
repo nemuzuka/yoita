@@ -29,17 +29,25 @@ class FacilitiesService < Service::Base
   # 引数のidに紐付く設備を取得します
   # ==== _Args_
   # [id]
-  #   取得対象id
+  #   取得対象id(空文字 or nilの場合、新規扱い)
   # ==== _Return_
-  # 該当レコード
+  # 該当レコード(see. <i>Resource</i>)
   # ==== _Raise_
   # [CustomException::NotFoundException]
   #   該当レコードが存在しない場合
   #
   def get_resource(id)
     transaction_handler do
-      logic = ResourceLogic.new
-      logic.get_resource(id, ResourceType::FACILITY)
+      
+      resource = nil
+      if id != nil && id != ''
+        logic = ResourceLogic.new
+        resource = logic.get_resource(id, ResourceType::FACILITY)
+      else
+        resource = Resource.new
+      end
+      return resource
+      
     end
   end
   
