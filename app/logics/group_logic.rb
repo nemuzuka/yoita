@@ -180,6 +180,8 @@ class GroupLogic
       elsif resource_type == ResourceType::FACILITY_GROUP
         # 設備グループの場合、設備として登録されているリソースIDのみ登録対象
         type = ResourceType::FACILITY
+      else
+        raise CustomException::IllegalParameterException.new
       end
       
       return type
