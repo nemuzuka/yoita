@@ -54,7 +54,6 @@ function reWriteSelect(targetId, checkedArray) {
 	if(count == 0) {
 		$("#" + targetId).css({width:"100px"});
 	}
-
 }
 
 

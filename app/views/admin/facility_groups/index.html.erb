@@ -17,9 +17,9 @@
 	</tbody>
 	</table>
 	<div class="search_ctrl">
-		<input type="button" class="btn btn-primary" id="searchFacilitiesBtn" value="検索" />
-		<input type="button" class="btn" value="新規登録" id="addFacilitiesBtn" />
-		<input type="button" class="btn" value="表示順変更" id="sortFacilitiesBtn" />
+		<input type="button" class="btn btn-primary" id="searchFacilityGroupsBtn" value="検索" />
+		<input type="button" class="btn" value="新規登録" id="addFacilityGroupsBtn" />
+		<input type="button" class="btn" value="表示順変更" id="sortFacilityGroupsBtn" />
 	</div>
 	
 	<div id="result_area" class="result">
@@ -44,10 +44,41 @@
 	<div class="control-group">
 		<label class="control-label" for="resource_memo">メモ</label>
 		<div class="controls">
-			<textarea class="input-xlarge" cols="30" rows="10" id="resource_memo"></textarea>
+			<textarea class="input-xlarge" cols="10" rows="10" id="resource_memo"></textarea>
 		</div>
 	</div>
-	<div class="edit_ctrl">
+	
+	<div>
+		<div class="sort_action_area" style="margin-right: 10px;">
+			<div class="sort_up_area">
+				<input type="button" class="btn sort_up_button" id="facilities_up" value="↑" />
+			</div>
+			<div>
+				<input type="button" class="btn" id="facilities_down" value="↓" />
+			</div>
+		</div>
+		<div class="sort_to">
+			<div>
+				<label for="target_facilities">参加リソース</label>
+				<select id="target_facilities" size="10" multiple class="required-input">
+				</select>
+			</div>
+			<div align="right" class="resource_remove_area">
+				<input id="facilities_remove" class="btn" type="button" value="ー" alt=" 参加リソースから削除" title="参加リソースから削除" />
+			</div>
+		</div>
+		<div class="sort_to">
+			<input id="facilities_add" class="btn resource_add_area" 
+				type="button" value="＜" alt=" 参加リソースに追加" title="参加リソースに追加" />
+		</div>
+		<div>
+			<label for="all_facilities">全設備</label>
+			<select id="all_facilities" size="10" multiple>
+			</select>
+		</div>
+	</div>
+	
+	<div class="edit_ctrl" style="clear: both;">
 		<input type="button" class="btn btn-primary" id="facilityGroupsDialog-add" value="登録する" />
 		<input type="button" class="btn" id="facilityGroupsDialog-cancel" value="キャンセル" />
 		<input type="hidden" id="resource_lock_version" />
@@ -62,13 +93,13 @@
 <div class="dialog-container form-horizontal" >
 <fieldset>
 	<div class="control-group">
-		<label class="control-label" for="facilities_to">設備グループ</label>
+		<label class="control-label" for="facilityGroups_to">設備グループ</label>
 		<div class="controls">
 			<div class="sort_to">
 				<select id="facilityGroups_to" size="10" multiple="multiple"></select>
 			</div>
 			<div class="sort_action_area">
-				<div  style="margin-bottom: 50px;">
+				<div class="sort_up_area">
 					<input type="button" class="btn sort_up_button" id="sort_up" value="↑" />
 				</div>
 				<div>

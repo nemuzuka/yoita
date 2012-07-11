@@ -5,7 +5,7 @@ module Ajax #:nodoc:
   #
   # 設備グループ管理のAjaxに関するController
   #
-  class FacilitiesController < AdminAjaxCommonController
+  class FacilityGroupsController < Ajax::AdminAjaxCommonController
     protected
       def get_service
         FacilityGroupsService.new

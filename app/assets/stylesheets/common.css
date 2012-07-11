@@ -24,6 +24,9 @@ td{empty-cells: show;}
 /* 必須項目 */
 .required-input{background-color: #FFFCEE;}
 
+/* 各種input要素 */
+.controls textarea {height: 100px;}
+
 /* 検索テーブル. */
 .search_table{font-size:100%;border-top:2px solid #08C;border-bottom:2px solid #08C;}
 .search_table th,.search_table td{padding:2px 2px;border-bottom:1px solid #08C;}
@@ -87,6 +90,11 @@ td{empty-cells: show;}
 .detail_ctrl{margin-top:10px;}
 .detail_ctrl .btn {margin-right:5px;}
 .detail_close{margin-top:10px;margin-left:2em;float: right;}
+
+/* ソートダイアログ用 */
+.sort_up_area{margin-bottom: 50px;}
+.resource_remove_area{clear: both; margin-top: 10px; margin-bottom: 10px;}
+.resource_add_area{margin-top: 80px; margin-left: 10px; margin-right: 10px;}
 
 .comment_list_table th, 
 .comment_list_table td{font-size:86%;}

@@ -142,7 +142,7 @@ class FacilityGroupsService < Service::Base
     #
     def create_all_faciliries
       params = ResourceSearchParam.new
-      params.resource_type = ResourceType::FACILITY_GROUP
+      params.resource_type = ResourceType::FACILITY
       logic = ResourceLogic.new
       list = logic.find_by_conditions(params)
       
@@ -150,6 +150,8 @@ class FacilityGroupsService < Service::Base
       list.each do |target|
         result_list.push(Entity::LabelValueBean.new(target.id, target.name))
       end
+
+      return result_list
     end
   
 end
