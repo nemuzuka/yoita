@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120702020714) do
+ActiveRecord::Schema.define(:version => 20120711003142) do
 
   create_table "resources", :force => true do |t|
     t.string   "resource_type",      :limit => 3
@@ -24,5 +24,16 @@ ActiveRecord::Schema.define(:version => 20120702020714) do
     t.datetime "created_at",                                        :null => false
     t.datetime "updated_at",                                        :null => false
   end
+
+  add_index "resources", ["name"], :name => "resource_idx_01"
+  add_index "resources", ["resource_type"], :name => "resource_idx_02"
+  add_index "resources", ["sort_num"], :name => "resource_idx_03"
+
+  create_table "user_facilities_group_conns", :force => true do |t|
+    t.integer "parent_resource_id", :limit => 8
+    t.integer "child_resource_id",  :limit => 8
+  end
+
+  add_index "user_facilities_group_conns", ["parent_resource_id"], :name => "user_facilities_group_conn_idx_01"
 
 end

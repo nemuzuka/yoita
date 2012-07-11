@@ -88,6 +88,8 @@ class FacilitiesService < Service::Base
     transaction_handler do
       logic = ResourceLogic.new
       logic.delete(id, ResourceType::FACILITY, lock_version)
+      # 設備グループから削除する
+      UserFacilitiesGroupConn.delete_by_child_id(id)
     end
   end
   
