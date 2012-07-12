@@ -50,6 +50,9 @@ class ResourceLogic
     else
       # 更新の場合
       resource = get_resource(id, resource_type)
+      # 強制的に更新させる為に、取得データの情報を変更
+      # (これをしておかないと、同じデータだった場合UPDATEがかからない。トランザクションをかけている時だけ？)
+      resource[:name] << "a"
       
       # 更新するカラムを指定して、更新を行う
       clone_pamam = params[:resource].clone

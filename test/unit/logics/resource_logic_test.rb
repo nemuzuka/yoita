@@ -110,6 +110,34 @@ class ResourceLogicTest < ActiveSupport::TestCase
     
   end
 
+  #
+  # saveメソッド-更新のテスト
+  # 更新前と後で内容が同じでも、update文を発行してlock_versionを変更させる
+  #
+  test "save_update_no_update_column" do
+    params = {
+      :resource => {
+        :id => 100001,
+        :name => "MyS%tring1",
+        :memo => "memo1",
+        :lock_version => "1"
+      }
+    }
+    
+    resource_logic = ResourceLogic.new
+    resource = resource_logic.save(params, "MyS", 1234)
+    
+    store_target = Resource.find_by_id(resource[:id])
+    assert_equal resource[:id], 100001
+    assert_equal resource[:name], "MyS%tring1"
+    assert_equal resource[:memo], "memo1"
+    assert_equal resource[:sort_num], 1
+    assert_equal resource[:entry_resource_id], 1
+    assert_equal resource[:update_resource_id], 1234
+    assert_equal resource[:lock_version], 2
+    
+  end
+
 
   #
   # saveメソッド-更新のテスト
