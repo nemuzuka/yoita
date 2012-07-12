@@ -155,7 +155,8 @@ function unFormatDate(str) {
 		return str;
 	}
 
-	return replaceAll(str, '/', '');
+	str = replaceAll(str, '/', '');
+	return replaceAll(str, '-', '');
 }
 
 
