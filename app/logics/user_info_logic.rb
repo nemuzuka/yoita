@@ -8,10 +8,18 @@ require 'digest/sha2'
 class UserInfoLogic
   
   #
-  # ユーザ検索
+  # ユーザ検索.
+  # 検索条件として設定されている項目に対してのみWhere句に設定します。ページャ用の設定がされている場合、ページング処理を行います
+  # 複数テーブルを内部結合してSQL文を発行します
+  # ==== _Args_
+  # [param]
+  #   検索条件パラメータ(see. <i>UserInfo::SearchParam</i>)
+  # ==== _Return_
+  # 該当レコード(存在しない場合、size=0のList)
   #
   def find_by_conditions(params)
-    
+    resource_logic = ResourceLogic.new
+    resource_logic.find_by_conditions(params)
   end
   
   #

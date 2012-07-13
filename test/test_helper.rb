@@ -59,10 +59,25 @@ module SetupMethods
   def create_user_info
     FactoryGirl.create(:user_info_resource1)
     FactoryGirl.create(:user_info_resource2)
+    FactoryGirl.create(:user_info_resource3)
+    FactoryGirl.create(:user_info_resource4)
+    FactoryGirl.create(:user_info_resource5)
+    FactoryGirl.create(:user_info_resource6)
+    FactoryGirl.create(:user_info_resource7)
+    FactoryGirl.create(:user_info_resource8)
+    FactoryGirl.create(:user_info_resource9)
     FactoryGirl.create(:user_info1)
     FactoryGirl.create(:user_info2)
+    FactoryGirl.create(:user_info3)
+    FactoryGirl.create(:user_info4)
+    FactoryGirl.create(:user_info5)
+    FactoryGirl.create(:user_info6)
     FactoryGirl.create(:login1)
     FactoryGirl.create(:login2)
+    FactoryGirl.create(:login3)
+    FactoryGirl.create(:login4)
+    FactoryGirl.create(:login5)
+    FactoryGirl.create(:login6)
     
   end
   

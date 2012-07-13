@@ -261,4 +261,166 @@ class UserInfoTest < ActiveSupport::TestCase
     assert user_info.errors[:validity_start_date].any?
   end
 
+  #
+  # find_by_conditionsのテスト
+  #
+  test "find_by_conditions" do
+    # 基準日時点で有効なレコード全て
+    param = UserInfo::SearchParam.new
+    param.search_base_date = Date.strptime("2010/01/01", "%Y/%m/%d") 
+    param.search_type = SearchType::EXCLUDE_DISABLE_DATA
+    
+    actual_list = UserInfo.find_by_conditions(param)
+    assert_equal param.total_count.to_i, 4
+    assert_equal actual_list[0][:resource_id], 100003
+    assert_equal actual_list[0][:name], "検索用ユーザ1-1"
+    assert_equal actual_list[0][:memo], "memo1-1"
+    assert_equal actual_list[0][:resource_lock_version], "10001"
+    assert_equal actual_list[0][:reading_character], "ゆーざ1-1"
+    assert_equal actual_list[0][:tel], "tel-001"
+    assert_equal actual_list[0][:mail], "user1-1@mail.com"
+    assert_equal actual_list[0][:admin_flg], "0"
+    assert_equal actual_list[0][:validity_start_date], Date.strptime("2010/01/01", "%Y/%m/%d")
+    assert_equal actual_list[0][:validity_end_date], Date.strptime("2010/01/01", "%Y/%m/%d")
+    assert_equal actual_list[0][:user_info_lock_version], "201"
+    assert_equal actual_list[0][:login_id], "user1-1"
+    assert_equal actual_list[0][:login_lock_version], "301"
+    assert_equal actual_list[1][:resource_id], 100004
+    assert_equal actual_list[2][:resource_id], 100006
+    assert_equal actual_list[3][:resource_id], 100005
+
+    # 基準日時点で有効なレコード全て
+    # 検索条件：名称
+    param = UserInfo::SearchParam.new
+    param.search_base_date = Date.strptime("2010/01/01", "%Y/%m/%d") 
+    param.search_type = SearchType::EXCLUDE_DISABLE_DATA
+    param.name = "用ユーザ3"
+    actual_list = UserInfo.find_by_conditions(param)
+    assert_equal param.total_count.to_i, 2
+    assert_equal actual_list[0][:resource_id], 100006
+    assert_equal actual_list[1][:resource_id], 100005
+
+    # 基準日時点で有効なレコード全て
+    # 検索条件：ふりがな
+    param = UserInfo::SearchParam.new
+    param.search_base_date = Date.strptime("2010/01/01", "%Y/%m/%d") 
+    param.search_type = SearchType::EXCLUDE_DISABLE_DATA
+    param.reading_character = "ゆーざ3"
+    param.admin_only = false
+    actual_list = UserInfo.find_by_conditions(param)
+    assert_equal param.total_count.to_i, 2
+    assert_equal actual_list[0][:resource_id], 100006
+    assert_equal actual_list[1][:resource_id], 100005
+
+    # 基準日時点で有効なレコード全て
+    # 検索条件：管理者のみ
+    param = UserInfo::SearchParam.new
+    param.search_base_date = Date.strptime("2010/01/01", "%Y/%m/%d") 
+    param.search_type = SearchType::EXCLUDE_DISABLE_DATA
+    param.admin_only = true
+    actual_list = UserInfo.find_by_conditions(param)
+    assert_equal param.total_count.to_i, 2
+    assert_equal actual_list[0][:resource_id], 100004
+    assert_equal actual_list[1][:resource_id], 100006
+
+    # 基準日時点で有効なレコード全て
+    # 検索条件：リソースID指定
+    param = UserInfo::SearchParam.new
+    param.search_base_date = Date.strptime("2010/01/01", "%Y/%m/%d") 
+    param.search_type = SearchType::EXCLUDE_DISABLE_DATA
+    param.resource_id = 100005
+    actual_list = UserInfo.find_by_conditions(param)
+    assert_equal param.total_count.to_i, 1
+    assert_equal actual_list[0][:resource_id], 100005
+
+    # 基準日時点で有効なレコード全て
+    # 検索条件：リソースIDList指定
+    param = UserInfo::SearchParam.new
+    param.search_base_date = Date.strptime("2010/01/01", "%Y/%m/%d") 
+    param.search_type = SearchType::EXCLUDE_DISABLE_DATA
+    param.resource_id_list = ["100008", "100004", "100002", "100005", "100006", "100009"]
+    actual_list = UserInfo.find_by_conditions(param)
+    assert_equal param.total_count.to_i, 3
+    assert_equal actual_list[0][:resource_id], 100004
+    assert_equal actual_list[1][:resource_id], 100006
+    assert_equal actual_list[2][:resource_id], 100005
+
+    # 基準日時点で有効なレコード全て
+    param = UserInfo::SearchParam.new
+    param.search_base_date = Date.strptime("2010/01/03", "%Y/%m/%d") 
+    param.search_type = SearchType::EXCLUDE_DISABLE_DATA
+    actual_list = UserInfo.find_by_conditions(param)
+    assert_equal param.total_count.to_i, 1
+    assert_equal actual_list[0][:resource_id], 100006
+
+    # 基準日時点で無効なレコードのみ
+    param = UserInfo::SearchParam.new
+    param.search_base_date = Date.strptime("2010/01/03", "%Y/%m/%d") 
+    param.search_type = SearchType::ONLY_DISABLE_DATA
+    actual_list = UserInfo.find_by_conditions(param)
+    assert_equal param.total_count.to_i, 5
+    assert_equal actual_list[0][:resource_id], 100001
+    assert_equal actual_list[1][:resource_id], 100002
+    assert_equal actual_list[2][:resource_id], 100003
+    assert_equal actual_list[3][:resource_id], 100004
+    assert_equal actual_list[4][:resource_id], 100005
+    
+    # 全ての検索条件を付与しても、エラーにならないこと
+    param = UserInfo::SearchParam.new
+    param.search_base_date = Date.strptime("2010/01/03", "%Y/%m/%d") 
+    param.search_type = SearchType::ONLY_DISABLE_DATA
+    param.name = "a"    
+    param.reading_character = "b"
+    param.admin_only = true
+    param.resource_id = 101
+    param.resource_id_list = [10,12,987,3]
+    # 正常に発行できていれば良い
+    actual_list = UserInfo.find_by_conditions(param)
+  end
+
+  #
+  # find_by_conditionsのテスト
+  #
+  test "find_by_conditions2" do
+    # 基準日時点で無効なレコードのみ
+    # 1ページ目
+    param = UserInfo::SearchParam.new
+    param.search_base_date = Date.strptime("2010/01/03", "%Y/%m/%d") 
+    param.search_type = SearchType::ONLY_DISABLE_DATA
+    param.per = 3
+    param.page = 1
+    actual_list = UserInfo.find_by_conditions(param)
+    assert_equal param.total_count.to_i, 5
+    assert_equal actual_list.length, 3
+    assert_equal actual_list[0][:resource_id], 100001
+    assert_equal actual_list[1][:resource_id], 100002
+    assert_equal actual_list[2][:resource_id], 100003
+
+    # 基準日時点で無効なレコードのみ
+    # 2ページ目
+    param = UserInfo::SearchParam.new
+    param.search_base_date = Date.strptime("2010/01/03", "%Y/%m/%d") 
+    param.search_type = SearchType::ONLY_DISABLE_DATA
+    param.per = 3
+    param.page = 2
+    actual_list = UserInfo.find_by_conditions(param)
+    assert_equal param.total_count.to_i, 5
+    assert_equal actual_list.length, 2
+    assert_equal actual_list[0][:resource_id], 100004
+    assert_equal actual_list[1][:resource_id], 100005
+
+    # 基準日時点で無効なレコードのみ
+    # 3ページ目
+    param = UserInfo::SearchParam.new
+    param.search_base_date = Date.strptime("2010/01/03", "%Y/%m/%d") 
+    param.search_type = SearchType::ONLY_DISABLE_DATA
+    param.per = 3
+    param.page = 3
+    actual_list = UserInfo.find_by_conditions(param)
+    assert_equal param.total_count.to_i, 5
+    assert_equal actual_list.length, 0
+    
+  end
+
+
 end
