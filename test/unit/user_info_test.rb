@@ -2,6 +2,10 @@
 require 'test_helper'
 
 class UserInfoTest < ActiveSupport::TestCase
+
+  include SetupMethods
+  # テスト前処理
+  setup :create_user_info
   
   #
   # validateのテスト
