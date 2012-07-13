@@ -1,5 +1,4 @@
 # encoding: utf-8
-require "resource_search_param"
 
 module Ajax #:nodoc:
   #

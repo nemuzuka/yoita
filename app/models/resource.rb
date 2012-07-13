@@ -26,7 +26,7 @@ class Resource < ActiveRecord::Base
   # 検索条件として設定されている項目に対してのみWhere句に設定します。ページャ用の設定がされている場合、ページング処理を行います
   # ==== _Args_
   # [param]
-  #   検索条件パラメータ(see. <i>ResourceSearchParam</i>)
+  #   検索条件パラメータ(see. <i>Resource::SearchParam</i>)
   # ==== _Return_
   # 該当レコード(存在しない場合、size=0のList)
   #
@@ -87,6 +87,18 @@ class Resource < ActiveRecord::Base
         ["id = ? and resource_type = ?", id, resource_type])
       sort_num = sort_num + 1
     end
+  end
+
+  #
+  # Resourceの検索条件のパラメータclass
+  #
+  class SearchParam < SearchParam
+    # 名称
+    attr_accessor :name
+    # リソース区分
+    attr_accessor :resource_type
+    # idのList
+    attr_accessor :ids
   end
 
 end

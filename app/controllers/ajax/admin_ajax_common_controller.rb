@@ -1,5 +1,4 @@
 # encoding: utf-8
-require "resource_search_param"
 
 module Ajax #:nodoc:
   
@@ -32,7 +31,7 @@ module Ajax #:nodoc:
     def list
       exeption_handler do
         search_param = session[:resource_search_param]
-        search_param = ResourceSearchParam.new if search_param == nil
+        search_param = Resource::SearchParam.new if search_param == nil
         
         # リクエストパラメータの情報を設定
         search_param.name = params[:name]
@@ -54,7 +53,7 @@ module Ajax #:nodoc:
     def refresh
       exeption_handler do
         search_param = session[:resource_search_param]
-        search_param = ResourceSearchParam.new if search_param == nil
+        search_param = Resource::SearchParam.new if search_param == nil
         
         json_result = nil
         if search_param.click_search != nil && search_param.click_search == true
@@ -81,7 +80,7 @@ module Ajax #:nodoc:
     def turn
       exeption_handler do
         search_param = session[:resource_search_param]
-        search_param = ResourceSearchParam.new if search_param == nil
+        search_param = Resource::SearchParam.new if search_param == nil
         
         # ページ番号を変更
         page_no = params[:page_no].to_i
@@ -150,7 +149,7 @@ module Ajax #:nodoc:
     def get_sort_info
       exeption_handler do
         # ページング無しで全件取得
-        search_param = ResourceSearchParam.new
+        search_param = Resource::SearchParam.new
         service = get_service
         list = service.find_by_conditions(search_param)
         

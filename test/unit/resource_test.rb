@@ -12,7 +12,7 @@ class ResourceTest < ActiveSupport::TestCase
   #
   test "find_by_conditions" do
     # 全件取得
-    resource_search_param = ResourceSearchParam.new
+    resource_search_param = Resource::SearchParam.new
     actual_list = Resource.find_by_conditions(resource_search_param)
     assert_equal resource_search_param.total_count, 7
     assert_equal actual_list[0], FactoryGirl.build(:resource1)
@@ -24,7 +24,7 @@ class ResourceTest < ActiveSupport::TestCase
     assert_equal actual_list[6], FactoryGirl.build(:resource7)
     
     # resource_type設定
-    resource_search_param = ResourceSearchParam.new
+    resource_search_param = Resource::SearchParam.new
     resource_search_param.resource_type = "MyS"
     actual_list = Resource.find_by_conditions(resource_search_param)
     assert_equal actual_list.length, 2
@@ -32,7 +32,7 @@ class ResourceTest < ActiveSupport::TestCase
     assert_equal actual_list[1], FactoryGirl.build(:resource3)
     
     # name設定
-    resource_search_param = ResourceSearchParam.new
+    resource_search_param = Resource::SearchParam.new
     resource_search_param.name = "MyString2"
     actual_list = Resource.find_by_conditions(resource_search_param)
     assert_equal actual_list.length, 2
@@ -40,42 +40,42 @@ class ResourceTest < ActiveSupport::TestCase
     assert_equal actual_list[1], FactoryGirl.build(:resource2)
 
     # name設定(%を含むテスト)
-    resource_search_param = ResourceSearchParam.new
+    resource_search_param = Resource::SearchParam.new
     resource_search_param.name = "%"
     actual_list = Resource.find_by_conditions(resource_search_param)
     assert_equal actual_list.length, 1
     assert_equal actual_list[0], FactoryGirl.build(:resource1)
 
     # name設定(％を含むテスト)
-    resource_search_param = ResourceSearchParam.new
+    resource_search_param = Resource::SearchParam.new
     resource_search_param.name = "％"
     actual_list = Resource.find_by_conditions(resource_search_param)
     assert_equal actual_list.length, 1
     assert_equal actual_list[0], FactoryGirl.build(:resource4)
 
     # name設定(_を含むテスト)
-    resource_search_param = ResourceSearchParam.new
+    resource_search_param = Resource::SearchParam.new
     resource_search_param.name = "_"
     actual_list = Resource.find_by_conditions(resource_search_param)
     assert_equal actual_list.length, 1
     assert_equal actual_list[0], FactoryGirl.build(:resource5)
 
     # name設定(＿を含むテスト)
-    resource_search_param = ResourceSearchParam.new
+    resource_search_param = Resource::SearchParam.new
     resource_search_param.name = "＿"
     actual_list = Resource.find_by_conditions(resource_search_param)
     assert_equal actual_list.length, 1
     assert_equal actual_list[0], FactoryGirl.build(:resource6)
 
     # name設定(\を含むテスト)
-    resource_search_param = ResourceSearchParam.new
+    resource_search_param = Resource::SearchParam.new
     resource_search_param.name = "\\"
     actual_list = Resource.find_by_conditions(resource_search_param)
     assert_equal actual_list.length, 1
     assert_equal actual_list[0], FactoryGirl.build(:resource7)
 
     # id指定
-    resource_search_param = ResourceSearchParam.new
+    resource_search_param = Resource::SearchParam.new
     resource_search_param.ids = [100010, 100005, 100001, 100007]
     actual_list = Resource.find_by_conditions(resource_search_param)
     assert_equal actual_list.length, 3
@@ -89,7 +89,7 @@ class ResourceTest < ActiveSupport::TestCase
   #
   test "find_by_conditions_with_kaminari_no_param" do
     # 全件取得(ページ指定有り 1ページ目)
-    resource_search_param = ResourceSearchParam.new
+    resource_search_param = Resource::SearchParam.new
     resource_search_param.page = 1
     resource_search_param.per = 3
     
@@ -101,7 +101,7 @@ class ResourceTest < ActiveSupport::TestCase
     assert_equal actual_list[2], FactoryGirl.build(:resource2)
 
     # 全件取得(ページ指定有り 2ページ目)    
-    resource_search_param = ResourceSearchParam.new
+    resource_search_param = Resource::SearchParam.new
     resource_search_param.page = 2
     resource_search_param.per = 3
     
@@ -113,7 +113,7 @@ class ResourceTest < ActiveSupport::TestCase
     assert_equal actual_list[2], FactoryGirl.build(:resource6)
     
     # 全件取得(ページ指定有り 3ページ目)    
-    resource_search_param = ResourceSearchParam.new
+    resource_search_param = Resource::SearchParam.new
     resource_search_param.page = 3
     resource_search_param.per = 3
     
@@ -123,7 +123,7 @@ class ResourceTest < ActiveSupport::TestCase
     assert_equal actual_list[0], FactoryGirl.build(:resource7)
 
     # 全件取得(ページ指定有り 4ページ目、表示するレコード無し)    
-    resource_search_param = ResourceSearchParam.new
+    resource_search_param = Resource::SearchParam.new
     resource_search_param.page = 4
     resource_search_param.per = 3
     
@@ -139,7 +139,7 @@ class ResourceTest < ActiveSupport::TestCase
   test "find_by_conditions_with_kaminari_param" do
     
     # id指定
-    resource_search_param = ResourceSearchParam.new
+    resource_search_param = Resource::SearchParam.new
     resource_search_param.ids = [100010, 100005, 100001, 100007]
     resource_search_param.page = 1
     resource_search_param.per = 2
@@ -159,7 +159,7 @@ class ResourceTest < ActiveSupport::TestCase
     ids = [100006,100004,100005,100007]
     Resource.update_sort_num(ids, "hog")
     
-    resource_search_param = ResourceSearchParam.new
+    resource_search_param = Resource::SearchParam.new
     resource_search_param.resource_type = "hog"
     actual_list = Resource.find_by_conditions(resource_search_param)
     assert_equal actual_list.length, 4

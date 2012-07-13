@@ -1,7 +1,6 @@
 # encoding: utf-8
 
 require "base_controller"
-require "resource_search_param"
 
 module Admin #:nodoc:
 
@@ -21,7 +20,7 @@ module Admin #:nodoc:
         user_info = get_user_info
 
         # 検索条件の初期値を設定
-        search_param = ResourceSearchParam.new
+        search_param = Resource::SearchParam.new
         # 1ページあたりの表示件数設定
         search_param.per = user_info.per_page
         

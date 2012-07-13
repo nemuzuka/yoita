@@ -138,7 +138,7 @@ class ResourceLogic
   # 検索条件に合致するリソース一覧を取得します
   # ==== _Args_
   # [params]
-  #   検索条件(see. <i>ResourceSearchParam</i>)
+  #   検索条件(see. <i>Resource::SearchParam</i>)
   # ==== _Return_
   # 該当レコード(存在しない場合、size=0のList)
   #

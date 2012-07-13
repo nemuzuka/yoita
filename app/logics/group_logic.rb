@@ -166,7 +166,7 @@ class GroupLogic
         raise CustomException::ValidationException.new(["参加リソースの選択は必須です"])
       end
       
-      resource_search_param = ResourceSearchParam.new
+      resource_search_param = Resource::SearchParam.new
       resource_search_param.ids = ids
       resource_search_param.resource_type = resource_type
       list = Resource.find_by_conditions(resource_search_param)

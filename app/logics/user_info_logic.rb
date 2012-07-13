@@ -8,6 +8,13 @@ require 'digest/sha2'
 class UserInfoLogic
   
   #
+  # ユーザ検索
+  #
+  def find_by_conditions(params)
+    
+  end
+  
+  #
   # ユーザ情報登録・更新
   # DBの整合性に合致しない場合、不正な入力値の場合、例外をthrowします 
   # ==== _Args_

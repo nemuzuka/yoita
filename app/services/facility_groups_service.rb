@@ -12,7 +12,7 @@ class FacilityGroupsService < Service::Base
   # 検索条件に合致する設備一覧を取得します
   # ==== _Args_
   # [params]
-  #   検索条件(see. <i>ResourceSearchParam</i>)
+  #   検索条件(see. <i>Resource::SearchParam</i>)
   # ==== _Return_
   # 該当レコード(存在しない場合、size=0のList)
   #
@@ -141,7 +141,7 @@ class FacilityGroupsService < Service::Base
     # 該当レコード(存在しない場合、size=0のList) <i>Entity::LabelValueBean</i>のlist
     #
     def create_all_faciliries
-      params = ResourceSearchParam.new
+      params = Resource::SearchParam.new
       params.resource_type = ResourceType::FACILITY
       logic = ResourceLogic.new
       list = logic.find_by_conditions(params)
