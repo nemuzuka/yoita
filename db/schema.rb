@@ -11,7 +11,21 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120711003142) do
+ActiveRecord::Schema.define(:version => 20120712043924) do
+
+  create_table "logins", :force => true do |t|
+    t.integer  "resource_id",        :limit => 8
+    t.string   "login_id",           :limit => 256
+    t.string   "password",           :limit => 256
+    t.integer  "entry_resource_id",  :limit => 8
+    t.integer  "update_resource_id", :limit => 8
+    t.integer  "lock_version",       :limit => 8,   :default => 0
+    t.datetime "created_at",                                       :null => false
+    t.datetime "updated_at",                                       :null => false
+  end
+
+  add_index "logins", ["login_id"], :name => "login_unique_idx_01", :unique => true
+  add_index "logins", ["resource_id"], :name => "login_idx_01"
 
   create_table "resources", :force => true do |t|
     t.string   "resource_type",      :limit => 3
@@ -35,5 +49,26 @@ ActiveRecord::Schema.define(:version => 20120711003142) do
   end
 
   add_index "user_facilities_group_conns", ["parent_resource_id"], :name => "user_facilities_group_conn_idx_01"
+
+  create_table "user_infos", :force => true do |t|
+    t.integer  "resource_id",         :limit => 8
+    t.string   "reading_character",   :limit => 128
+    t.string   "tel",                 :limit => 48
+    t.string   "mail",                :limit => 256
+    t.string   "admin_flg",           :limit => 1
+    t.integer  "per_page"
+    t.integer  "default_user_group",  :limit => 8
+    t.date     "validity_start_date"
+    t.date     "validity_end_date"
+    t.integer  "entry_resource_id",   :limit => 8
+    t.integer  "update_resource_id",  :limit => 8
+    t.integer  "lock_version",        :limit => 8,   :default => 0
+    t.datetime "created_at",                                        :null => false
+    t.datetime "updated_at",                                        :null => false
+  end
+
+  add_index "user_infos", ["reading_character"], :name => "user_info_idx_03"
+  add_index "user_infos", ["resource_id"], :name => "user_info_idx_01"
+  add_index "user_infos", ["validity_start_date", "validity_end_date"], :name => "user_info_idx_02"
 
 end

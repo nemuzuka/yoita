@@ -53,4 +53,11 @@ module SetupMethods
     FactoryGirl.create(:user_facilities_group_conn9)
   end
   
+  #
+  # user_infoテスト用
+  #
+  def create_user_info
+    
+  end
+  
 end

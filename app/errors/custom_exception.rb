@@ -22,6 +22,12 @@ module CustomException
   end
 
   #
+  # 入力値による一意制約違反の時の例外
+  #
+  class UniqueConstraintException < StandardError
+  end
+
+  #
   # validation時の例外
   #
   class ValidationException < StandardError

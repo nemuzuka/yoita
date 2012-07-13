@@ -8,7 +8,7 @@ class Resource < ActiveRecord::Base
 
   # validates
   validates :resource_type, :length => { :is => 3 }
-  validates :name, :length => { :maximum  => 128 } ,:presence => true
+  validates :name, :length => { :maximum  => 128 }, :presence => true
   validates :memo, :length => { :maximum  => 1024 }
 
   #

@@ -2,7 +2,7 @@
 require 'test_helper'
 require "constants"
 
-# ResourceLogicのテストクラス
+# GroupLogicのテストクラス
 class GroupLogicTest < ActiveSupport::TestCase
   
   include SetupMethods
