@@ -1,4 +1,5 @@
 # encoding: utf-8
+require "model"
 
 #
 # resourcesテーブルのmodel
@@ -92,7 +93,7 @@ class Resource < ActiveRecord::Base
   #
   # Resourceの検索条件のパラメータclass
   #
-  class SearchParam < SearchParam
+  class SearchParam < Model::SearchParam
     # 名称
     attr_accessor :name
     # リソース区分
