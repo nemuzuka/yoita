@@ -33,36 +33,39 @@ class Resource < ActiveRecord::Base
   #
   def self.find_by_conditions(param)
     
-    resources = Arel::Table.new :resources
+    sql = <<-EOS
+      select 
+        * 
+      from 
+        resources
+      where
+        1 = 1
+    EOS
     
-    # 検索条件をパラメータによって動的に変更する
-    condition = nil
+    param_hash = {}
     # 名称(中間一致)
     if param.name.to_s != ''
-      condition = SqlHelper.add_condition(
-        condition, 
-        resources[:name].matches("%" + SqlHelper.replase_match_string(param.name) + "%"))
+      sql << " and name like :name "
+      param_hash[:name] = "%" + SqlHelper.replase_match_string(param.name) + "%"
     end
 
     # 区分(必須)
     if param.resource_type.to_s != ''
-      condition = SqlHelper.add_condition(
-        condition, 
-        resources[:resource_type].eq(param.resource_type))
+      sql << " and resource_type = :resource_type "
+      param_hash[:resource_type] = param.resource_type
     end
     
     # 指定id
     if param.ids != nil && param.ids.length != 0
-      condition = SqlHelper.add_condition(
-        condition, 
-        resources[:id].eq_any(param.ids))
+      sql << " and id in (:ids) "
+      param_hash[:ids] = param.ids
     end
     
     # ソート順(パラメータで変更するかもしれないけど、とりあえず固定で)
-    orders = [resources[:sort_num], resources[:id]];
+    sql << " order by sort_num, id "
     
-    # 設定条件次第でSQL発行
-    SqlHelper::execute_search(param, self, condition, orders)
+    # 直接SQL発行
+    SqlHelper::find_by_sql(sql, param_hash, self, param)
   end
 
   #

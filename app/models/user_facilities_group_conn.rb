@@ -25,24 +25,30 @@ class UserFacilitiesGroupConn < ActiveRecord::Base
   def self.find_by_parent_id(parent_resource_id, include_parent)
     
     # 検索条件の設定
-    user_facilities_group_conns = Arel::Table.new :user_facilities_group_conns
-    condition = SqlHelper.add_condition(
-      nil,
-      user_facilities_group_conns[:parent_resource_id].eq(parent_resource_id))
+    sql = <<-EOS
+      select 
+        * 
+      from 
+        user_facilities_group_conns
+      where
+        1 = 1
+    EOS
+    
+    param_hash = {}
+    sql << " and parent_resource_id = :parent_resource_id "    
+    param_hash[:parent_resource_id] = parent_resource_id
 
     if include_parent == false
       # 親リソースIDが子リソースIDと指定されているレコードを除外する
-      condition = SqlHelper.add_condition(
-        condition,
-        user_facilities_group_conns[:child_resource_id].not_eq(parent_resource_id))
+      sql << " and child_resource_id != :parent_resource_id "
     end
     
     # ソート順の設定
-    orders = [user_facilities_group_conns[:id]];
+    sql << " order by id "
     
     param = SqlHelper::DefaultPagerCondition.new
     # SQL発行
-    SqlHelper::execute_search(param, self, condition, orders)
+    SqlHelper::find_by_sql(sql, param_hash, self, param)
 
   end
 

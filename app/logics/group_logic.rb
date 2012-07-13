@@ -93,7 +93,7 @@ class GroupLogic
     if resource_type == ResourceType::USER_GROUP && include_parent == true
       child_hash[result.resource.id.to_s] = result.resource.name
     end
-    
+
     # リソースとして登録されたデータのみ戻り値に設定する
     result.resource_conn_list = []
     list.each do |target|

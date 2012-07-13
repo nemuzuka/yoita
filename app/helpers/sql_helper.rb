@@ -68,45 +68,62 @@ module SqlHelper
   end
 
   #
-  # 検索処理実行
-  # where句の有り/無し
-  # ページングの有り/無し
-  # で発行するSQLを変更します。
+  # SQL発行
+  # ページングの指定によって、SQLを仕分けます
   # 検索実行後、引数のparam.total_countにトータル件数を設定します。
   # ==== _Args_
-  # [param]
-  #   <i>SqlHelper::DefaultPagerCondition</i>のサブクラスのインスタンスである必要があります。
+  # [sql]
+  #   SQL文(find_by_sqlに渡すSQL文です)
+  # [param_hash]
+  #   SQL文パラメータ(find_by_sqlに渡すパラメータです)
   # [model_class]
   #   modelクラス
-  # [condition]
-  #   検索条件
-  # [orders]
-  #   ソート順(必須)
+  # [pager_condition]
+  #   <i>SqlHelper::DefaultPagerCondition</i>のサブクラスのインスタンスである必要があります。
   # ==== _Return_
   # 検索結果
   #
-  def execute_search(param, model_class, condition, orders)
-    # 設定条件次第でSQL発行
-    result = nil
-    target = model_class
-    if condition != nil
-      target = model_class.where(condition)
-    end
+  def find_by_sql(sql, param_hash, model_class, pager_condition)
     
-    if param.per == nil
-      # ページングの指定が無い場合
-      result = target.order(orders).all
-      param.total_count = result.length
+    result = nil
+    if pager_condition.per == nil
+      # ページングの指定がない場合、そのままsql実行
+      result = model_class.find_by_sql([sql, param_hash])
+      pager_condition.total_count = result.length
     else
-      # ページングの指定がある場合
-      result = target.order(orders).page(param.page).per(param.per)
-      param.total_count = result.total_count
+      # トータルページを取得するsqlを発行
+      count_sql = "select count(a.*) as count from (" + sql + ") as a"
+      result_count = model_class.find_by_sql([count_sql, param_hash])
+      pager_condition.total_count = result_count[0][:count]
+      
+      # limit/offsetを加味してSQL発行
+      offset = calcOffset(pager_condition)
+      offset_sql = sql + " LIMIT " + pager_condition.per.to_s + " OFFSET " + offset.to_s
+      result = model_class.find_by_sql([offset_sql, param_hash])
     end
 
-    return result;
+    return result
   end
 
-  module_function :add_condition, :replase_match_string, :execute_search
+  #
+  # offset計算
+  # 表示対象ページが1ページより小さい場合、1ページ目を表示するとみなします
+  # ==== _Args_
+  # [pager_condition]
+  #   ページャ条件
+  # ==== _Return_
+  # offset値
+  #
+  def calcOffset(pager_condition)
+    page = pager_condition.page
+    page = 1 if page < 1
+    
+    offset = (page -1) * pager_condition.per
+    return offset
+  end
+
+  module_function :add_condition, :replase_match_string, :find_by_sql,
+    :calcOffset
 
   #
   # 改ページが必要な場合の条件

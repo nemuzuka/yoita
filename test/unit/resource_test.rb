@@ -94,7 +94,7 @@ class ResourceTest < ActiveSupport::TestCase
     resource_search_param.per = 3
     
     actual_list = Resource.find_by_conditions(resource_search_param)
-    assert_equal resource_search_param.total_count, 7
+    assert_equal resource_search_param.total_count.to_i, 7
     assert_equal actual_list.length, 3
     assert_equal actual_list[0], FactoryGirl.build(:resource1)
     assert_equal actual_list[1], FactoryGirl.build(:resource3)
@@ -106,7 +106,7 @@ class ResourceTest < ActiveSupport::TestCase
     resource_search_param.per = 3
     
     actual_list = Resource.find_by_conditions(resource_search_param)
-    assert_equal resource_search_param.total_count, 7
+    assert_equal resource_search_param.total_count.to_i, 7
     assert_equal actual_list.length, 3
     assert_equal actual_list[0], FactoryGirl.build(:resource4)
     assert_equal actual_list[1], FactoryGirl.build(:resource5)
@@ -118,7 +118,7 @@ class ResourceTest < ActiveSupport::TestCase
     resource_search_param.per = 3
     
     actual_list = Resource.find_by_conditions(resource_search_param)
-    assert_equal resource_search_param.total_count, 7
+    assert_equal resource_search_param.total_count.to_i, 7
     assert_equal actual_list.length, 1
     assert_equal actual_list[0], FactoryGirl.build(:resource7)
 
@@ -128,7 +128,7 @@ class ResourceTest < ActiveSupport::TestCase
     resource_search_param.per = 3
     
     actual_list = Resource.find_by_conditions(resource_search_param)
-    assert_equal resource_search_param.total_count, 7
+    assert_equal resource_search_param.total_count.to_i, 7
     assert_equal actual_list.length, 0
     
   end
@@ -144,7 +144,7 @@ class ResourceTest < ActiveSupport::TestCase
     resource_search_param.page = 1
     resource_search_param.per = 2
     actual_list = Resource.find_by_conditions(resource_search_param)
-    assert_equal resource_search_param.total_count, 3
+    assert_equal resource_search_param.total_count.to_i, 3
     assert_equal actual_list.length, 2
     assert_equal actual_list[0], FactoryGirl.build(:resource1)
     assert_equal actual_list[1], FactoryGirl.build(:resource5)
