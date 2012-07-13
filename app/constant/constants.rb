@@ -18,3 +18,15 @@ module ResourceType
   # 設備グループ
   FACILITY_GROUP = "004"
 end
+
+#
+# 検索方法設定値.
+#
+module SearchType
+  # 無効データは含めない
+  EXCLUDE_DISABLE_DATA = "001"
+  # 無効データも含める
+  INCLUDE_DISABLE_DATA = "002"
+  # 無効データのみ
+  ONLY_DISABLE_DATA = "003"
+end
