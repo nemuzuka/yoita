@@ -79,6 +79,7 @@ class FacilitiesService < Service::Base
   #
   # 設備削除
   # 指定設備を削除します。
+  # 設備グループからも削除します。
   # ==== _Args_
   # [id]
   #   削除対象設備のリソースID

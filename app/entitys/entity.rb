@@ -111,6 +111,11 @@ module Entity
     
     #
     # コンストラクタ
+    # ==== _Args_
+    # [key]
+    #   Key値
+    # [value]
+    #   value値
     #
     def initialize(key, value)
       @key = key

@@ -33,7 +33,7 @@ class ResourceLogic
     resource = nil
     id = params[:resource][:id]
     
-    if id == nil || id == ""
+    if id.to_s == ""
       # 新規登録の場合
       resource = Resource.new(params[:resource])
       resource[:sort_num] = MAX_LONG

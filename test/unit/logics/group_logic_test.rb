@@ -199,11 +199,28 @@ class GroupLogicTest < ActiveSupport::TestCase
   test "get_resource2" do
     logic = GroupLogic.new
     begin
-      actual = logic.get_resource(123001, ResourceType::FACILITY_GROUP, false)
+      logic.get_resource(123001, ResourceType::FACILITY_GROUP, false)
       assert_fail
     rescue CustomException::NotFoundException => e
       assert true
     end    
+  end
+
+  #
+  # deleteのテスト
+  #
+  test "delete" do
+    logic = GroupLogic.new
+    assert_not_nil logic.get_resource(100001, ResourceType::USER_GROUP, true)
+    
+    logic.delete("100001", ResourceType::USER_GROUP, "0")
+    begin
+      logic.get_resource(100001, ResourceType::USER_GROUP, true)
+      assert_fail
+    rescue CustomException::NotFoundException => e
+      assert true
+    end    
+    
   end
 
 end

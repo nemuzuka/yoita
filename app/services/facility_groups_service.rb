@@ -102,7 +102,7 @@ class FacilityGroupsService < Service::Base
   def delete(id, lock_version)
     transaction_handler do
       logic = GroupLogic.new
-      logic.delete(id, ResourceType::FACILITY, lock_version)
+      logic.delete(id, ResourceType::FACILITY_GROUP, lock_version)
     end
   end
   

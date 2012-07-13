@@ -57,6 +57,12 @@ module SetupMethods
   # user_infoテスト用
   #
   def create_user_info
+    FactoryGirl.create(:user_info_resource1)
+    FactoryGirl.create(:user_info_resource2)
+    FactoryGirl.create(:user_info1)
+    FactoryGirl.create(:user_info2)
+    FactoryGirl.create(:login1)
+    FactoryGirl.create(:login2)
     
   end
   

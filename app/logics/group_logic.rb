@@ -108,6 +108,30 @@ class GroupLogic
   end
   
   #
+  # ユーザ・設備グループ削除
+  # idに紐付くリソース情報を削除します。
+  # 自身が親になっているグループ関連データを削除します。
+  # ==== _Args_
+  # [id]
+  #   取得対象のリソースID
+  # [resource_type]
+  #   リソース区分(see. <i>ResourceType</i>)
+  # [lock_version]
+  #   バージョンNo
+  # ==== _Raise_
+  # [CustomException::IllegalParameterException]
+  #   不正なパラメータを渡された場合
+  # [CustomException::NotFoundException]
+  #   該当レコードが存在しない場合
+  #
+  def delete(id, resource_type, lock_version)
+    logic = ResourceLogic.new
+    logic.delete(id, resource_type, lock_version)
+    # リソースidが親となっている関連を削除
+    UserFacilitiesGroupConn.delete_by_parent_id(id)
+  end
+  
+  #
   # 取得リソース戻り値.
   #
   class Detail
