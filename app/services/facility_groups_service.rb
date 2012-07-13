@@ -40,7 +40,7 @@ class FacilityGroupsService < Service::Base
     transaction_handler do
       
       group_detail = nil
-      if id != nil && id != ""
+      if id.to_s != ""
         logic = GroupLogic.new
         group_detail = logic.get_resource(id, ResourceType::FACILITY_GROUP, false)
       else

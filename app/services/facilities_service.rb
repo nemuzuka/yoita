@@ -40,7 +40,7 @@ class FacilitiesService < Service::Base
     transaction_handler do
       
       resource = nil
-      if id != nil && id != ''
+      if id.to_s != ''
         logic = ResourceLogic.new
         resource = logic.get_resource(id, ResourceType::FACILITY)
       else
