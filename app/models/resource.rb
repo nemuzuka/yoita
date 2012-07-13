@@ -38,14 +38,14 @@ class Resource < ActiveRecord::Base
     # 検索条件をパラメータによって動的に変更する
     condition = nil
     # 名称(中間一致)
-    if param.name != nil && param.name != ''
+    if param.name.to_s != ''
       condition = SqlHelper.add_condition(
         condition, 
         resources[:name].matches("%" + SqlHelper.replase_match_string(param.name) + "%"))
     end
 
     # 区分(必須)
-    if param.resource_type != nil && param.resource_type != ''
+    if param.resource_type.to_s != ''
       condition = SqlHelper.add_condition(
         condition, 
         resources[:resource_type].eq(param.resource_type))
