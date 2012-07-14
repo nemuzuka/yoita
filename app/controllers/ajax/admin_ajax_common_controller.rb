@@ -17,7 +17,7 @@ module Ajax #:nodoc:
     #
     def get_serch_info
       exeption_handler do
-        search_param = session[:resource_search_param]
+        search_param = session[get_search_param_symble]
         result = Entity::JsonResult.new
         result.result = search_param
         render json: result
@@ -30,7 +30,7 @@ module Ajax #:nodoc:
     #
     def list
       exeption_handler do
-        search_param = session[:resource_search_param]
+        search_param = session[get_search_param_symble]
         search_param = Resource::SearchParam.new if search_param == nil
         
         # リクエストパラメータの情報を設定
@@ -178,6 +178,16 @@ module Ajax #:nodoc:
       end
     end
 
+    protected
+      #
+      # 検索条件格納インスタンスSession格納シンボル取得
+      # ==== _Return_
+      # 検索条件格納インスタンスSession格納シンボル
+      #
+      def get_search_param_symble
+        return :resource_search_param
+      end
+
     private
       #
       # 一覧戻り値作成
@@ -194,7 +204,7 @@ module Ajax #:nodoc:
 
         json_result = Entity::JsonResult.new        
         # トータル件数が0件の場合、メッセージを設定
-        if search_param.total_count == 0
+        if search_param.total_count.to_i == 0
           json_result.info_msgs.push("一覧に表示するレコードが存在しません")
           search_param.click_search = false
         end

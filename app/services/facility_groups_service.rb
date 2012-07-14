@@ -39,16 +39,9 @@ class FacilityGroupsService < Service::Base
   def get_resource(id)
     transaction_handler do
       
-      group_detail = nil
-      if id.to_s != ""
-        logic = GroupLogic.new
-        group_detail = logic.get_resource(id, ResourceType::FACILITY_GROUP, false)
-      else
-        group_detail = GroupLogic::Detail.new
-        group_detail.resource = Resource.new
-        group_detail.resource_conn_list = []
-      end
-      
+      logic = GroupLogic.new
+      group_detail = logic.get_resource(id, ResourceType::FACILITY_GROUP, false)
+       
       result = FacilityGroupsService::Detail.new
       result.detail = group_detail
       

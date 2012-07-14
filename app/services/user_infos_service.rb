@@ -3,35 +3,34 @@ require "constants"
 require "service"
 
 #
-# 設備に対するService
+# ユーザに対するService
 #
-class FacilitiesService < Service::Base
+class UserInfosService < Service::Base
   
   #
-  # 設備検索
-  # 検索条件に合致する設備一覧を取得します
+  # ユーザ検索
+  # 検索条件に合致するユーザ一覧を取得します
   # ==== _Args_
   # [params]
-  #   検索条件(see. <i>Resource::SearchParam</i>)
+  #   検索条件(see. <i>UserInfo::SearchParam</i>)
   # ==== _Return_
   # 該当レコード(存在しない場合、size=0のList)
   #
   def find_by_conditions(params)
     transaction_handler do
-      params.resource_type = ResourceType::FACILITY
-      logic = ResourceLogic.new
+      logic = UserInfoLogic.new
       logic.find_by_conditions(params)
     end
   end
 
   #
-  # 設備情報取得
-  # 引数のidに紐付く設備を取得します
+  # ユーザ詳細情報取得
+  # 引数のidに紐付くユーザを取得します
   # ==== _Args_
   # [id]
-  #   取得対象id(空文字 or nilの場合、新規扱い)
+  #   取得対象id(空文字 or nullの場合、新規とみなす)
   # ==== _Return_
-  # 該当レコード(see. <i>Resource</i>)
+  # 該当レコード(see. <i>UserInfoLogic::Detail</i>)
   # ==== _Raise_
   # [CustomException::NotFoundException]
   #   該当レコードが存在しない場合
@@ -39,18 +38,18 @@ class FacilitiesService < Service::Base
   def get_resource(id)
     transaction_handler do
       
-      logic = ResourceLogic.new
-      logic.get_resource(id, ResourceType::FACILITY)
-      
+      logic = UserInfoLogic.new
+      logic.get_detail(id)
+
     end
   end
   
   #
-  # 設備登録・更新
+  # ユーザ登録・更新
   # DBの整合性に合致しない場合、不正な入力値の場合、例外をthrowします 
   # ==== _Args_
   # [params]
-  #   設備登録・更新情報
+  #   ユーザ登録・更新情報
   # [action_resource_id]
   #   登録・更新処理実行ユーザリソースID
   # ==== _Raise_
@@ -65,40 +64,33 @@ class FacilitiesService < Service::Base
   #
   def save(params, action_resource_id)
     transaction_handler do
-      logic = ResourceLogic.new
-      logic.save(params, ResourceType::FACILITY, action_resource_id)
+      logic = UserInfoLogic.new
+      logic.save(params, ResourceType::USER, action_resource_id)
     end
   end
   
   #
-  # 設備削除
-  # 指定設備を削除します。
-  # 設備グループからも削除します。
+  # ユーザ削除
+  # ユーザを削除します。
   # ==== _Args_
-  # [id]
-  #   削除対象設備のリソースID
-  # [lock_version]
-  #   対象バージョンNo
+  # [params]
+  #   ユーザ削除情報
   # ==== _Raise_
-  # [CustomException::IllegalParameterException]
-  #   不正なパラメータを渡された場合
   # [CustomException::NotFoundException]
   #   該当レコードが存在しない場合
   # [CustomException::InvalidVersionException]
   #   バージョンが合わない場合
   # 
-  def delete(id, lock_version)
+  def delete(params)
     transaction_handler do
-      logic = ResourceLogic.new
-      logic.delete(id, ResourceType::FACILITY, lock_version)
-      # 設備グループから削除する
-      UserFacilitiesGroupConn.delete_by_child_id(id)
+      logic = UserInfoLogic.new
+      logic.delete(params)
     end
   end
   
   #
-  # 設備ソート順更新
-  # 指定した設備のソート順を変更します
+  # ユーザソート順更新
+  # 指定したユーザのソート順を変更します
   # ==== _Args_
   # [ids]
   #   更新対象idList。この順番にソート順を1から採番します
@@ -106,7 +98,7 @@ class FacilitiesService < Service::Base
   def update_sort_num(ids)
     transaction_handler do
       logic = ResourceLogic.new
-      logic.update_sort_num(ids, ResourceType::FACILITY)
+      logic.update_sort_num(ids, ResourceType::FACILITY_GROUP)
     end
   end
   

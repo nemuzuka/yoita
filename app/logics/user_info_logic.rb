@@ -118,6 +118,8 @@ class UserInfoLogic
   #
   # 詳細情報取得
   # idに紐付くユーザ情報を取得します。
+  # idが未設定の場合、newしただけのインスタンスを返します。
+  # idが設定されていても該当データが存在しない場合、例外をthrowします
   # ==== _Args_
   # [resource_id]
   #   取得対象のリソースID
@@ -128,8 +130,17 @@ class UserInfoLogic
   #   該当レコードが存在しない場合
   #
   def get_detail(resource_id)
-    logic = ResourceLogic.new
+
     result = UserInfoLogic::Detail.new
+    
+    if resource_id.to_s == ''
+        result.resource = Resource.new
+        result.user_info = UserInfo.new
+        result.login = Login.new      
+        return result
+    end
+    
+    logic = ResourceLogic.new
     result.resource = logic.get_resource(resource_id, ResourceType::USER)
     result.user_info = UserInfo.find_by_resource_id(resource_id)
     result.login = Login.find_by_resource_id(resource_id)

@@ -57,6 +57,8 @@ class GroupLogic
   #
   # リソース取得
   # idに紐付くリソース情報を取得します。
+  # idが未設定の場合、newしただけのインスタンスを返します。
+  # idが設定されていても該当データが存在しない場合、例外をthrowします
   # ==== _Args_
   # [id]
   #   取得対象のリソースID
@@ -74,8 +76,15 @@ class GroupLogic
   #
   def get_resource(id, resource_type, include_parent)
     
-    logic = ResourceLogic.new
     result = GroupLogic::Detail.new
+    if id.to_s == ''
+        result = GroupLogic::Detail.new
+        result.resource = Resource.new
+        result.resource_conn_list = []
+        return result
+    end
+    
+    logic = ResourceLogic.new
     result.resource = logic.get_resource(id, resource_type)
     
     # 紐付く子リソース情報を取得

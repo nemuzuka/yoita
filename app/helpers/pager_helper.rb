@@ -23,15 +23,15 @@ module PagerHelper
   # 
   def crate_page_link(default_pager_condition, function_name, app_path)
     
-    if default_pager_condition.total_count == nil || default_pager_condition.total_count == 0 || 
+    if default_pager_condition.total_count == nil || default_pager_condition.total_count.to_i == 0 || 
       default_pager_condition.per == nil || default_pager_condition.per == 0 ||
       default_pager_condition.page == nil || default_pager_condition.page == 0
       return ""
     end
     
     # トータルページ数を算出
-    total_page_num = default_pager_condition.total_count / default_pager_condition.per
-    mod_num = default_pager_condition.total_count % default_pager_condition.per
+    total_page_num = default_pager_condition.total_count.to_i / default_pager_condition.per
+    mod_num = default_pager_condition.total_count.to_i % default_pager_condition.per
     if mod_num != 0
       total_page_num = total_page_num + 1
     end

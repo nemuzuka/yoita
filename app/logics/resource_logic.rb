@@ -107,6 +107,8 @@ class ResourceLogic
   #
   # リソース取得
   # idに紐付くリソース情報を取得します。
+  # idが未設定の場合、newしただけのインスタンスを返します。
+  # idが設定されていても該当データが存在しない場合、例外をthrowします
   # ==== _Args_
   # [id]
   #   取得対象のリソースID
@@ -121,6 +123,11 @@ class ResourceLogic
   #   該当レコードが存在しない場合
   #
   def get_resource(id, resource_type)
+    
+    if id.to_s == ''
+      return Resource.new
+    end
+    
     resource = Resource.find_by_id(id)
     if resource == nil
       # 該当レコード無しのExceptionをthrow
