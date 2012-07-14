@@ -98,7 +98,22 @@ class UserInfosService < Service::Base
   def update_sort_num(ids)
     transaction_handler do
       logic = ResourceLogic.new
-      logic.update_sort_num(ids, ResourceType::FACILITY_GROUP)
+      logic.update_sort_num(ids, ResourceType::USER)
+    end
+  end
+  
+  #
+  # ユーザ一覧取得
+  # 登録されている全ユーザを取得します
+  # ==== _Return_
+  # 該当レコード
+  #
+  def get_all_users
+    transaction_handler do
+      search_param = Resource::SearchParam.new
+      search_param.resource_type = ResourceType::USER
+      logic = ResourceLogic.new
+      logic.find_by_conditions(search_param)
     end
   end
   

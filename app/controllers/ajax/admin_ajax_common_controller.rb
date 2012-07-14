@@ -18,6 +18,7 @@ module Ajax #:nodoc:
     def get_serch_info
       exeption_handler do
         search_param = session[get_search_param_symble]
+        search_param = create_search_param if search_param == nil
         result = Entity::JsonResult.new
         result.result = search_param
         render json: result
@@ -31,10 +32,11 @@ module Ajax #:nodoc:
     def list
       exeption_handler do
         search_param = session[get_search_param_symble]
-        search_param = Resource::SearchParam.new if search_param == nil
+        search_param = create_search_param if search_param == nil
         
-        # リクエストパラメータの情報を設定
-        search_param.name = params[:name]
+        # リクエストパラメータの情報を検索条件に設定する
+        set_search_param(search_param)
+
         # 1ページ目から検索
         search_param.page = 1
         # 検索ボタンを押下した状態
@@ -45,15 +47,14 @@ module Ajax #:nodoc:
       end
     end
 
-
     #
     # 一覧リフレッシュ処理
     # Sessionに格納されている検索条件を元に、再検索を行い、一覧を取得します
     #
     def refresh
       exeption_handler do
-        search_param = session[:resource_search_param]
-        search_param = Resource::SearchParam.new if search_param == nil
+        search_param = session[get_search_param_symble]
+        search_param = create_search_param if search_param == nil
         
         json_result = nil
         if search_param.click_search != nil && search_param.click_search == true
@@ -188,10 +189,31 @@ module Ajax #:nodoc:
         return :resource_search_param
       end
 
-    private
+      #
+      # 検索条件格納インスタンス生成
+      # ==== _Return_
+      # 検索条件格納インスタンス
+      #
+      def create_search_param
+        Resource::SearchParam.new
+      end
+
+      #
+      # 検索条件設定
+      # リクエストパラメータを元に、検索条件を設定します
+      # [search_param]
+      #   検索条件パラメータ
+      #
+      def set_search_param(search_param)
+        # リクエストパラメータの情報を設定
+        search_param.name = params[:name]
+      end
+
       #
       # 一覧戻り値作成
       # 検索条件に紐付くデータを取得し、Json戻り値を作成します。
+      # [search_param]
+      #   検索条件パラメータ
       #
       def create_json_result(search_param)
         # 1ページ辺りの表示件数が未設定の場合
