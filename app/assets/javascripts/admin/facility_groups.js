@@ -325,7 +325,7 @@ function execute() {
 		function(data) {
 			//共通エラーチェック
 			if(errorCheck(data) == false) {
-				if(data.status == -1 ) {
+				if(data.status_code == -1 ) {
 					//validateエラーの場合、処理終了
 					//※それ以外の場合、ダイアログをクローズして一覧再描画する
 					return;
@@ -458,7 +458,7 @@ function executeSort() {
 		function(data) {
 			//共通エラーチェック
 			if(errorCheck(data) == false) {
-				if(data.status == -1 ) {
+				if(data.status_code == -1 ) {
 					return;
 				}
 			}

@@ -32,7 +32,8 @@ class UserInfoLogicTest < ActiveSupport::TestCase
       },
       :login => {
         :login_id => "hoge1",
-        :password => "hogehogehogeABC"
+        :password => "hogehogehogeABC",
+        :confirm_password => "hogehogehogeABC"
       }
     }
     
@@ -70,7 +71,8 @@ class UserInfoLogicTest < ActiveSupport::TestCase
       },
       :login => {
         :login_id => "hoge2",
-        :password => "hogehogehoge123"
+        :password => "hogehogehoge123",
+        :confirm_password => "hogehogehoge123"
       }
     }
     
@@ -108,7 +110,8 @@ class UserInfoLogicTest < ActiveSupport::TestCase
       },
       :login => {
         :login_id => "hoge1",
-        :password => "hogehogehoge123"
+        :password => "hogehogehoge123",
+        :confirm_password => "hogehogehogeABC"
       }
     }
     
@@ -243,6 +246,7 @@ class UserInfoLogicTest < ActiveSupport::TestCase
         :resource_id => 102,
         :login_id => "hohohoho1",
         :password => "hogehogehogeABC",
+        :confirm_password => "hogehogehogeABC",
         :entry_resource_id => 9999997,
         :update_resource_id => 9999996,
         :lock_version => "21"
@@ -373,6 +377,7 @@ class UserInfoLogicTest < ActiveSupport::TestCase
         :resource_id => 102,
         :login_id => "hohohoho1",
         :password => "hogehogehogeABC",
+        :confirm_password => "hogehogehogeABC",
         :entry_resource_id => 9999997,
         :update_resource_id => 9999996,
         :lock_version => "21"
@@ -509,12 +514,61 @@ class UserInfoLogicTest < ActiveSupport::TestCase
         :resource_id => 102,
         :login_id => "hohohoho1",
         :password => "123456",
+        :confirm_password => "123456",
         :entry_resource_id => 9999997,
         :update_resource_id => 9999996,
         :lock_version => "21"
       }
     }
     
+    logic = UserInfoLogic.new
+    begin
+      logic.save(params, ResourceType::USER, 4989)
+      assert_fail
+    rescue CustomException::ValidationException => e
+      assert_equal e.msgs.length, 1
+      assert true
+    end
+  end
+
+  #
+  # saveメソッド-更新のテスト
+  # validateエラー
+  # user_info更新時のエラー
+  #
+  test "save-update-ng4" do
+
+    params = {
+      :resource => {
+        :id => 100001,
+        :name => "変更後ユーザA",
+        :memo => "変更後メモリん",
+        :lock_version => "1"
+      },
+      :user_info => {
+        :resource_id => 101,
+        :reading_character => "ゆーざA",
+        :tel => "123-4567-8901",
+        :mail => "change_hige@hoge.hage",
+        :admin_flg => "0",
+        :per_page => "10",
+        :default_user_group => "1234",
+        :validity_start_date => "2010/12/31",
+        :entry_resource_id => 9999999,
+        :update_resource_id => 9999998,
+        :lock_version => "10"
+      },
+      :login => {
+        :resource_id => 102,
+        :login_id => "hohohoho1",
+        :password => "123456",
+        :confirm_password => "1234567",
+        :entry_resource_id => 9999997,
+        :update_resource_id => 9999996,
+        :lock_version => "21"
+      }
+    }
+    # パスワードと確認パスワードが違う
     logic = UserInfoLogic.new
     begin
       logic.save(params, ResourceType::USER, 4989)

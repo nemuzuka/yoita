@@ -29,7 +29,7 @@ module Ajax #:nodoc:
       exeption_handler do
         # ページング無しで全件取得
         service = get_service
-        list = service.get_all_users(search_param)
+        list = service.get_all_users
         
         result = Entity::JsonResult.new
         result.result = list

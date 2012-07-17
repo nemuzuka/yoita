@@ -80,8 +80,8 @@ module Ajax #:nodoc:
     #
     def turn
       exeption_handler do
-        search_param = session[:resource_search_param]
-        search_param = Resource::SearchParam.new if search_param == nil
+        search_param = session[get_search_param_symble]
+        search_param = create_search_param.new if search_param == nil
         
         # ページ番号を変更
         page_no = params[:page_no].to_i
@@ -235,7 +235,7 @@ module Ajax #:nodoc:
         list_result.link = PagerHelper.crate_page_link(
           search_param, get_function_name, get_app_path)
         list_result.total_count = search_param.total_count
-        
+
         json_result.result = list_result
         return json_result
       end

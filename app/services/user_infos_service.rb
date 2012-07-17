@@ -47,14 +47,13 @@ class UserInfosService < Service::Base
         user_info.validity_end_date = nil
       end
       
-      detail = UserInfosService::Detail.new
-      detail.detail = detail
+      ret_detail = UserInfosService::Detail.new
+      ret_detail.detail = detail
       
       # 全てのユーザグループを取得する
       resource_logic = ResourceLogic.new
-      detail.user_group_list = resource_logic.get_all_resources(ResourceType::USER_GROUP)
-      
-      return detail
+      ret_detail.user_group_list = resource_logic.get_all_resources(ResourceType::USER_GROUP)
+      return ret_detail
     end
   end
   

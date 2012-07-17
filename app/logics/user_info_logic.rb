@@ -347,10 +347,13 @@ class UserInfoLogic
     #
     def validate_insert(params)
       password = params[:login][:password]
+      confirm_password = params[:login][:confirm_password]
       if password.to_s == ''
         raise CustomException::ValidationException.new(["パスワードは必須です。"])
       end
+      
       check_password_length(password)
+      check_password_confirm(password, confirm_password)
     end
 
     #
@@ -365,7 +368,9 @@ class UserInfoLogic
     #
     def validate_update(params)
       password = params[:login][:password]
+      confirm_password = params[:login][:confirm_password]
       check_password_length(password)
+      check_password_confirm(password, confirm_password)
     end
     
     #
@@ -381,6 +386,26 @@ class UserInfoLogic
     def check_password_length(password)
       if password.to_s != "" && password.length < 6
         raise CustomException::ValidationException.new(["パスワードは6文字以上設定して下さい。"])
+      end
+    end
+
+    #
+    # パスワード確認チェック
+    # パスワードと確認用パスワードが合致しない場合、例外をthrowします
+    # ==== _Args_
+    # [password]
+    #   パスワード文字列
+    # [confirm_password]
+    #   確認用パスワード文字列
+    # ==== _Raise_
+    # [CustomException::ValidationException]
+    #   validate時の例外
+    #
+    def check_password_confirm(password, confirm_password)
+      if password.to_s != ""
+        if password != confirm_password
+          raise CustomException::ValidationException.new(["パスワードとパスワード(確認用)の値が違います"])
+        end
       end
     end
 

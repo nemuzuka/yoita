@@ -26,6 +26,8 @@ td{empty-cells: show;}
 
 /* 各種input要素 */
 .controls textarea {height: 100px;}
+/* 重要メッセージ */
+.important-msg{color: red;}
 
 /* 検索テーブル. */
 .search_table{font-size:100%;border-top:2px solid #08C;border-bottom:2px solid #08C;}
@@ -53,6 +55,8 @@ td{empty-cells: show;}
 .result_table {font-size: 100%; margin-top:5px}
 .result_table thead th{background:#f0ffff;text-align:center;}
 .result_table a{cursor: pointer;}
+/* 偶数行の色分け */
+.result_table .disableColor td{background:#EEE;}
 
 
 /* ダイアログテーブル(並べ替え・編集・フォロー) */

@@ -113,6 +113,10 @@ module BaseController
             # validateエラー
             render json: createJsonResult(Entity::JsonResult::STATUS_NG, 
               e.msgs)
+          rescue CustomException::UniqueConstraintException => e
+            # 一意制約エラー
+            render json: createJsonResult(Entity::JsonResult::DUPLICATE_ERR, 
+              ["入力されたユーザは既に登録されています"])
           rescue => e
             logger.error e.message if logger
             render json: createJsonResult(Entity::JsonResult::SERVER_ERROR, 

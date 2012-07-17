@@ -59,15 +59,47 @@ Validate.prototype = {
 		}
 		return false;
 	},
+	//最小文字数
+	minLength:function(value, size){
+		if(value == null || value.length == 0) {
+			return false;
+		}
+		if(value.length < size) {
+			return true;
+		}
+		return false;
+	},
+	//同値チェック
+	eachValue:function(value1, value2){
+		if(value1 == null && value2 == null) {
+			return false;
+		}
+		if(value1 != value2) {
+			return true;
+		}
+		return false;
+	},
 	//日付チェック(8桁の数値であることのチェック)
 	//詳細は、サーバ側で行う
 	date:function(value) {
 		if(value == null || value == '') {
 			return false;
 		}
+		
+		var targetValue = unFormatDate(value);
 		var regex = /^\d{8}$/;
-		return (regex.test(value) == false);
+		return (regex.test(targetValue) == false);
 
+	},
+	//日付関連チェック
+	dateRange:function(fromDate, toDate){
+	
+		var from = formatDateyyyyMMdd(fromDate);
+		var to = formatDateyyyyMMdd(toDate);
+		if(from > to) {
+			return true;
+		}
+		return false;
 	},
 	//数値チェック
 	isNum:function(value){
@@ -129,6 +161,28 @@ Validate.prototype = {
 						this.e = false;
 					}
 					break;
+				//最小文字数
+				case 'minLength':
+					if(this.minLength(this.rules_array[i].value, this.rules_array[i].size)) {
+						if(this.rules_array[i].error == undefined) {
+							this.rules_array[i].error = "{0}の長さは{1}文字以上で入力して下さい。";
+						}
+						this.error_array.push(this.rules_array[i].error.format(
+								this.rules_array[i].error_args, this.rules_array[i].size));
+						this.e = false;
+					}
+					break;
+				//同値
+				case 'eachValue':
+					if(this.eachValue(this.rules_array[i].value1, this.rules_array[i].value2)) {
+						if(this.rules_array[i].error == undefined) {
+							this.rules_array[i].error = "{0}と{1}の値が違います。";
+						}
+						this.error_array.push(this.rules_array[i].error.format(
+								this.rules_array[i].error_args, this.rules_array[i].error_args2));
+						this.e = false;
+					}
+					break;
 				//日付
 				case "date":
 					if (this.date(this.rules_array[i].value)){
@@ -137,6 +191,19 @@ Validate.prototype = {
 						}
 						this.error_array.push(this.rules_array[i].error.format(
 								this.rules_array[i].error_args));
+						this.e = false;
+					}
+					break;
+				//日付関連
+				case "dateRange":
+					if (this.dateRange(this.rules_array[i].fromValue, this.rules_array[i].toValue)){
+						if(this.rules_array[i].error == undefined) {
+							this.rules_array[i].error = "{0}は{1}以降の{2}を指定して下さい。";
+						}
+						this.error_array.push(this.rules_array[i].error.format(
+								this.rules_array[i].error_args,
+								this.rules_array[i].error_args2,
+								this.rules_array[i].error_args3));
 						this.e = false;
 					}
 					break;
