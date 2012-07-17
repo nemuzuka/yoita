@@ -9,6 +9,7 @@ class UserInfoLogic
   
   #
   # ユーザ検索.
+  # 各行に対して、有効期限内であるかを判断し、disableプロパティに追加します
   # 検索条件として設定されている項目に対してのみWhere句に設定します。ページャ用の設定がされている場合、ページング処理を行います
   # 複数テーブルを内部結合してSQL文を発行します
   # ==== _Args_
@@ -16,10 +17,28 @@ class UserInfoLogic
   #   検索条件パラメータ(see. <i>UserInfo::SearchParam</i>)
   # ==== _Return_
   # 該当レコード(存在しない場合、size=0のList)
+  # record:SQLで取得したレコード
+  # disable:無効の場合、true
+  # をプロパティに持つHashのリスト
   #
   def find_by_conditions(params)
-    resource_logic = ResourceLogic.new
-    resource_logic.find_by_conditions(params)
+    list = UserInfo.find_by_conditions(params)
+    
+    # 有効期間を参照し、有効状態を付与する
+    result_list = []
+    search_base_date = params.search_base_date
+    list.each do |target|
+      disable_value = nil
+      if target[:validity_start_date] <= search_base_date && 
+          search_base_date <= target[:validity_end_date]
+        disable_value = false
+      else
+        disable_value = true
+      end
+      result_list.push({:record => target, :disable => disable_value})
+    end
+    return result_list
+
   end
   
   #

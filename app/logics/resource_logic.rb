@@ -166,4 +166,23 @@ class ResourceLogic
     Resource.update_sort_num(ids, resource_type)
   end
   
+  #
+  # 指定区分の全リソース取得.
+  # ==== _Args_
+  # [resource_type]
+  #   リソース区分
+  # ==== _Return_
+  # <i>Entity::LabelValueBean</i>のlist
+  #
+  def get_all_resources(resource_type)
+    search_param = Resource::SearchParam.new
+    search_param.resource_type = resource_type
+    list = Resource.find_by_conditions(search_param)
+    result_list = []
+    list.each do |target|
+      result_list.push(Entity::LabelValueBean.new(target.id, target.name))
+    end
+    return result_list
+  end
+  
 end

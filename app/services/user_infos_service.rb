@@ -26,11 +26,13 @@ class UserInfosService < Service::Base
   #
   # ユーザ詳細情報取得
   # 引数のidに紐付くユーザを取得します
+  # 有効終了日がデフォルト値の場合、nil値に上書きします
+  # デフォルトユーザグループの構成情報も返却します
   # ==== _Args_
   # [id]
   #   取得対象id(空文字 or nullの場合、新規とみなす)
   # ==== _Return_
-  # 該当レコード(see. <i>UserInfoLogic::Detail</i>)
+  # 該当レコード(see. <i>UserInfosService::Detail</i>)
   # ==== _Raise_
   # [CustomException::NotFoundException]
   #   該当レコードが存在しない場合
@@ -39,8 +41,20 @@ class UserInfosService < Service::Base
     transaction_handler do
       
       logic = UserInfoLogic.new
-      logic.get_detail(id)
-
+      detail = logic.get_detail(id)
+      user_info = detail.user_info
+      if user_info.validity_end_date != nil && user_info.validity_end_date == MAX_DATE
+        user_info.validity_end_date = nil
+      end
+      
+      detail = UserInfosService::Detail.new
+      detail.detail = detail
+      
+      # 全てのユーザグループを取得する
+      resource_logic = ResourceLogic.new
+      detail.user_group_list = resource_logic.get_all_resources(ResourceType::USER_GROUP)
+      
+      return detail
     end
   end
   
@@ -115,6 +129,17 @@ class UserInfosService < Service::Base
       logic = ResourceLogic.new
       logic.find_by_conditions(search_param)
     end
+  end
+  
+  #
+  # 詳細データ
+  #
+  class Detail
+    # 該当詳細データ
+    attr_accessor :detail
+    # ユーザグループ構成情報
+    # <i>Entity::LabelValueBean</i>のlist
+    attr_accessor :user_group_list
   end
   
 end

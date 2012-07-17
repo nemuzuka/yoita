@@ -593,4 +593,29 @@ class UserInfoLogicTest < ActiveSupport::TestCase
 
   end
 
+  #
+  # find_by_conditionsのテスト
+  #
+  test "find_by_conditions" do
+
+    # 無効データも含める
+    # 検索条件：リソースIDList指定
+    param = UserInfo::SearchParam.new
+    param.search_base_date = Date.strptime("2010/01/01", "%Y/%m/%d") 
+    param.search_type = SearchType::INCLUDE_DISABLE_DATA
+    param.resource_id_list = ["100008", "100004", "100002", "100005", "100006", "100009"]
+    logic = UserInfoLogic.new
+    actual_list = logic.find_by_conditions(param)
+    assert_equal param.total_count.to_i, 4
+    assert_equal actual_list[0][:record][:resource_id], 100002
+    assert_equal actual_list[0][:disable], true
+    assert_equal actual_list[1][:record][:resource_id], 100004
+    assert_equal actual_list[1][:disable], false
+    assert_equal actual_list[2][:record][:resource_id], 100006
+    assert_equal actual_list[2][:disable], false
+    assert_equal actual_list[3][:record][:resource_id], 100005
+    assert_equal actual_list[3][:disable], false
+    
+  end
+
 end
