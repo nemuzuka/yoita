@@ -1,0 +1,118 @@
+<%= javascript_include_tag "admin/user_groups"  %>
+
+<% content_for :extend_sub_menu do %>
+	<%= render :file => 'admin/_admin_sub_menu.html.erb' %>
+<% end %>
+
+<div class="widget">
+<form class="form-horizontal">
+
+	<h2 class="title">ユーザグループ検索</h2>
+	<table class="search_table">
+	<tbody>
+	<tr>
+		<th>名称</th>
+		<td><input type="text" id="search_name" /></td>
+	</tr>
+	</tbody>
+	</table>
+	<div class="search_ctrl">
+		<input type="button" class="btn btn-primary" id="searchUserGroupsBtn" value="検索" />
+		<input type="button" class="btn" value="新規登録" id="addUserGroupsBtn" />
+		<input type="button" class="btn" value="表示順変更" id="sortUserGroupsBtn" />
+	</div>
+	
+	<div id="result_area" class="result">
+	</div>
+
+	<input type="hidden" id="selected_sub_menu" value="sub_menu3" />
+
+</form>
+</div>
+
+<!-- ユーザグループ登録・更新ダイアログ -->
+<div id="userGroupsDialog" class="dialog-widget">
+<div class="dialog-container form-horizontal" >
+<fieldset>
+	<div class="control-group">
+		<label class="control-label" for="resource_name">ユーザグループ名</label>
+		<div class="controls">
+			<input type="text" class="input-xlarge required-input" id="resource_name">
+		</div>
+	</div>
+
+	<div class="control-group">
+		<label class="control-label" for="resource_memo">メモ</label>
+		<div class="controls">
+			<textarea class="input-xlarge" cols="10" rows="10" id="resource_memo"></textarea>
+		</div>
+	</div>
+	
+	<div>
+		<div class="sort_action_area" style="margin-right: 10px;">
+			<div class="sort_up_area">
+				<input type="button" class="btn sort_up_button" id="users_up" value="↑" />
+			</div>
+			<div>
+				<input type="button" class="btn" id="users_down" value="↓" />
+			</div>
+		</div>
+		<div class="sort_to">
+			<div>
+				<label for="target_users">参加リソース</label>
+				<select id="target_users" size="10" multiple class="required-input">
+				</select>
+			</div>
+			<div align="right" class="resource_remove_area">
+				<input id="users_remove" class="btn" type="button" value="ー" alt=" 参加リソースから削除" title="参加リソースから削除" />
+			</div>
+		</div>
+		<div class="sort_to">
+			<input id="users_add" class="btn resource_add_area" 
+				type="button" value="＜" alt=" 参加リソースに追加" title="参加リソースに追加" />
+		</div>
+		<div>
+			<label for="all_users">全設備</label>
+			<select id="all_users" size="10" multiple>
+			</select>
+		</div>
+	</div>
+	
+	<div class="edit_ctrl" style="clear: both;">
+		<input type="button" class="btn btn-primary" id="userGroupsDialog-add" value="登録する" />
+		<input type="button" class="btn" id="userGroupsDialog-cancel" value="キャンセル" />
+		<input type="hidden" id="resource_lock_version" />
+		<input type="hidden" id="resource_id" />
+	</div>
+</fieldset>
+</div>
+</div>
+
+<!-- ユーザグループソートダイアログ -->
+<div id="userGroupsSortDialog" title="表示順変更" class="dialog-widget">
+<div class="dialog-container form-horizontal" >
+<fieldset>
+	<div class="control-group">
+		<label class="control-label" for="userGroups_to">ユーザグループ</label>
+		<div class="controls">
+			<div class="sort_to">
+				<select id="userGroups_to" size="10" multiple="multiple"></select>
+			</div>
+			<div class="sort_action_area">
+				<div class="sort_up_area">
+					<input type="button" class="btn sort_up_button" id="sort_up" value="↑" />
+				</div>
+				<div>
+					<input type="button" class="btn" id="sort_down" value="↓" />
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div class="edit_ctrl">
+		<input type="button" class="btn btn-primary" id="userGroupsSortDialog-execute" value="変更する" />
+		<input type="button" class="btn" id="userGroupsSortDialog-cancel" value="キャンセル" />
+	</div>
+</fieldset>
+</div>
+</div>

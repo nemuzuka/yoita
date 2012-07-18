@@ -1,4 +1,4 @@
-//設備グループメンテナンスのjs
+//ユーザグループメンテナンスのjs
 $(function(){
 	$(window).unload(function(){
 		//画面を離れる場合
@@ -8,7 +8,7 @@ $(function(){
 	//dialogの登録
 	initDialog();
 	
-	$("#addFacilityGroupsBtn").click(function(){
+	$("#addUserGroupsBtn").click(function(){
 		openEditDialog("");
 	});
 
@@ -16,7 +16,7 @@ $(function(){
 	setAjaxDefault();
 	$.ajax({
 		type: "GET",
-		url: "/ajax/facilityGroups/get_serch_info",
+		url: "/ajax/userGroups/get_serch_info",
 	}).then(
 		function(data) {
 			//共通エラーチェック
@@ -37,15 +37,15 @@ $(function(){
 		}
 	);
 	
-	$("#searchFacilityGroupsBtn").click(function(){
-		searchFacilityGroups();
+	$("#searchUserGroupsBtn").click(function(){
+		searchUserGroups();
 	});
 
 });
 
 //ダイアログ初期化
 function initDialog(){
-	$("#facilityGroupsDialog").dialog({
+	$("#userGroupsDialog").dialog({
 		modal:true,
 		autoOpen:false,
 		width:700,
@@ -60,7 +60,7 @@ function initDialog(){
         hide: 'clip'
 	});
 
-	$("#facilityGroupsSortDialog").dialog({
+	$("#userGroupsSortDialog").dialog({
 		modal:true,
 		autoOpen:false,
 		width:600,
@@ -76,55 +76,55 @@ function initDialog(){
 	});
 	
 	//登録・更新実行
-	$("#facilityGroupsDialog-add").click(function(){
+	$("#userGroupsDialog-add").click(function(){
 		execute();
 	});
 	
-	$("#facilityGroupsDialog-cancel").click(function(){
-		$("#facilityGroupsDialog").dialog("close");
+	$("#userGroupsDialog-cancel").click(function(){
+		$("#userGroupsDialog").dialog("close");
 	});
 	
 	//各種ボタンの制御
-	$("#facilities_up").click(function(){
-		upItems("target_facilities");
+	$("#users_up").click(function(){
+		upItems("target_users");
 	});
-	$("#facilities_down").click(function(){
-		downItems("target_facilities");
+	$("#users_down").click(function(){
+		downItems("target_users");
 	});
-	$("#facilities_add").click(function(){
-		addItems("all_facilities","target_facilities");
+	$("#users_add").click(function(){
+		addItems("all_users","target_users");
 	});
-	$("#facilities_remove").click(function(){
-		removeItems("target_facilities");
+	$("#users_remove").click(function(){
+		removeItems("target_users");
 	});
 
 	//ソートダイアログ
-	$("#sortFacilityGroupsBtn").click(function(){
+	$("#sortUserGroupsBtn").click(function(){
 		openSortDialog();
 	});
 	$("#sort_up").click(function(){
-		upItems("facilityGroups_to");
+		upItems("userGroups_to");
 	});
 	$("#sort_down").click(function(){
-		downItems("facilityGroups_to");
+		downItems("userGroups_to");
 	});
-	$("#facilityGroupsSortDialog-execute").click(function(){
+	$("#userGroupsSortDialog-execute").click(function(){
 		executeSort();
 	});
-	$("#facilityGroupsSortDialog-cancel").click(function(){
-		$("#facilityGroupsSortDialog").dialog("close");
+	$("#userGroupsSortDialog-cancel").click(function(){
+		$("#userGroupsSortDialog").dialog("close");
 	});
 }
 
-//設備グループ検索
-function searchFacilityGroups() {
+//ユーザグループ検索
+function searchUserGroups() {
 	var params = {};
 	params["name"] = $("#search_name").val();
 	
 	setAjaxDefault();
 	$.ajax({
 		type: "GET",
-		url: "/ajax/facilityGroups/list",
+		url: "/ajax/userGroups/list",
 		data: params
 	}).then(
 		function(data) {
@@ -138,7 +138,7 @@ function reSearchAndRender() {
 	setAjaxDefault();
 	$.ajax({
 		type: "GET",
-		url: "/ajax/facilityGroups/refresh"
+		url: "/ajax/userGroups/refresh"
 	}).then(
 		function(data) {
 			render(data);
@@ -147,7 +147,7 @@ function reSearchAndRender() {
 }
 
 //ページング処理
-function turnFacilityGroups(pageNo, url) {
+function turnUserGroups(pageNo, url) {
 	setAjaxDefault();
 	
 	var params = {};
@@ -193,7 +193,7 @@ function render(data) {
 	//ヘッダ部分作成
 	var $thead = $("<thead />")
 		.append($("<tr />")
-			.append($("<th />").text("設備グループ名").attr({width:"35%"}))
+			.append($("<th />").text("ユーザグループ名").attr({width:"35%"}))
 			.append($("<th />").text("メモ"))
 			.append($("<th />").text("").attr({width:"50px"}))
 		);
@@ -213,7 +213,7 @@ function render(data) {
 		});
 
 		$delButton.click(function(){
-			deleteFacilityGroups(resourceId, version, name);
+			deleteUserGroups(resourceId, version, name);
 		});
 
 		//※memo、エスケープしているので、html出力可
@@ -238,15 +238,15 @@ function openEditDialog(resourceId) {
 	var title = "";
 	var buttonLabel = "";
 	if(resourceId == '') {
-		title = "設備グループ登録";
+		title = "ユーザグループ登録";
 		buttonLabel = "登録する";
 	} else {
-		title = "設備グループ変更";
+		title = "ユーザグループ変更";
 		buttonLabel = "変更する";
 	}
-	$("#ui-dialog-title-facilityGroupsDialog").empty();
-	$("#ui-dialog-title-facilityGroupsDialog").append(title);
-	$("#facilityGroupsDialog-add").attr({value:buttonLabel});
+	$("#ui-dialog-title-userGroupsDialog").empty();
+	$("#ui-dialog-title-userGroupsDialog").append(title);
+	$("#userGroupsDialog-add").attr({value:buttonLabel});
 	
 	var params = {};
 	params["resource_id"] = resourceId;
@@ -255,7 +255,7 @@ function openEditDialog(resourceId) {
 	var task;
 	task = $.ajax({
 		type: "GET",
-		url: "/ajax/facilityGroups/show",
+		url: "/ajax/userGroups/show",
 		data: params
 	});
 	
@@ -285,25 +285,25 @@ function openEditDialog(resourceId) {
 			if(resource_conn_list == null) {
 				resource_conn_list = [];
 			}
-			$("#target_facilities").empty();
+			$("#target_users").empty();
 			$.each(resource_conn_list, function(){
-				$("#target_facilities").append($('<option />').attr({value:this.key }).text(this.value));
+				$("#target_users").append($('<option />').attr({value:this.key }).text(this.value));
 			});
-			reWriteSelect("target_facilities", new Array());
+			reWriteSelect("target_users", new Array());
 			
-			var facilities_list = data.result.facilities_list;
-			if(facilities_list == null) {
-				facilities_list = [];
+			var user_infos_list = data.result.user_infos_list;
+			if(user_infos_list == null) {
+				user_infos_list = [];
 			}
-			$("#all_facilities").empty();
-			$.each(facilities_list, function(){
-				$("#all_facilities").append($('<option />').attr({value:this.key }).text(this.value));
+			$("#all_users").empty();
+			$.each(user_infos_list, function(){
+				$("#all_users").append($('<option />').attr({value:this.key }).text(this.value));
 			});
-			reWriteSelect("all_facilities", new Array());
+			reWriteSelect("all_users", new Array());
 			
-			prependDummyText("facilityGroupsDialog");
-			$("#facilityGroupsDialog").dialog("open");
-			removeDummyText("facilityGroupsDialog");
+			prependDummyText("userGroupsDialog");
+			$("#userGroupsDialog").dialog("open");
+			removeDummyText("userGroupsDialog");
 			return;
 		}
 	);
@@ -321,7 +321,7 @@ function execute() {
 	var task;
 	task = $.ajax({
 		type: "POST",
-		url: "/ajax/facilityGroups/save",
+		url: "/ajax/userGroups/save",
 		data: params
 	});
 	
@@ -339,7 +339,7 @@ function execute() {
 			}
 			//メッセージを表示して、戻る
 			infoCheck(data);
-			$("#facilityGroupsDialog").dialog("close");
+			$("#userGroupsDialog").dialog("close");
 			return reSearchAndRender();
 		}
 	);
@@ -354,7 +354,7 @@ function createExecuteParams() {
 	resource["memo"] = $("#resource_memo").val();
 	resource["id"] = $("#resource_id").val();
 	resource["lock_version"] = $("#resource_lock_version").val();
-	params["child_ids"] = getSelectArray("target_facilities");
+	params["child_ids"] = getSelectArray("target_users");
 	setToken(params)
 	return params;
 }
@@ -363,8 +363,8 @@ function createExecuteParams() {
 function validate(params) {
 	var v = new Validate();
 	var resource = params["resource"]
-	v.addRules({value:resource["name"],option:'required',error_args:"設備グループ名"});
-	v.addRules({value:resource["name"],option:'maxLength',error_args:"設備グループ名", size:128});
+	v.addRules({value:resource["name"],option:'required',error_args:"ユーザグループ名"});
+	v.addRules({value:resource["name"],option:'maxLength',error_args:"ユーザグループ名", size:128});
 
 	v.addRules({value:resource["memo"],option:'maxLength',error_args:"メモ", size:1024});
 	
@@ -372,9 +372,9 @@ function validate(params) {
 	return v.execute();
 }
 
-//設備グループ削除
-function deleteFacilityGroups(id, version, name) {
-	if(window.confirm("設備グループ「" + name + "」を削除します。本当によろしいですか？") == false) {
+//ユーザグループ削除
+function deleteUserGroups(id, version, name) {
+	if(window.confirm("ユーザグループ「" + name + "」を削除します。本当によろしいですか？") == false) {
 		return;
 	}
 	
@@ -387,7 +387,7 @@ function deleteFacilityGroups(id, version, name) {
 	var task;
 	task = $.ajax({
 		type: "POST",
-		url: "/ajax/facilityGroups/destroy",
+		url: "/ajax/userGroups/destroy",
 		data: params
 	});
 	
@@ -409,7 +409,7 @@ function openSortDialog() {
 	setAjaxDefault();
 	return $.ajax({
 		type: "GET",
-		url: "/ajax/facilityGroups/get_sort_info"
+		url: "/ajax/userGroups/get_sort_info"
 	}).then(
 		function(data) {
 			renderSortDialog(data);
@@ -419,7 +419,7 @@ function openSortDialog() {
 
 //ソートダイアログデータ設定 & Open
 function renderSortDialog(data) {
-	$("#facilityGroups_to").empty();
+	$("#userGroups_to").empty();
 
 	//共通エラーチェック
 	if(errorCheck(data) == false) {
@@ -435,26 +435,26 @@ function renderSortDialog(data) {
 	$.each(result, function(){
 		var resourceId = this.id;
 		var name = this.name;
-		$("#facilityGroups_to").append($('<option />').attr({value:resourceId }).text(name));
+		$("#userGroups_to").append($('<option />').attr({value:resourceId }).text(name));
 	});
-	reWriteSelect("facilityGroups_to", new Array());
+	reWriteSelect("userGroups_to", new Array());
 	
-	prependDummyText("facilityGroupsSortDialog");
-	$("#facilityGroupsSortDialog").dialog("open");
-	removeDummyText("facilityGroupsSortDialog");
+	prependDummyText("userGroupsSortDialog");
+	$("#userGroupsSortDialog").dialog("open");
+	removeDummyText("userGroupsSortDialog");
 }
 
 //ソート情報変更
 function executeSort() {
 	var params = {};
-	params["ids"] = getSelectArray("facilityGroups_to");
+	params["ids"] = getSelectArray("userGroups_to");
 	setToken(params)
 
 	setAjaxDefault();
 	var task;
 	task = $.ajax({
 		type: "POST",
-		url: "/ajax/facilityGroups/update_sort_order",
+		url: "/ajax/userGroups/update_sort_order",
 		data: params
 	});
 	
@@ -471,7 +471,7 @@ function executeSort() {
 
 			//メッセージを表示して、ダイアログを閉じて、再検索
 			infoCheck(data);
-			$("#facilityGroupsSortDialog").dialog("close");
+			$("#userGroupsSortDialog").dialog("close");
 			return reSearchAndRender();
 		}
 	);
