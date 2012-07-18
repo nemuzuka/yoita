@@ -171,14 +171,19 @@ class ResourceLogic
   # ==== _Args_
   # [resource_type]
   #   リソース区分
+  # [add_empty_data]
+  #   先頭に空データを追加する場合、true(デフォルトfalse)
   # ==== _Return_
   # <i>Entity::LabelValueBean</i>のlist
   #
-  def get_all_resources(resource_type)
+  def get_all_resources(resource_type, add_empty_data=false)
     search_param = Resource::SearchParam.new
     search_param.resource_type = resource_type
     list = Resource.find_by_conditions(search_param)
     result_list = []
+    if add_empty_data
+      result_list.push(Entity::LabelValueBean.new("", ""))
+    end
     list.each do |target|
       result_list.push(Entity::LabelValueBean.new(target.id, target.name))
     end

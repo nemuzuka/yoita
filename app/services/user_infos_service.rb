@@ -52,7 +52,7 @@ class UserInfosService < Service::Base
       
       # 全てのユーザグループを取得する
       resource_logic = ResourceLogic.new
-      ret_detail.user_group_list = resource_logic.get_all_resources(ResourceType::USER_GROUP)
+      ret_detail.user_group_list = resource_logic.get_all_resources(ResourceType::USER_GROUP, true)
       return ret_detail
     end
   end

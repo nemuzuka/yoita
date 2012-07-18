@@ -317,7 +317,7 @@ function openEditDialog(resourceId) {
 			$("#tel").val(user_info.tel);
 			$("#mail").val(user_info.mail);
 			
-			var user_group_list = detail.user_group_list;
+			var user_group_list = data.result.user_group_list;
 			$("#default_user_group").empty();
 			if(user_group_list != null) {
 				$.each(user_group_list, function(){
