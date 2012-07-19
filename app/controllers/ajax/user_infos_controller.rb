@@ -118,5 +118,14 @@ module Ajax #:nodoc:
       def get_app_path
         return "/ajax/userInfos/turn"
       end
+
+      #
+      # 一意制約違反時のメッセージ取得
+      # ==== _Return_
+      # 一意制約違反時のメッセージ
+      #
+      def get_unique_data_name
+        return "ユーザ"
+      end
   end
 end

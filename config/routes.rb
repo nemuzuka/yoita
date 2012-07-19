@@ -8,6 +8,7 @@ Yoita::Application.routes.draw do
     resources :facilityGroups
     resources :userInfos
     resources :userGroups
+    resources :nationalHolidays
   end
   
   # The priority is based upon order of creation:

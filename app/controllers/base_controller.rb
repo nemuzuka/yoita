@@ -115,8 +115,9 @@ module BaseController
               e.msgs)
           rescue CustomException::UniqueConstraintException => e
             # 一意制約エラー
+            target = get_unique_data_name
             render json: createJsonResult(Entity::JsonResult::DUPLICATE_ERR, 
-              ["入力されたユーザは既に登録されています"])
+              ["入力された" + target + "は既に登録されています"])
           rescue => e
             logger.error e.message if logger
             render json: createJsonResult(Entity::JsonResult::SERVER_ERROR, 
@@ -124,6 +125,15 @@ module BaseController
           end
           
         end
+      end
+      
+      #
+      # 一意制約違反時のメッセージ取得
+      # ==== _Return_
+      # 一意制約違反時のメッセージ
+      #
+      def get_unique_data_name
+        return "データ"
       end
 
     private

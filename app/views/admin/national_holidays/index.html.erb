@@ -1,0 +1,26 @@
+<%= javascript_include_tag "admin/national_holidays"  %>
+
+<% content_for :extend_sub_menu do %>
+	<%= render :file => 'admin/_admin_sub_menu.html.erb' %>
+<% end %>
+
+<div class="widget">
+<form class="form-horizontal">
+
+	<h2 class="title">祝日設定</h2>
+	<table class="search_table">
+	<tbody>
+	<tr>
+		<th>対象年</th>
+		<td><select id="target_year"></select></td>
+	</tr>
+	</tbody>
+	</table>
+	
+	<div id="result_area" class="result">
+	</div>
+
+	<input type="hidden" id="selected_sub_menu" value="sub_menu5" />
+
+</form>
+</div>

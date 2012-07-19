@@ -10,6 +10,7 @@ h2.title{
   font-size:150%;
   font-weight:bold;
   text-shadow:1px 1px 1px #CCC;
+  margin-top: 10px;
 }
 h2.title.small{
   font-size:110%;

@@ -81,4 +81,19 @@ module SetupMethods
     
   end
   
+  #
+  # national_holidayテスト用
+  #
+  def create_national_holiday
+    FactoryGirl.create(:national_holiday1)
+    FactoryGirl.create(:national_holiday2)
+    FactoryGirl.create(:national_holiday3)
+    FactoryGirl.create(:national_holiday4)
+    FactoryGirl.create(:national_holiday5)
+    FactoryGirl.create(:national_holiday6)
+    FactoryGirl.create(:national_holiday7)
+    FactoryGirl.create(:national_holiday8)
+    
+  end
+  
 end

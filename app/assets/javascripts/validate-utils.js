@@ -59,6 +59,20 @@ Validate.prototype = {
 		}
 		return false;
 	},
+	//最大文字数(List)
+	maxLength4List:function(values, size){
+		var errorIndex = [];
+		if(values == null) {
+			return errorIndex;
+		}
+		var length = values.length;
+		for(var i = 0; i < length; i++) {
+			if(this.maxLength(values[i], size)) {
+				errorIndex.push(i)
+			}
+		}
+		return errorIndex;
+	},
 	//最小文字数
 	minLength:function(value, size){
 		if(value == null || value.length == 0) {
@@ -91,6 +105,32 @@ Validate.prototype = {
 		return (regex.test(targetValue) == false);
 
 	},
+	//日付チェック(4桁の数値であることのチェック)
+	//詳細は、サーバ側で行う
+	day:function(value) {
+		if(value == null || value == '') {
+			return false;
+		}
+		
+		var targetValue = unFormatDate(value);
+		var regex = /^\d{4}$/;
+		return (regex.test(targetValue) == false);
+
+	},
+	//日付(List)
+	day4List:function(values){
+		var errorIndex = [];
+		if(values == null) {
+			return errorIndex;
+		}
+		var length = values.length;
+		for(var i = 0; i < length; i++) {
+			if(this.day(values[i])) {
+				errorIndex.push(i)
+			}
+		}
+		return errorIndex;
+	},
 	//日付関連チェック
 	dateRange:function(fromDate, toDate){
 	
@@ -112,9 +152,9 @@ Validate.prototype = {
 	//listチェック
 	requiredList:function(value){
 		if(value == null || value.length == 0) {
-			return false;
+			return true;
 		}
-		return true
+		return false;
 	},
 	//ルールの追加
 	addRules:function(rules){
@@ -140,7 +180,7 @@ Validate.prototype = {
 
 				//必須List入力
 				case'requiredList':
-					if (this.isEmpty(this.rules_array[i].value)){
+					if (this.requiredList(this.rules_array[i].value)){
 						if(this.rules_array[i].error == undefined) {
 							this.rules_array[i].error = "{0}は1件以上選択してください。";
 						}
@@ -158,6 +198,23 @@ Validate.prototype = {
 						}
 						this.error_array.push(this.rules_array[i].error.format(
 								this.rules_array[i].error_args, this.rules_array[i].size));
+						this.e = false;
+					}
+					break;
+				//最大文字数
+				case 'maxLength4List':
+					var retArray = this.maxLength4List(this.rules_array[i].value, this.rules_array[i].size);
+					if(retArray.length != 0) {
+						if(this.rules_array[i].error == undefined) {
+							this.rules_array[i].error = "{0}番目の{1}の長さが最大値({2})を超えています。";
+						}
+						
+						var length = retArray.length;
+						for(var j = 0; j < length; j++) {
+							this.error_array.push(this.rules_array[i].error.format(
+									(j + 1),
+									this.rules_array[i].error_args, this.rules_array[i].size));
+						}
 						this.e = false;
 					}
 					break;
@@ -183,7 +240,7 @@ Validate.prototype = {
 						this.e = false;
 					}
 					break;
-				//日付
+				//日付(yyyyMMdd)
 				case "date":
 					if (this.date(this.rules_array[i].value)){
 						if(this.rules_array[i].error == undefined) {
@@ -191,6 +248,33 @@ Validate.prototype = {
 						}
 						this.error_array.push(this.rules_array[i].error.format(
 								this.rules_array[i].error_args));
+						this.e = false;
+					}
+					break;
+				//日付(MMdd)
+				case "day":
+					if (this.day(this.rules_array[i].value)){
+						if(this.rules_array[i].error == undefined) {
+							this.rules_array[i].error = "{0}は日付ではありません。";
+						}
+						this.error_array.push(this.rules_array[i].error.format(
+								this.rules_array[i].error_args));
+						this.e = false;
+					}
+					break;
+				//日付(MMdd List)
+				case 'day4List':
+					var retArray = this.day4List(this.rules_array[i].value);
+					if(retArray.length != 0) {
+						if(this.rules_array[i].error == undefined) {
+							this.rules_array[i].error = "{0}番目の{1}は日付ではありません。";
+						}
+						
+						var length = retArray.length;
+						for(var j = 0; j < length; j++) {
+							this.error_array.push(this.rules_array[i].error.format(
+									(j + 1), this.rules_array[i].error_args));
+						}
 						this.e = false;
 					}
 					break;
