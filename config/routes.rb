@@ -2,6 +2,7 @@
 
 Yoita::Application.routes.draw do
   resource :login
+  resources :logout
   
   namespace :admin do
     resources :facilities

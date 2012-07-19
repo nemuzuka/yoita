@@ -1,7 +1,7 @@
 #
 # ログアウトに関するController
 #
-class LoginController < BaseController::HtmlNoLoginController
+class LogoutController < BaseController::HtmlNoLoginController
   
   #
   # ログアウトします

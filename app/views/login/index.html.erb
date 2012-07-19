@@ -1,5 +1,80 @@
-<h1>やっほー</h1>
+<!DOCTYPE html>
+<html lang="jp">
+<head>
+<%= render :file => 'layouts/_include_css_js.html.erb' %>
 
-<h2>ログイン画面でんがなー</h2>
+<style>
+h1{font-size:125%;text-align:center;line-height:2;}
+label{display:block;font-size:75%;line-height:2;font-weight:bolder;margin-bottom:5px;}
+label input{font-size:115%;padding:3px;width:392px;}
+#container{width:400px;border:1px solid #CCC;background:#FFF;padding:20px;border-radius:5px;margin:20px auto;}
+div.login{text-align:center;padding-top:10px;}
+.system{margin-top:20px;padding:5px;font-size:86%;border:1px solid #CCC;background:#EEE;color:#666;}
+</style>
 
-<%= link_to 'Execute', '/login/execute' %>
+<script type="text/javascript">
+<!--
+$(function(){
+	$("#jsNg").hide();
+	$("#jsOk").show();
+	$("#loginId").focus();
+	$("#login_button").click(function(){
+		doSubmit();
+		return false;
+	});
+});
+
+function executeSubmit(e){
+	if (!e) var e = window.event;
+
+	if(e.keyCode == 13) {
+		doSubmit();
+		return false;
+	}
+}
+
+function doSubmit() {
+	$("#form1")[0].submit(function () {
+		return false;
+	});
+}
+//-->
+</script>
+
+
+</head>
+
+<body>
+
+<div id="container">
+
+	<h1>Group Scheduler [Yoita]</h1>
+	<form>
+		<label>ログインID
+		<input type="text" class="required-input" id="loginId" />
+		</label>
+		<label>パスワード
+		<input type="password" class="required-input" id="password" />
+		</label>
+		<input type="button" value="ログイン" class="btn btn-primary"/>
+		<%= hidden_field_tag :referer, @referer %>
+	</form>
+
+	<div class="system">
+		<p class="note" id="jsNg" title="JavaScriptを有効にしてください">
+		本システムを使用するには、JavaScriptを有効にする必要があります。<br />
+		このブラウザでは、JavaScriptが無効になっているか、<br />
+		サポートされていないようです。<br />
+		ブラウザのオプションを変更しJavascriptを有効にし、<a href="/">もう一度お試しください。</a><br />
+		</p>
+	
+		<p class="note" id="jsOk" style="display:none;">
+		本システムを使用するには、ユーザ認証が必要です。<br />
+		ログインIDとパスワードを入力してログインボタンをクリックしてください。<br />
+		</p>
+	</div>
+
+</div>
+
+</body>
+</html>
