@@ -34,10 +34,56 @@ function executeSubmit(e){
 }
 
 function doSubmit() {
-	$("#form1")[0].submit(function () {
-		return false;
+	var params = createLoginParams();
+	
+	if(validate(params) == false) {
+		return;
+	}
+	
+	setAjaxDefault();
+	var task;
+	task = $.ajax({
+		type: "POST",
+		url: "/login/auth",
+		data: params
 	});
+	
+	//後処理の登録
+	//
+	task.pipe(
+		function(data) {
+			//共通エラーチェック
+			if(errorCheck(data) == false) {
+				if(data.status_code == -1 ) {
+					//認証エラーの場合、処理終了
+					return;
+				}
+			}
+			var referer = $("#referer").val();
+			if(referer != null && referer != '') {
+				moveUrl(referer);
+			} else {
+				moveUrl("/schedule");
+			}
+		}
+	);
 }
+
+function createLoginParams() {
+	var params = {};
+	params["login_id"] = $("#loginId").val();
+	params["password"] = $("#password").val();
+	return params;
+}
+
+function validate(params) {
+	var v = new Validate();
+	v.addRules({value:params["login_id"],option:'required',error_args:"ログインID"});
+	v.addRules({value:params["password"],option:'required',error_args:"パスワード"});
+	return v.execute();
+}
+
+
 //-->
 </script>
 
@@ -56,7 +102,7 @@ function doSubmit() {
 		<label>パスワード
 		<input type="password" class="required-input" id="password" />
 		</label>
-		<input type="button" value="ログイン" class="btn btn-primary"/>
+		<input type="button" value="ログイン" id="login_button" class="btn btn-primary"/>
 		<%= hidden_field_tag :referer, @referer %>
 	</form>
 

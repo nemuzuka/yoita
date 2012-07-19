@@ -131,6 +131,22 @@ class UserInfosService < Service::Base
   end
   
   #
+  # 認証.
+  # 入力されたユーザIDとパスワードが合致するloginsテーブルの情報を取得します
+  # ==== _Args_
+  # [login_id]
+  #   ログインID
+  # [password]
+  #   パスワード
+  # ==== _Return_
+  # 該当レコード(存在しない場合、nil)
+  #
+  def auth(login_id, password)
+    logic = UserInfoLogic.new
+    logic.auth(login_id, password)
+  end
+  
+  #
   # 詳細データ
   #
   class Detail
