@@ -1,0 +1,16 @@
+<%= javascript_include_tag "schedule_week"  %>
+
+<% content_for :extend_sub_menu do %>
+	<%= render :file => 'schedule/_schedule_sub_menu.html.erb' %>
+<% end %>
+
+<div class="widget">
+<form class="form-horizontal">
+
+	<h2 class="title">スケジューラ</h2>
+	
+	<input type="hidden" id="selected_sub_menu" value="sub_menu1" />
+
+</form>
+</div>
+

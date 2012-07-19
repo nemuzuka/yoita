@@ -54,10 +54,14 @@ $(function(){
 		$("#admin_menu").show();
 
 		$("#admin_menu").click(function(){
-			moveUrl("/admin/users");
+			moveUrl("/admin/userInfos");
 		});
 
 	}
+	
+	$("#scheduler_menu").click(function(){
+		moveUrl("/schedule");
+	});
 	
 	$("#logout_link").click(function(){
 		moveUrl("/logout");

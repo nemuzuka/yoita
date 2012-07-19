@@ -1,0 +1,16 @@
+<ul class="nav nav-list">
+  <li class="nav-header"></li>
+  <li id="sub_menu1"><a href="javascript:void(0)" title="スケジュールを確認します">スケジューラ</a></li>
+</ul>
+
+<script type="text/javascript">
+<!--
+$(function(){
+	$("#sub_menu1").click(function(){
+		moveUrl("/schedule");
+	});
+});
+//-->
+</script>
+
+<input type="hidden" id="selected_main_menu" value="main_menu1" />
