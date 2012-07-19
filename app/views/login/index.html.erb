@@ -22,15 +22,27 @@ $(function(){
 		doSubmit();
 		return false;
 	});
+	
+	$("#loginId").keypress(function(ev){
+		if(checkEnterKey(ev)) {
+			doSubmit();
+		}
+	});
+
+	$("#password").keypress(function(ev){
+		if(checkEnterKey(ev)) {
+			doSubmit();
+		}
+	});
+	
 });
 
-function executeSubmit(e){
-	if (!e) var e = window.event;
-
-	if(e.keyCode == 13) {
-		doSubmit();
+function checkEnterKey(ev) {
+	if ((ev.which && ev.which === 13) || (ev.keyCode && ev.keyCode === 13)) {
+		return true;
+	} else {
 		return false;
-	}
+	}	
 }
 
 function doSubmit() {

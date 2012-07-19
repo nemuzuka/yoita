@@ -1,4 +1,5 @@
 # encoding: utf-8
+require "constants"
 
 #
 # ログインに関するController
@@ -37,6 +38,8 @@ class LoginController < BaseController::HtmlNoLoginController
       service_detail = service.get_resource(login[:resource_id])
       resource = service_detail.detail.resource
       user_info_model = service_detail.detail.user_info
+      # 有効期間終了日がnilの場合、最大値が設定されているとみなす
+      user_info_model[:validity_end_date] = MAX_DATE if user_info_model[:validity_end_date] == nil
 
       now_date = ApplicationHelper::get_current_date
       if user_info_model[:validity_start_date] > now_date || now_date > user_info_model[:validity_end_date]
