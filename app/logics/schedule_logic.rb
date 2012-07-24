@@ -178,12 +178,48 @@ class ScheduleLogic
         set_resource_schedule(ret, target_schedule_id, target_dates, target_schedule, action_resource_id)
       end
       # スケジュールの重複設定
-      # TODO
-#      set_duplicate_mark(ret)
+      set_duplicate_mark(ret)
 
       return ret
     end
     
+    #
+    # 重複スケジュール設定
+    # 時刻指定有りのスケジュールに対して、重複フラグを付与します
+    # ==== _Args_
+    # [resource_schedule]
+    #   設定インスタンス<i>ScheduleLogic::ResourceSchedule</i>
+    #
+    def set_duplicate_mark(resource_schedule)
+      schedule_list = resource_schedule.schedule_list
+      schedule_list.each do |day_schedule|
+        # 時刻設定有りのスケジュールのみ処理対象
+        time_list = day_schedule.time_list
+        list_size = time_list.length
+        time_list.each_with_index do |from_view_schedule, i|
+          
+          j = (i + 1)
+          while j < list_size do
+            to_view_schedule = time_list[j]
+            
+            if from_view_schedule.duplicate == false || 
+              to_view_schedule.duplicate == false
+
+              # 被っている場合、重複チェックを付与
+              if DateHelper::range_check(from_view_schedule.start_time, from_view_schedule.end_time,
+                to_view_schedule.start_time, to_view_schedule.end_time) == true
+                
+                from_view_schedule.duplicate = true
+                to_view_schedule.duplicate = true
+              end
+            end
+
+            j += 1
+          end
+        end
+      end
+    end
+
     #
     # リソーススケジュール設定
     # スケジュールを設定します

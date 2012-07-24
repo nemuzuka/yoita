@@ -59,4 +59,48 @@ module DateHelper
     return end_date - 1
   end
 
+  #
+  # 範囲チェック
+  # 対象となる時刻が、基準となる時刻に被るかチェックします
+  # ==== _Args_
+  # [base_from]
+  #   基準From(HHmm形式)
+  # [base_to]
+  #   基準To(HHmm形式)
+  # [target_from]
+  #   対象From(HHmm形式)
+  # [target_to]
+  #   対象To(HHmm形式)
+  # ==== _Return_
+  # 重複する場合、true
+  #
+  def range_check(base_from, base_to, target_from, target_to)
+    base_from_num = base_from.to_i
+    base_to_num = base_to.to_i
+    target_from_num = target_from.to_i
+    target_to_num = target_to.to_i
+    
+    if base_from_num > base_to_num || target_from_num > target_to_num
+      return false
+    end
+    
+    # 基準の開始が対象From～対象Toの間に含まれる場合
+    if target_from_num <= base_from_num && base_from_num < target_to_num
+      return true
+    end
+
+    # 基準の終了が対象From～対象Toの間に含まれる場合
+    if target_from_num < base_to_num && base_to_num <= target_to_num
+      return true
+    end
+
+    # 基準の範囲内に収まる場合
+    if base_from_num <= target_from_num && target_from_num <= base_to_num &&
+        base_from_num <= target_to_num && target_to_num <= base_to_num
+      return true
+    end
+
+    return false
+  end
+
 end
