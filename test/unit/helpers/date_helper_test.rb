@@ -21,4 +21,33 @@ class DateHelperTest < ActionView::TestCase
     assert_equal format_time(""), ""
     assert_equal format_time("2345"), "23:45"
   end
+  
+  test "range_checkのテスト" do
+    # 基準が範囲のテスト
+    assert_equal range_check("1000", "1100", "1030", "1130"), true
+    assert_equal range_check("1000", "1100", "1100", "1130"), false
+    assert_equal range_check("1000", "1100", "1101", "1130"), false
+    assert_equal range_check("1000", "1100", "0930", "1030"), true
+    assert_equal range_check("1000", "1100", "0930", "1000"), false
+    assert_equal range_check("1000", "1100", "0930", "0959"), false
+    assert_equal range_check("1000", "1100", "1000", "1100"), true
+    assert_equal range_check("1000", "1100", "0959", "1101"), true
+    assert_equal range_check("1000", "1100", "1001", "1059"), true
+    assert_equal range_check("1000", "1100", "0959", "0959"), false
+    assert_equal range_check("1000", "1100", "1000", "1000"), true
+    assert_equal range_check("1000", "1100", "1030", "1030"), true
+    assert_equal range_check("1000", "1100", "1100", "1100"), true
+    assert_equal range_check("1000", "1100", "1101", "1101"), false
+    
+    # 基準が点のテスト
+    assert_equal range_check("1030", "1030", "1030", "1031"), true
+    assert_equal range_check("1030", "1030", "1031", "1032"), false
+    assert_equal range_check("1030", "1030", "1029", "1030"), true
+    assert_equal range_check("1030", "1030", "1028", "1029"), false
+    assert_equal range_check("1030", "1030", "1029", "1031"), true
+    assert_equal range_check("1030", "1030", "1029", "1029"), false
+    assert_equal range_check("1030", "1030", "1030", "1030"), true
+    assert_equal range_check("1030", "1030", "1031", "1031"), false
+  end
+  
 end

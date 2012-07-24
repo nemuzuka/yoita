@@ -121,6 +121,10 @@ module SetupMethods
     FactoryGirl.create(:schedule8)
     FactoryGirl.create(:schedule9)
     FactoryGirl.create(:schedule10)
+    FactoryGirl.create(:schedule11)
+    FactoryGirl.create(:schedule12)
+    FactoryGirl.create(:schedule13)
+    FactoryGirl.create(:schedule14)
     FactoryGirl.create(:schedule_conn1)
     FactoryGirl.create(:schedule_conn2)
     FactoryGirl.create(:schedule_conn3)
@@ -133,6 +137,10 @@ module SetupMethods
     FactoryGirl.create(:schedule_conn10)
     FactoryGirl.create(:schedule_conn11)
     FactoryGirl.create(:schedule_conn12)
+    FactoryGirl.create(:schedule_conn13)
+    FactoryGirl.create(:schedule_conn14)
+    FactoryGirl.create(:schedule_conn15)
+    FactoryGirl.create(:schedule_conn16)
     
   end
   

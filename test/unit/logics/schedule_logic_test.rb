@@ -691,5 +691,56 @@ class ScheduleLogicTest < ActiveSupport::TestCase
 
   end
 
+  test "create_resource_scheduleのテスト 重複のテスト" do 
+    target_date = Date.strptime("2011/01/20", "%Y/%m/%d")
+    target_dates = []
+    1.times do
+      target_dates.push(target_date)
+      target_date = target_date + 1
+    end
+    
+    target_resource_ids = ["100003"]
+    action_resource_id = "100001"
+    logic = ScheduleLogic.new
+    actual_list = logic.create_resource_schedule(target_dates, target_resource_ids, action_resource_id)
+    
+    assert_equal actual_list.length, 1
+    actual_resource_schedule = actual_list[0]
+    actual_schedule_list = actual_resource_schedule.schedule_list
+    assert_equal actual_schedule_list.length, 1
+
+    # 1日目(01/20)
+    actual_day_schedule = actual_schedule_list[0]
+    # 時刻指定なしのスケジュール
+    actual_no_time_list = actual_day_schedule.no_time_list
+    assert_equal actual_no_time_list.length, 0
+    
+    # 時刻指定ありのスケジュール
+    actual_time_list = actual_day_schedule.time_list
+    assert_equal actual_time_list.length, 4
+    
+    actual_view_schedule = actual_time_list[0]
+    assert_equal actual_view_schedule.schedule_id, 10014
+    assert_equal actual_view_schedule.view_title, "00:00-09:31 スケジュール14"
+    assert_equal actual_view_schedule.duplicate, true
+
+    actual_view_schedule = actual_time_list[1]
+    assert_equal actual_view_schedule.schedule_id, 10011
+    assert_equal actual_view_schedule.view_title, "09:30-10:00 スケジュール11"
+    assert_equal actual_view_schedule.duplicate, true
+
+    actual_view_schedule = actual_time_list[2]
+    assert_equal actual_view_schedule.schedule_id, 10012
+    assert_equal actual_view_schedule.view_title, "09:45-12:00 スケジュール12"
+    assert_equal actual_view_schedule.duplicate, true
+
+    actual_view_schedule = actual_time_list[3]
+    assert_equal actual_view_schedule.schedule_id, 10013
+    assert_equal actual_view_schedule.view_title, "12:00-12:45 スケジュール13"
+    assert_equal actual_view_schedule.duplicate, false
+
+  end
+
+
 
 end

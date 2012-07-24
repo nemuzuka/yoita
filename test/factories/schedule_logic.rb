@@ -181,6 +181,78 @@ FactoryGirl.define do
     lock_version 1
   end
 
+  factory :schedule11, :class => Schedule do
+    id 10011
+    title "スケジュール11"
+    memo "重複スケジュール"
+    closed_flg "0"
+    start_date "2011-01-20"
+    start_time "0930"
+    end_date "2011-01-20"
+    end_time "1000"
+    repeat_conditions ""
+    repeat_week ""
+    repeat_day ""
+    repeat_endless ""
+    entry_resource_id 1
+    update_resource_id 1
+    lock_version 1
+  end
+
+  factory :schedule12, :class => Schedule do
+    id 10012
+    title "スケジュール12"
+    memo "重複スケジュールその2"
+    closed_flg "0"
+    start_date "2011-01-20"
+    start_time "0945"
+    end_date "2011-01-20"
+    end_time "1200"
+    repeat_conditions ""
+    repeat_week ""
+    repeat_day ""
+    repeat_endless ""
+    entry_resource_id 1
+    update_resource_id 1
+    lock_version 1
+  end
+
+  factory :schedule13, :class => Schedule do
+    id 10013
+    title "スケジュール13"
+    memo "重複なしスケジュール"
+    closed_flg "0"
+    start_date "2011-01-20"
+    start_time "1200"
+    end_date "2011-01-20"
+    end_time "1245"
+    repeat_conditions ""
+    repeat_week ""
+    repeat_day ""
+    repeat_endless ""
+    entry_resource_id 1
+    update_resource_id 1
+    lock_version 1
+  end
+
+  factory :schedule14, :class => Schedule do
+    id 10014
+    title "スケジュール14"
+    memo "重複スケジュールその3"
+    closed_flg "0"
+    start_date "2011-01-20"
+    start_time "0000"
+    end_date "2011-01-20"
+    end_time "0931"
+    repeat_conditions ""
+    repeat_week ""
+    repeat_day ""
+    repeat_endless ""
+    entry_resource_id 1
+    update_resource_id 1
+    lock_version 1
+  end
+
   factory :schedule_conn1, :class => ScheduleConn do
     schedule_id 10001
     resource_id 100001
@@ -238,6 +310,26 @@ FactoryGirl.define do
 
   factory :schedule_conn12, :class => ScheduleConn do
     schedule_id 10010
+    resource_id 100003
+  end
+
+  factory :schedule_conn13, :class => ScheduleConn do
+    schedule_id 10011
+    resource_id 100003
+  end
+
+  factory :schedule_conn14, :class => ScheduleConn do
+    schedule_id 10012
+    resource_id 100003
+  end
+
+  factory :schedule_conn15, :class => ScheduleConn do
+    schedule_id 10013
+    resource_id 100003
+  end
+
+  factory :schedule_conn16, :class => ScheduleConn do
+    schedule_id 10014
     resource_id 100003
   end
   
