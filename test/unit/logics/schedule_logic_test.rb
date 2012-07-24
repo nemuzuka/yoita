@@ -741,4 +741,74 @@ class ScheduleLogicTest < ActiveSupport::TestCase
 
   end
 
+  test "create_resource_scheduleのテスト 複数リソース" do 
+    target_date = Date.strptime("2011/01/19", "%Y/%m/%d")
+    target_dates = []
+    1.times do
+      target_dates.push(target_date)
+      target_date = target_date + 1
+    end
+    
+    target_resource_ids = ["100003", "100001", "100002"]
+    action_resource_id = "100004"
+    logic = ScheduleLogic.new
+    actual_list = logic.create_resource_schedule(target_dates, target_resource_ids, action_resource_id)
+    
+    assert_equal actual_list.length, 3
+    actual_resource_schedule = actual_list[0]
+    assert_equal actual_resource_schedule.resource_id, 100003
+    assert_equal actual_resource_schedule.name, "ユーザB"
+    assert_equal actual_resource_schedule.resource_type, "001"
+    actual_schedule_list = actual_resource_schedule.schedule_list
+    assert_equal actual_schedule_list.length, 1
+
+    # 1日目(01/19)
+    actual_day_schedule = actual_schedule_list[0]
+    # 時刻指定なしのスケジュール
+    actual_no_time_list = actual_day_schedule.no_time_list
+    assert_equal actual_no_time_list.length, 0
+    
+    # 時刻指定ありのスケジュール
+    actual_time_list = actual_day_schedule.time_list
+    assert_equal actual_time_list.length, 0
+
+
+    actual_resource_schedule = actual_list[1]
+    assert_equal actual_resource_schedule.resource_id, 100001
+    assert_equal actual_resource_schedule.name, "ユーザグループ1"
+    assert_equal actual_resource_schedule.resource_type, "003"
+    actual_schedule_list = actual_resource_schedule.schedule_list
+    assert_equal actual_schedule_list.length, 1
+
+    # 1日目(01/19)
+    actual_day_schedule = actual_schedule_list[0]
+    # 時刻指定なしのスケジュール
+    actual_no_time_list = actual_day_schedule.no_time_list
+    assert_equal actual_no_time_list.length, 0
+    
+    # 時刻指定ありのスケジュール
+    actual_time_list = actual_day_schedule.time_list
+    assert_equal actual_time_list.length, 0
+
+
+    actual_resource_schedule = actual_list[2]
+    assert_equal actual_resource_schedule.resource_id, 100002
+    assert_equal actual_resource_schedule.name, "ユーザA"
+    assert_equal actual_resource_schedule.resource_type, "001"
+    actual_schedule_list = actual_resource_schedule.schedule_list
+    assert_equal actual_schedule_list.length, 1
+
+    # 1日目(01/19)
+    actual_day_schedule = actual_schedule_list[0]
+    # 時刻指定なしのスケジュール
+    actual_no_time_list = actual_day_schedule.no_time_list
+    assert_equal actual_no_time_list.length, 0
+    
+    # 時刻指定ありのスケジュール
+    actual_time_list = actual_day_schedule.time_list
+    assert_equal actual_time_list.length, 0
+   
+  end
+
+
 end
