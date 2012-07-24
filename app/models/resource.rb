@@ -49,7 +49,7 @@ class Resource < ActiveRecord::Base
       param_hash[:name] = "%" + SqlHelper.replase_match_string(param.name) + "%"
     end
 
-    # 区分(必須)
+    # 区分(一致)
     if param.resource_type.to_s != ''
       sql << " and resource_type = :resource_type "
       param_hash[:resource_type] = param.resource_type
@@ -91,6 +91,27 @@ class Resource < ActiveRecord::Base
         ["id = ? and resource_type = ?", id, resource_type])
       sort_num = sort_num + 1
     end
+  end
+
+  #
+  # リソース情報のHash作成
+  # ==== _Args_
+  # [resource_ids]
+  #   リソースIDList
+  # ==== _Return_
+  # keyがリソースID(string)、valueが<i>Resource</i>のHash
+  # ※<i>ActiveSupport::OrderedHash</i>で返すので、順番を保持します
+  #
+  def self.create_resource_hash(resource_ids)
+    search_param = Resource::SearchParam.new
+    search_param.ids = resource_ids
+    
+    list = self.find_by_conditions(search_param)
+    hash = ActiveSupport::OrderedHash.new
+    list.each do |target|
+      hash[target[:id]] = target
+    end
+    return hash
   end
 
   #

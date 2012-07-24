@@ -4,6 +4,7 @@
 # SQL文組立の際に使用されるヘルパーmodule
 #
 module SqlHelper
+  module_function 
 
   # AND条件
   AND_JOIN = 1
@@ -121,9 +122,6 @@ module SqlHelper
     offset = (page -1) * pager_condition.per
     return offset
   end
-
-  module_function :add_condition, :replase_match_string, :find_by_sql,
-    :calcOffset
 
   #
   # 改ページが必要な場合の条件

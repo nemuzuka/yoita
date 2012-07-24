@@ -96,4 +96,44 @@ module SetupMethods
     
   end
   
+  #
+  # scheduleテスト用
+  #
+  def create_schedule
+    FactoryGirl.create(:schedule_model1)
+    FactoryGirl.create(:schedule_conn_model1)
+    FactoryGirl.create(:schedule_conn_model2)
+    
+  end
+  
+  #
+  # ScheduleLogicテスト用
+  #
+  def create_schedule_logic
+    create_user_facilities_group_conn
+    FactoryGirl.create(:schedule1)
+    FactoryGirl.create(:schedule2)
+    FactoryGirl.create(:schedule3)
+    FactoryGirl.create(:schedule4)
+    FactoryGirl.create(:schedule5)
+    FactoryGirl.create(:schedule6)
+    FactoryGirl.create(:schedule7)
+    FactoryGirl.create(:schedule8)
+    FactoryGirl.create(:schedule9)
+    FactoryGirl.create(:schedule10)
+    FactoryGirl.create(:schedule_conn1)
+    FactoryGirl.create(:schedule_conn2)
+    FactoryGirl.create(:schedule_conn3)
+    FactoryGirl.create(:schedule_conn4)
+    FactoryGirl.create(:schedule_conn5)
+    FactoryGirl.create(:schedule_conn6)
+    FactoryGirl.create(:schedule_conn7)
+    FactoryGirl.create(:schedule_conn8)
+    FactoryGirl.create(:schedule_conn9)
+    FactoryGirl.create(:schedule_conn10)
+    FactoryGirl.create(:schedule_conn11)
+    FactoryGirl.create(:schedule_conn12)
+    
+  end
+  
 end

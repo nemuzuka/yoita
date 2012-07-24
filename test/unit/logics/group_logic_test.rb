@@ -223,4 +223,128 @@ class GroupLogicTest < ActiveSupport::TestCase
     
   end
 
+  test "get_group_resourcesのテスト" do
+    
+    pager_condition = SqlHelper::DefaultPagerCondition.new
+    pager_condition.page = 1
+    pager_condition.per = 30
+    logic = GroupLogic.new
+
+    actual_list = logic.get_group_resources(100001, 900002, pager_condition)
+    assert_equal actual_list.length, 4
+    assert_equal actual_list[0], 100001
+    assert_equal actual_list[1], 100002
+    assert_equal actual_list[2], 100003
+    assert_equal actual_list[3], 100004
+
+    # ログインユーザの情報が、Listに含まれる
+    actual_list = logic.get_group_resources(100001, 100003, pager_condition)
+    assert_equal actual_list.length, 4
+    assert_equal actual_list[0], 100003
+    assert_equal actual_list[1], 100001
+    assert_equal actual_list[2], 100002
+    assert_equal actual_list[3], 100004
+
+    # 該当データなし
+    actual_list = logic.get_group_resources(999999, 100003, pager_condition)
+    assert_equal actual_list.length, 0
+
+    # ユーザを指定してしまった
+    begin
+      logic.get_group_resources(100003, 100003, pager_condition)
+      assert_fail
+    rescue CustomException::IllegalParameterException
+      assert true
+    end
+
+    # ページャの確認
+    pager_condition = SqlHelper::DefaultPagerCondition.new
+    pager_condition.page = 1
+    pager_condition.per = 2
+
+    actual_list = logic.get_group_resources(100001, 900002, pager_condition)
+    assert_equal pager_condition.total_count.to_i, 4
+    assert_equal actual_list.length, 2
+    assert_equal actual_list[0], 100001
+    assert_equal actual_list[1], 100002
+
+    # ページャの確認(表示するデータが無い)
+    pager_condition = SqlHelper::DefaultPagerCondition.new
+    pager_condition.page = 5
+    pager_condition.per = 10
+
+    actual_list = logic.get_group_resources(100001, 900002, pager_condition)
+    assert_equal pager_condition.total_count.to_i, 4
+    assert_equal actual_list.length, 0
+    
+  end
+
+  test "get_all_group_resourcesのテスト" do
+    pager_condition = SqlHelper::DefaultPagerCondition.new
+    pager_condition.page = 1
+    pager_condition.per = 30
+    logic = GroupLogic.new
+
+    # 全ユーザ
+    actual_list = logic.get_all_group_resources(FixGroupResourceIds::ALL_USERS, 
+      900002, pager_condition)
+    assert_equal actual_list.length, 3
+    assert_equal actual_list[0], 100002
+    assert_equal actual_list[1], 100003
+    assert_equal actual_list[2], 100004
+
+    # 全ユーザ(自分が含まれる)
+    actual_list = logic.get_all_group_resources(FixGroupResourceIds::ALL_USERS, 
+      100004, pager_condition)
+    assert_equal actual_list.length, 3
+    assert_equal actual_list[0], 100004
+    assert_equal actual_list[1], 100002
+    assert_equal actual_list[2], 100003
+
+    # 全設備
+    actual_list = logic.get_all_group_resources(FixGroupResourceIds::ALL_FACILITIES, 
+      100004, pager_condition)
+    assert_equal actual_list.length, 3
+    assert_equal actual_list[0], 100007
+    assert_equal actual_list[1], 100008
+    assert_equal actual_list[2], 100009
+
+    # 全ユーザグループ
+    actual_list = logic.get_all_group_resources(FixGroupResourceIds::ALL_USER_GROUP, 
+      100004, pager_condition)
+    assert_equal actual_list.length, 2
+    assert_equal actual_list[0], 100001
+    assert_equal actual_list[1], 100005
+
+    # 固定値以外を指定してしまった
+    begin
+      logic.get_all_group_resources(100003, 100003, pager_condition)
+      assert_fail
+    rescue CustomException::IllegalParameterException
+      assert true
+    end
+    
+    # ページャの確認
+    pager_condition = SqlHelper::DefaultPagerCondition.new
+    pager_condition.page = 1
+    pager_condition.per = 2
+    
+    actual_list = logic.get_all_group_resources(FixGroupResourceIds::ALL_USERS, 
+      900002, pager_condition)
+    assert_equal pager_condition.total_count.to_i, 3
+    assert_equal actual_list.length, 2
+    assert_equal actual_list[0], 100002
+    assert_equal actual_list[1], 100003
+
+    # ページャの確認(対象ページに表示するデータが無い)
+    pager_condition = SqlHelper::DefaultPagerCondition.new
+    pager_condition.page = 10
+    pager_condition.per = 10
+    
+    actual_list = logic.get_all_group_resources(FixGroupResourceIds::ALL_USERS, 
+      900002, pager_condition)
+    assert_equal pager_condition.total_count.to_i, 3
+    assert_equal actual_list.length, 0
+  end
+
 end

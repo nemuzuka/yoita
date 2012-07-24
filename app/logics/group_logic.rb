@@ -141,6 +141,117 @@ class GroupLogic
   end
   
   #
+  # グループに紐付くリソース情報取得
+  # 指定したグループに紐付くリソース情報を全て取得し、
+  # 指定されたページに表示する分のListを作成します
+  # 取得したリソースListの中に、自分のリソースIDが存在する場合、0番目のindexに自分を移動します
+  # ==== _Args_
+  # [resource_id]
+  #   指定グループのリソースID
+  # [self_resource_id]
+  #   ログインユーザのリソースID
+  # [pager_condition]
+  #   ページリンク生成条件。<i>SqlHelper::DefaultPagerCondition</i>のサブクラスのインスタンスである必要があります。
+  # ==== _Return_
+  # 指定ページに表示するリソースIDのList
+  # ==== _Raise_
+  # [CustomException::IllegalParameterException]
+  #   不正なパラメータを渡された場合
+  # 
+  #
+  def get_group_resources(resource_id, self_resource_id, pager_condition)
+    
+    pager_condition.total_count = "0"
+    
+    # 指定されたリソースに紐付くデータを取得
+    search_param = Resource::SearchParam.new
+    search_param.ids = [resource_id]
+    resource_logic = ResourceLogic.new
+    resource_list = resource_logic.find_by_conditions(search_param)
+    if resource_list.length != 1
+      return []
+    end
+    
+    target_group_resource = resource_list[0]
+    # 指定リソースがユーザグループ or 設備グループでない場合、不正なリクエストとする
+    case target_group_resource[:resource_type]
+    when ResourceType::USER_GROUP || ResourceType::FACILITY_GROUP
+    else
+      raise CustomException::IllegalParameterException.new
+    end
+    
+    # 該当グループに紐付くデータを取得
+    detail = get_resource(
+      target_group_resource[:id], target_group_resource[:resource_type], true)
+    pager_condition.total_count = detail.resource_conn_list.length.to_s
+    resource_all_list = []
+    detail.resource_conn_list.each do |target|
+      if target.key.to_s == self_resource_id.to_s
+        # 自分のリソースIDが存在する場合、先頭に移動
+        resource_all_list.unshift(target.key)
+      else
+        resource_all_list.push(target.key)
+      end
+    end
+    
+    # 指定ページに紐付くListだけを抽出
+    PagerHelper::create_slice_list(pager_condition, resource_all_list)
+    
+  end
+  
+  #
+  # 固定グループに紐付くリソース情報取得.
+  # 指定した固定グループに紐付くリソース情報を取得します
+  # 取得したリソースListの中に、自分のリソースIDが存在する場合、0番目のindexに自分を移動します
+  # ==== _Args_
+  # [fix_group_resource_id]
+  #   固定グループのリソースID(see. <i>FixGroupResourceIds</i>)
+  # [self_resource_id]
+  #   ログインユーザのリソースID
+  # [pager_condition]
+  #   ページリンク生成条件。<i>SqlHelper::DefaultPagerCondition</i>のサブクラスのインスタンスである必要があります。
+  # ==== _Return_
+  # 指定ページに表示するリソースIDのList
+  # ==== _Raise_
+  # [CustomException::IllegalParameterException]
+  #   不正なパラメータを渡された場合
+  #
+  def get_all_group_resources(fix_group_resource_id, self_resource_id, pager_condition)
+    
+    pager_condition.total_count = "0"
+
+    search_param = Resource::SearchParam.new
+    case fix_group_resource_id.to_i
+    when FixGroupResourceIds::ALL_USERS
+      search_param.resource_type = ResourceType::USER
+    when FixGroupResourceIds::ALL_FACILITIES
+      search_param.resource_type = ResourceType::FACILITY
+    when FixGroupResourceIds::ALL_USER_GROUP
+      search_param.resource_type = ResourceType::USER_GROUP
+    else
+      raise CustomException::IllegalParameterException.new
+    end
+    
+    logic = ResourceLogic.new
+    list = logic.find_by_conditions(search_param)
+    pager_condition.total_count = list.length.to_s
+    
+    # 戻り値のデータを生成
+    resource_all_list = []
+    list.each do |target|
+      if target[:id].to_s == self_resource_id.to_s
+        # 自分のリソースIDが存在する場合、先頭に移動
+        resource_all_list.unshift(target[:id])
+      else
+        resource_all_list.push(target[:id])
+      end
+    end
+    
+    # 指定ページに紐付くListだけを抽出
+    PagerHelper::create_slice_list(pager_condition, resource_all_list)
+  end
+  
+  #
   # 取得リソース戻り値.
   #
   class Detail

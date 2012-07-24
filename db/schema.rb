@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120719023221) do
+ActiveRecord::Schema.define(:version => 20120719072713) do
 
   create_table "logins", :force => true do |t|
     t.integer  "resource_id",        :limit => 8
@@ -52,6 +52,48 @@ ActiveRecord::Schema.define(:version => 20120719023221) do
   add_index "resources", ["name"], :name => "resource_idx_01"
   add_index "resources", ["resource_type"], :name => "resource_idx_02"
   add_index "resources", ["sort_num"], :name => "resource_idx_03"
+
+  create_table "schedule_conns", :force => true do |t|
+    t.integer "schedule_id", :limit => 8
+    t.integer "resource_id", :limit => 8
+  end
+
+  add_index "schedule_conns", ["resource_id"], :name => "schedule_conns_idx_02"
+  add_index "schedule_conns", ["schedule_id"], :name => "schedule_conns_idx_01"
+
+  create_table "schedule_follows", :force => true do |t|
+    t.integer  "schedule_id",               :limit => 8
+    t.integer  "parent_schedule_follow_id", :limit => 8
+    t.string   "memo",                      :limit => 1024
+    t.integer  "entry_resource_id",         :limit => 8
+    t.integer  "update_resource_id",        :limit => 8
+    t.datetime "created_at",                                :null => false
+    t.datetime "updated_at",                                :null => false
+  end
+
+  add_index "schedule_follows", ["parent_schedule_follow_id"], :name => "schedule_follows_idx_02"
+  add_index "schedule_follows", ["schedule_id"], :name => "schedule_follows_idx_01"
+
+  create_table "schedules", :force => true do |t|
+    t.string   "title",              :limit => 64
+    t.string   "memo",               :limit => 1024
+    t.string   "closed_flg",         :limit => 1
+    t.date     "start_date"
+    t.string   "start_time",         :limit => 4
+    t.date     "end_date"
+    t.string   "end_time",           :limit => 4
+    t.string   "repeat_conditions",  :limit => 1
+    t.string   "repeat_week",        :limit => 1
+    t.string   "repeat_day",         :limit => 2
+    t.string   "repeat_endless",     :limit => 1
+    t.integer  "entry_resource_id",  :limit => 8
+    t.integer  "update_resource_id", :limit => 8
+    t.integer  "lock_version",       :limit => 8,    :default => 0
+    t.datetime "created_at",                                        :null => false
+    t.datetime "updated_at",                                        :null => false
+  end
+
+  add_index "schedules", ["start_date", "end_date"], :name => "schedules_idx_01"
 
   create_table "user_facilities_group_conns", :force => true do |t|
     t.integer "parent_resource_id", :limit => 8

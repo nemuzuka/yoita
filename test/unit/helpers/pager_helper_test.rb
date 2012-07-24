@@ -225,4 +225,42 @@ class PagerHelperTest < ActionView::TestCase
     assert_equal actual[6].link, true
   end
 
+  test "create_slice_listのテスト" do
+    list = [1,2,3,4,5,6]
+    pager_condition = SqlHelper::DefaultPagerCondition.new
+    pager_condition.per = 3
+    pager_condition.page = 1
+    actual_list = create_slice_list(pager_condition, list)
+    assert_equal actual_list.length, 3
+    assert_equal actual_list[0], 1
+    assert_equal actual_list[1], 2
+    assert_equal actual_list[2], 3
+    
+    pager_condition = SqlHelper::DefaultPagerCondition.new
+    pager_condition.per = 3
+    pager_condition.page = 2
+    actual_list = create_slice_list(pager_condition, list)
+    assert_equal actual_list.length, 3
+    assert_equal actual_list[0], 4
+    assert_equal actual_list[1], 5
+    assert_equal actual_list[2], 6
+
+    # 1ページ分に満たない
+    pager_condition = SqlHelper::DefaultPagerCondition.new
+    pager_condition.per = 4
+    pager_condition.page = 2
+    actual_list = create_slice_list(pager_condition, list)
+    assert_equal actual_list.length, 2
+    assert_equal actual_list[0], 5
+    assert_equal actual_list[1], 6
+
+    # 1ページ分に満たない(1件も存在しない)
+    pager_condition = SqlHelper::DefaultPagerCondition.new
+    pager_condition.per = 100
+    pager_condition.page = 2
+    actual_list = create_slice_list(pager_condition, list)
+    assert_equal actual_list.length, 0
+    
+  end
+
 end

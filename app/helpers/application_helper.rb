@@ -2,6 +2,7 @@
 # アプリケーション共通Helper.
 #
 module ApplicationHelper
+  module_function
 
   #
   # システム日付取得
@@ -12,6 +13,5 @@ module ApplicationHelper
     Date.today
   end
 
-  module_function :get_current_date
 
 end

@@ -5,6 +5,8 @@
 #
 module PagerHelper
   
+  module_function
+  
   # ページ省略時の文字列
   CONTINUE_STR = "..."
   
@@ -21,22 +23,22 @@ module PagerHelper
   # ==== _Return_
   # ページリンク文字列(そのままhtml出力することを想定)
   # 
-  def crate_page_link(default_pager_condition, function_name, app_path)
+  def crate_page_link(pager_condition, function_name, app_path)
     
-    if default_pager_condition.total_count == nil || default_pager_condition.total_count.to_i == 0 || 
-      default_pager_condition.per == nil || default_pager_condition.per == 0 ||
-      default_pager_condition.page == nil || default_pager_condition.page == 0
+    if pager_condition.total_count == nil || pager_condition.total_count.to_i == 0 || 
+      pager_condition.per == nil || pager_condition.per == 0 ||
+      pager_condition.page == nil || pager_condition.page == 0
       return ""
     end
     
     # トータルページ数を算出
-    total_page_num = default_pager_condition.total_count.to_i / default_pager_condition.per
-    mod_num = default_pager_condition.total_count.to_i % default_pager_condition.per
+    total_page_num = pager_condition.total_count.to_i / pager_condition.per
+    mod_num = pager_condition.total_count.to_i % pager_condition.per
     if mod_num != 0
       total_page_num = total_page_num + 1
     end
     
-    current_page_num = default_pager_condition.page
+    current_page_num = pager_condition.page
     
     # ページリンクの構成情報を作成して、アンカーリンク文字列を生成
     page_info_list = create_page_info_list(total_page_num, current_page_num)
@@ -56,6 +58,28 @@ module PagerHelper
     end
     
     return links * " "
+  end
+  
+  #
+  # ページ表示情報切り出し
+  # 指定ページに表示する情報のみ取り出します
+  # ==== _Args_
+  # [pager_condition]
+  #   ページリンク生成条件。<i>SqlHelper::DefaultPagerCondition</i>のサブクラスのインスタンスである必要があります。
+  # [all_list]
+  #   出力される全List
+  # ==== _Return_
+  # 指定ページに表示するList
+  #
+  def create_slice_list(pager_condition, all_list)
+    if all_list == nil || all_list.length == 0
+      return []
+    end
+    
+    offset = SqlHelper::calcOffset(pager_condition)
+    result = all_list.slice(offset..(offset + pager_condition.per - 1))
+    result = [] if result == nil
+    return result
   end
   
   # これ以降はprotected
@@ -152,6 +176,4 @@ module PagerHelper
         return link
       end
     end
-
-  module_function :crate_page_link, :create_page_info_list
 end
