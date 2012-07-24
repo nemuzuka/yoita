@@ -741,6 +741,4 @@ class ScheduleLogicTest < ActiveSupport::TestCase
 
   end
 
-
-
 end

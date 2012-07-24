@@ -75,28 +75,23 @@ module DateHelper
   # 重複する場合、true
   #
   def range_check(base_from, base_to, target_from, target_to)
-    base_from_num = base_from.to_i
-    base_to_num = base_to.to_i
-    target_from_num = target_from.to_i
-    target_to_num = target_to.to_i
-    
-    if base_from_num > base_to_num || target_from_num > target_to_num
+    if base_from > base_to || target_from > target_to
       return false
     end
     
     # 基準の開始が対象From～対象Toの間に含まれる場合
-    if target_from_num <= base_from_num && base_from_num < target_to_num
+    if target_from <= base_from && base_from < target_to
       return true
     end
 
     # 基準の終了が対象From～対象Toの間に含まれる場合
-    if target_from_num < base_to_num && base_to_num <= target_to_num
+    if target_from < base_to && base_to <= target_to
       return true
     end
 
     # 基準の範囲内に収まる場合
-    if base_from_num <= target_from_num && target_from_num <= base_to_num &&
-        base_from_num <= target_to_num && target_to_num <= base_to_num
+    if base_from <= target_from && target_from <= base_to &&
+        base_from <= target_to && target_to <= base_to
       return true
     end
 
