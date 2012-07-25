@@ -50,4 +50,15 @@ class DateHelperTest < ActionView::TestCase
     assert_equal range_check("1030", "1030", "1031", "1031"), false
   end
   
+  test "time_string?のテスト" do
+    assert_equal time_string?(""), true
+    assert_equal time_string?("123"), false
+    assert_equal time_string?("0000"), true
+    assert_equal time_string?("0001"), true
+    assert_equal time_string?("0159"), true
+    assert_equal time_string?("0160"), false
+    assert_equal time_string?("2358"), true
+    assert_equal time_string?("2359"), true
+    assert_equal time_string?("2400"), false
+  end
 end

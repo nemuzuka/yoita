@@ -6,6 +6,28 @@
 class ScheduleLogic
 
   #
+  # スケジュール登録・更新
+  # スケジュール情報を登録・更新した後、関連データを登録します
+  # ==== _Args_
+  # [params]
+  #   スケジュール登録・更新情報
+  # [action_resource_id]
+  #   登録・更新処理実行ユーザリソースID
+  # ==== _Return_
+  # 処理スケジュール
+  # see. <i>Schedule</i>
+  #
+  def save(params, action_resource_id)
+    # スケジュール情報を登録
+    schedule = save_schedule(params, action_resource_id)
+    
+    # スケジュール関連情報を登録
+    save_schedule_conn(schedule[:id], params[:schedule_conn])
+    
+    return schedule
+  end
+
+  #
   # リソース毎のスケジュール作成
   # ==== _Args_
   # [target_dates]
@@ -111,6 +133,63 @@ class ScheduleLogic
   end
 
   protected
+  
+    #
+    # スケジュール登録・更新
+    # ==== _Args_
+    # [params]
+    #   スケジュール登録・更新情報
+    # [action_resource_id]
+    #   登録・更新処理実行ユーザリソースID
+    # ==== _Return_
+    # 処理レコード
+    # ==== _Raise_
+    # [CustomException::ValidationException]
+    #   validate時の例外
+    # [CustomException::IllegalParameterException]
+    #   不正なパラメータを渡された場合
+    # [CustomException::NotFoundException]
+    #   該当レコードが存在しない場合
+    # [CustomException::InvalidVersionException]
+    #   バージョンが合わない場合(更新時)
+    #
+    def save_schedule(params, action_resource_id)  
+      schedule = nil
+      id = params[:schedule][:id]
+      
+      # validate
+      validate_schedule(params)
+      
+      if id.to_s == ''
+        # 新規登録の場合
+        schedule = Schedule.new(params[:schedule])
+        schedule[:entry_resource_id] = action_resource_id
+        schedule[:update_resource_id] = action_resource_id
+        begin
+          schedule.save!
+        rescue ActiveRecord::RecordInvalid => e
+          raise CustomException::ValidationException.new(e.record.errors.full_messages)
+        end
+      else
+        # 更新の場合
+        # TODO 実装
+      end
+      return schedule
+    end
+  
+    #
+    # スケジュール関連データ登録
+    # 全て削除した後、新しく登録します
+    # ==== _Args_
+    # [schedule_id]
+    #   スケジュールID
+    # [schedule_conn]
+    #   スケジュール関連設定対象リソースIDList
+    #
+    def save_schedule_conn(schedule_id, schedule_conn)
+      ScheduleConn.delete_by_schedule_id(schedule_id)
+      ScheduleConn.insert_conn_list(schedule_id, schedule_conn)
+    end
   
     # リソース毎のスケジュールList作成
     # ==== _Args_
@@ -557,6 +636,105 @@ class ScheduleLogic
       ret[:entry_resource_id] = schedule[:entry_resource_id].to_i
       ret[:resource_id] = schedule[:resource_id].to_i
       return ret
+    end
+
+    #
+    # schedule登録・更新validate
+    # 不正なパラメータの場合、例外をthrowします
+    # ==== _Args_
+    # [params]
+    #   リクエストパラメータ
+    #
+    def validate_schedule(params)
+      schedule = params[:schedule]
+      
+      # 時刻のフォーマットチェック
+      if DateHelper::time_string?(schedule[:start_time]) == false
+          raise CustomException::ValidationException.new(["スケジュール開始時刻が不正です。"])
+      end
+      if DateHelper::time_string?(schedule[:end_time]) == false
+          raise CustomException::ValidationException.new(["スケジュール終了時刻が不正です。"])
+      end
+      
+      # 時刻の片方の入力はNG
+      if (schedule[:start_time].to_s == '' && schedule[:end_time].to_s != '') || 
+        (schedule[:start_time].to_s != '' && schedule[:end_time].to_s == '')
+        
+          raise CustomException::ValidationException.new(
+            ["時刻を設定する場合はスケジュール開始時刻とスケジュール終了時刻を入力してください。"])
+      end
+      
+      if params[:repeat].to_s == '0'
+        # 繰り返しでない場合、繰り返しの情報を初期化
+        schedule[:repeat_conditions] = ''
+        schedule[:repeat_week] = ''
+        schedule[:repeat_day] = ''
+        schedule[:repeat_endless] = ''
+        
+        # 終了日が未設定の場合、エラー
+        if schedule[:end_date].to_s == ''
+          raise CustomException::ValidationException.new(["終了日は必須です。"])
+        end
+        
+        if schedule[:start_date] == schedule[:end_date] && schedule[:start_time].to_s != ''
+          # 開始日 = 終了日でかつ、時刻が入力されている場合、開始時刻 <= 終了時刻の関係であること
+          if schedule[:start_time] > schedule[:end_time]
+            raise CustomException::ValidationException.new(["終了時刻は開始時刻以降の時間を指定して下さい。"])
+          end
+        end
+        
+        
+      elsif params[:repeat].to_s == '1'
+        # 繰り返しの場合、繰り返しのデータチェック
+        case schedule[:repeat_conditions]
+        when RepeatConditions::EVERY_WEEK
+          # 毎週の繰り返し
+          repeat_week = schedule[:repeat_week].to_i
+          if repeat_week < 0 || repeat_week > 6
+            raise CustomException::ValidationException.new(["繰り返し曜日の指定が不正です"])
+          end
+        when RepeatConditions::EVERY_MONTH
+          # 毎月の繰り返し
+          repeat_day = schedule[:repeat_day].to_i
+          if schedule[:repeat_day].length != 2 || (repeat_day < 1 || repeat_day > 32)
+            raise CustomException::ValidationException.new(["繰り返し日の指定が不正です"])
+          end
+        end
+      else
+        raise CustomException::IllegalParameterException.new
+      end
+      
+      if params[:repeat].to_s == '1' 
+        # 繰り返しの場合
+        if schedule[:repeat_endless] == '1'
+          # 無期限スケジュールの場合、スケジュール終了日を最大日付に設定
+          schedule[:end_date] = MAX_DATE.strftime("%Y/%m/%d")
+        else
+          # 無期限でなく、終了日が未設定の場合、エラー
+          if schedule[:end_date].to_s == ''
+            raise CustomException::ValidationException.new(["終了日は必須です。"])
+          end
+        end
+        
+        if schedule[:start_time].to_s != ''
+          # 時刻が入力されている場合、開始時刻 <= 終了時刻の関係であること
+          if schedule[:start_time] > schedule[:end_time]
+            raise CustomException::ValidationException.new(["終了時刻は開始時刻以降の時間を指定して下さい。"])
+          end
+        end
+        
+      end
+      
+      # 開始日<=終了日の関係であること
+      if schedule[:start_date] > schedule[:end_date]
+        raise CustomException::ValidationException.new(["終了日は開始日以降の日付を指定して下さい。"])
+      end
+      
+      # スケジュール参加者のチェック
+      schedule_conn = params[:schedule_conn]
+      if schedule_conn == nil || schedule_conn.length == 0
+        raise CustomException::ValidationException.new(["スケジュールに紐づくユーザもしくは設備を1件以上設定して下さい。"])
+      end
     end
 
 end

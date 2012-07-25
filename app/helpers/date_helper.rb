@@ -98,4 +98,36 @@ module DateHelper
     return false
   end
 
+  #
+  # 時刻文字列か？
+  # 対象文字列が空文字か時刻文字列の場合、時刻文字列と判断します
+  # ==== _Args_
+  # [target]
+  #   対象文字列(HHmm形式)
+  # ==== _Return_
+  # 時刻文字列でない場合、false
+  #
+  def time_string?(target)
+    if target.to_s == ''
+      return true
+    end
+    
+    if target.length != 4
+      return false
+    end
+
+    begin
+      Time.strptime(target, "%H%M")
+    rescue ArgumentError
+      return false
+    end
+    
+    if (target.to_i / 100) > 23
+      # 0000〜2359までを有効なデータとしたい
+      return false
+    end
+
+    return true
+  end
+
 end

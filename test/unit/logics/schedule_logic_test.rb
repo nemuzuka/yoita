@@ -810,5 +810,344 @@ class ScheduleLogicTest < ActiveSupport::TestCase
    
   end
 
+  test "saveのテスト 非繰り返し 新規登録・正常系" do
+    params = {
+      :schedule => {
+        :title => "スケジュールタイトル",
+        :memo => "イチローがマリナーズかぁ・・・",
+        :closed_flg => "0",
+        :start_date => "2010/01/01",
+        :start_time => "1010",
+        :end_date => "2010/01/01",
+        :end_time => "1010"
+      },
+      :schedule_conn => ["12345", "67890", "4989"],
+      :repeat => "0"
+    }
+    logic = ScheduleLogic.new
+    actual_schedule = logic.save(params, "987654321")
+    actual_schedule_conn_list =  ScheduleConn.find_by_schedule_id(actual_schedule[:id])
+    assert_equal actual_schedule_conn_list.length, 3
+    assert_equal actual_schedule_conn_list[0][:resource_id], 12345
+    assert_equal actual_schedule_conn_list[1][:resource_id], 67890
+    assert_equal actual_schedule_conn_list[2][:resource_id], 4989
+
+  end
+
+  test "saveのテスト 繰り返し 新規登録・正常系" do
+    params = {
+      :schedule => {
+        :title => "スケジュールタイトル",
+        :memo => "イチローがマリナーズかぁ・・・",
+        :closed_flg => "0",
+        :start_date => "2010/01/01",
+        :start_time => "1010",
+        :end_date => "2010/01/01",
+        :end_time => "1010",
+        :repeat_conditions => RepeatConditions::EVERY_DAY,
+        :repeat_endless => "1"
+      },
+      :schedule_conn => ["12345", "67890", "4989"],
+      :repeat => "1"
+    }
+    logic = ScheduleLogic.new
+    actual_schedule = logic.save(params, "987654321")
+  end
+
+  test "validateのテスト 開始時刻が不正" do
+    params = {
+      :schedule => {
+        :title => "スケジュールタイトル",
+        :memo => "イチローがマリナーズかぁ・・・",
+        :closed_flg => "0",
+        :start_date => "2010/01/01",
+        :start_time => "100",
+        :end_date => "2010/01/01",
+        :end_time => "1010"
+      },
+      :schedule_conn => ["12345", "67890", "4989"],
+      :repeat => "0"
+    }
+    logic = ScheduleLogic.new
+    begin
+      logic.save(params, "987654321")
+    rescue CustomException::ValidationException => e
+      assert_equal e.msgs.length, 1
+    end
+  end
+
+  test "validateのテスト 終了時刻が不正" do
+    params = {
+      :schedule => {
+        :title => "スケジュールタイトル",
+        :memo => "イチローがマリナーズかぁ・・・",
+        :closed_flg => "0",
+        :start_date => "2010/01/01",
+        :start_time => "1000",
+        :end_date => "2010/01/01",
+        :end_time => "1060"
+      },
+      :schedule_conn => ["12345", "67890", "4989"],
+      :repeat => "0"
+    }
+    logic = ScheduleLogic.new
+    begin
+      logic.save(params, "987654321")
+    rescue CustomException::ValidationException => e
+      assert_equal e.msgs.length, 1
+    end
+  end
+
+  test "validateのテスト 開始時刻のみの入力は不正" do
+    params = {
+      :schedule => {
+        :title => "スケジュールタイトル",
+        :memo => "イチローがマリナーズかぁ・・・",
+        :closed_flg => "0",
+        :start_date => "2010/01/01",
+        :start_time => "1000",
+        :end_date => "2010/01/01",
+        :end_time => ""
+      },
+      :schedule_conn => ["12345", "67890", "4989"],
+      :repeat => "0"
+    }
+    logic = ScheduleLogic.new
+    begin
+      logic.save(params, "987654321")
+    rescue CustomException::ValidationException => e
+      assert_equal e.msgs.length, 1
+    end
+  end
+
+  test "validateのテスト 終了時刻のみの入力は不正" do
+    params = {
+      :schedule => {
+        :title => "スケジュールタイトル",
+        :memo => "イチローがマリナーズかぁ・・・",
+        :closed_flg => "0",
+        :start_date => "2010/01/01",
+        :start_time => "",
+        :end_date => "2010/01/01",
+        :end_time => "1000"
+      },
+      :schedule_conn => ["12345", "67890", "4989"],
+      :repeat => "0"
+    }
+    logic = ScheduleLogic.new
+    begin
+      logic.save(params, "987654321")
+    rescue CustomException::ValidationException => e
+      assert_equal e.msgs.length, 1
+    end
+  end
+
+  test "validateのテスト 非繰り返し 終了日未入力" do
+    params = {
+      :schedule => {
+        :title => "スケジュールタイトル",
+        :memo => "イチローがマリナーズかぁ・・・",
+        :closed_flg => "0",
+        :start_date => "2010/01/01",
+        :start_time => "",
+        :end_date => "",
+        :end_time => ""
+      },
+      :schedule_conn => ["12345", "67890", "4989"],
+      :repeat => "0"
+    }
+    logic = ScheduleLogic.new
+    begin
+      logic.save(params, "987654321")
+    rescue CustomException::ValidationException => e
+      assert_equal e.msgs.length, 1
+    end
+  end
+
+  test "validateのテスト 非繰り返し 開始日=終了日の時の開始時刻 > 終了時刻" do
+    params = {
+      :schedule => {
+        :title => "スケジュールタイトル",
+        :memo => "イチローがマリナーズかぁ・・・",
+        :closed_flg => "0",
+        :start_date => "2010/01/01",
+        :start_time => "1000",
+        :end_date => "2010/01/01",
+        :end_time => "0930"
+      },
+      :schedule_conn => ["12345", "67890", "4989"],
+      :repeat => "0"
+    }
+    logic = ScheduleLogic.new
+    begin
+      logic.save(params, "987654321")
+    rescue CustomException::ValidationException => e
+      assert_equal e.msgs.length, 1
+    end
+  end
+
+  test "validateのテスト 非繰り返し 開始日 > 終了日" do
+    params = {
+      :schedule => {
+        :title => "スケジュールタイトル",
+        :memo => "イチローがマリナーズかぁ・・・",
+        :closed_flg => "0",
+        :start_date => "2010/01/01",
+        :start_time => "",
+        :end_date => "2009/12/31",
+        :end_time => ""
+      },
+      :schedule_conn => ["12345", "67890", "4989"],
+      :repeat => "0"
+    }
+    logic = ScheduleLogic.new
+    begin
+      logic.save(params, "987654321")
+    rescue CustomException::ValidationException => e
+      assert_equal e.msgs.length, 1
+    end
+  end
+
+  test "validateのテスト 非繰り返し スケジュール参加リソース指定なし" do
+    params = {
+      :schedule => {
+        :title => "スケジュールタイトル",
+        :memo => "イチローがマリナーズかぁ・・・",
+        :closed_flg => "0",
+        :start_date => "2010/01/01",
+        :start_time => "",
+        :end_date => "2010/01/02",
+        :end_time => ""
+      },
+      :schedule_conn => [],
+      :repeat => "0"
+    }
+    logic = ScheduleLogic.new
+    begin
+      logic.save(params, "987654321")
+    rescue CustomException::ValidationException => e
+      assert_equal e.msgs.length, 1
+    end
+  end
+
+  test "validateのテスト 繰り返し 毎週指定時の指定週が不正" do
+    params = {
+      :schedule => {
+        :title => "スケジュールタイトル",
+        :memo => "イチローがマリナーズかぁ・・・",
+        :closed_flg => "0",
+        :start_date => "2010/01/01",
+        :start_time => "",
+        :end_date => "2010/12/31",
+        :end_time => "",
+        :repeat_conditions => RepeatConditions::EVERY_WEEK,
+        :repeat_week => 7
+      },
+      :schedule_conn => ["12345", "67890", "4989"],
+      :repeat => "1"
+    }
+    logic = ScheduleLogic.new
+    begin
+      logic.save(params, "987654321")
+    rescue CustomException::ValidationException => e
+      assert_equal e.msgs.length, 1
+    end
+  end
+
+  test "validateのテスト 繰り返し 毎月指定時の指定日が不正 桁数不足" do
+    params = {
+      :schedule => {
+        :title => "スケジュールタイトル",
+        :memo => "イチローがマリナーズかぁ・・・",
+        :closed_flg => "0",
+        :start_date => "2010/01/01",
+        :start_time => "",
+        :end_date => "2010/12/31",
+        :end_time => "",
+        :repeat_conditions => RepeatConditions::EVERY_MONTH,
+        :repeat_day => "1"
+      },
+      :schedule_conn => ["12345", "67890", "4989"],
+      :repeat => "1"
+    }
+    logic = ScheduleLogic.new
+    begin
+      logic.save(params, "987654321")
+    rescue CustomException::ValidationException => e
+      assert_equal e.msgs.length, 1
+    end
+  end
+
+  test "validateのテスト 繰り返し 毎月指定時の指定日が不正 範囲外" do
+    params = {
+      :schedule => {
+        :title => "スケジュールタイトル",
+        :memo => "イチローがマリナーズかぁ・・・",
+        :closed_flg => "0",
+        :start_date => "2010/01/01",
+        :start_time => "",
+        :end_date => "2010/12/31",
+        :end_time => "",
+        :repeat_conditions => RepeatConditions::EVERY_MONTH,
+        :repeat_day => "00"
+      },
+      :schedule_conn => ["12345", "67890", "4989"],
+      :repeat => "1"
+    }
+    logic = ScheduleLogic.new
+    begin
+      logic.save(params, "987654321")
+    rescue CustomException::ValidationException => e
+      assert_equal e.msgs.length, 1
+    end
+  end
+
+  test "validateのテスト 繰り返し 無制限でなく終了日未設定" do
+    params = {
+      :schedule => {
+        :title => "スケジュールタイトル",
+        :memo => "イチローがマリナーズかぁ・・・",
+        :closed_flg => "0",
+        :start_date => "2010/01/01",
+        :start_time => "",
+        :end_date => "",
+        :end_time => "",
+        :repeat_conditions => RepeatConditions::EVERY_DAY,
+        :repeat_endless => "0"
+      },
+      :schedule_conn => ["12345", "67890", "4989"],
+      :repeat => "1"
+    }
+    logic = ScheduleLogic.new
+    begin
+      logic.save(params, "987654321")
+    rescue CustomException::ValidationException => e
+      assert_equal e.msgs.length, 1
+    end
+  end
+
+  test "validateのテスト 繰り返し 開始時刻 > 終了時刻" do
+    params = {
+      :schedule => {
+        :title => "スケジュールタイトル",
+        :memo => "イチローがマリナーズかぁ・・・",
+        :closed_flg => "0",
+        :start_date => "2010/01/01",
+        :start_time => "1001",
+        :end_date => "",
+        :end_time => "1000",
+        :repeat_conditions => RepeatConditions::EVERY_DAY,
+        :repeat_endless => "1"
+      },
+      :schedule_conn => ["12345", "67890", "4989"],
+      :repeat => "1"
+    }
+    logic = ScheduleLogic.new
+    begin
+      logic.save(params, "987654321")
+    rescue CustomException::ValidationException => e
+      assert_equal e.msgs.length, 1
+    end
+  end
 
 end
