@@ -86,3 +86,26 @@ module RepeatMonth
   # 月末
   EndOfMonth = "32"
 end
+
+#
+# スケジュール表示方法
+#
+module ViewType
+  # システム日付
+  TODAY = "today"
+  # 次へ
+  NEXT = "next"
+  # 前へ
+  PREV = "prev"
+end
+
+#
+# 加算単位
+#
+module AmountType
+  # 日単位
+  DAY = "day"
+  # 週単位
+  WEEK = "week"
+end
+

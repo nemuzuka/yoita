@@ -21,11 +21,11 @@ class ScheduleService < Service::Base
   # ==== _Return_
   # 該当レコード(see. <i>ScheduleService::ScheduleView</i>)
   #
-  def create_create_resource_schedule_view_week(target_date, target_resource_id, action_resource_id)
+  def create_resource_schedule_view_week(target_date, target_resource_id, action_resource_id)
     
     # 基準日から1週間分の日付Listを取得
-    target_dates = DateHelper::create_date_list(targt_date, 7)
-    schedule_view = create_create_resources_schedule_view(target_dates, [target_resource_id], action_resource_id)
+    target_dates = DateHelper::create_date_list(target_date, 7)
+    schedule_view = create_resources_schedule_view(target_dates, [target_resource_id], action_resource_id)
     schedule_view.target_group_resource_id = ""
     return schedule_view
   end
@@ -43,7 +43,7 @@ class ScheduleService < Service::Base
   # ==== _Return_
   # 該当レコード(see. <i>ScheduleService::ScheduleView</i>)
   #
-  def create_create_resource_schedule_view_week(target_date, search_param, action_resource_id)
+  def create_group_schedule_view_week(target_date, search_param, action_resource_id)
     
     target_resource_id = search_param.group_resource_id.to_i
     group_logic = GroupLogic.new
@@ -67,10 +67,10 @@ class ScheduleService < Service::Base
     end
     
     # 基準日から1週間分の日付Listを取得
-    target_dates = DateHelper::create_date_list(targt_date, 7)
+    target_dates = DateHelper::create_date_list(target_date, 7)
 
     # 取得したリソースIDListに対するスケジュール情報を取得する
-    schedule_view = create_create_resources_schedule_view(target_dates, resource_ids, action_resource_id)
+    schedule_view = create_resources_schedule_view(target_dates, resource_ids, action_resource_id)
     schedule_view.target_group_resource_id = search_param.group_resource_id
     return schedule_view
   end
@@ -90,7 +90,7 @@ class ScheduleService < Service::Base
   # ==== _Return_
   # 該当レコード(see. <i>ScheduleService::ScheduleView</i>)
   #
-  def create_create_resources_schedule_view(
+  def create_resources_schedule_view(
     target_dates, target_resource_ids, action_resource_id, target_year_month = nil)
     schedule_view = ScheduleService::ScheduleView.new
     schedule_view.view_date_range = create_view_date_range(target_dates)
@@ -314,7 +314,7 @@ class ScheduleService < Service::Base
       logic = ResourceLogic.new
       search_param = Resource::SearchParam.new
       search_param.resource_type = ResourceType::USER_GROUP
-      user_group_list = logic.find_by_conditions(search_params)
+      user_group_list = logic.find_by_conditions(search_param)
       add_group(ret_list, user_group_list)
       return ret_list
     end
@@ -329,7 +329,7 @@ class ScheduleService < Service::Base
       logic = ResourceLogic.new
       search_param = Resource::SearchParam.new
       search_param.resource_type = ResourceType::FACILITY_GROUP
-      facility_group_list = logic.find_by_conditions(search_params)
+      facility_group_list = logic.find_by_conditions(search_param)
       add_group(ret_list, facility_group_list)
       return ret_list
     end
