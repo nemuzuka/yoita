@@ -16,7 +16,7 @@ class Schedule < ActiveRecord::Base
   validates :repeat_week, :length => { :maximum => 1 }
   validates :repeat_day, :length => { :maximum => 2 }
   validates :repeat_endless, :length => { :maximum => 1 }
-  
+
   #
   # スケジュール取得
   # 指定した日付間、リソースに紐付くスケジュール情報を取得します

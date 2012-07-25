@@ -172,8 +172,31 @@ class ScheduleLogic
         end
       else
         # 更新の場合
-        # TODO 実装
+        logic = ScheduleDetailLogic.new
+        detail = logic.get_detail(id, action_resource_id)
+        
+        schedule = detail.schedule
+        schedule[:title] = nil
+        
+        # 更新するカラムを指定して、更新を行う
+        clone_pamam = params[:schedule].clone
+        clone_pamam[:update_resource_id] = action_resource_id
+
+        begin
+          
+          begin
+            schedule.update_attributes!(
+                  clone_pamam.except(:entry_resource_id))
+          rescue ActiveRecord::RecordInvalid => e
+            raise CustomException::ValidationException.new(e.record.errors.full_messages)
+          end
+        
+        rescue ActiveRecord::StaleObjectError
+          # lock_versionが不正の場合、バージョンエラーのExceptionをthrow
+          raise CustomException::InvalidVersionException.new
+        end
       end
+
       return schedule
     end
   

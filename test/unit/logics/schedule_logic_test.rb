@@ -1150,4 +1150,107 @@ class ScheduleLogicTest < ActiveSupport::TestCase
     end
   end
 
+  test "saveのテスト 更新" do
+    params = {
+      :schedule => {
+        :id => "10001",
+        :title => "頑張れイチロー",
+        :memo => "お前も頑張れよ",
+        :closed_flg => "1",
+        :start_date => "2012/01/01",
+        :start_time => "1300",
+        :end_date => "2012/01/01",
+        :end_time => "1400",
+        :lock_version => 1
+      },
+      :schedule_conn => ["12345", "67890", "4989"],
+      :repeat => "0"
+    }
+    logic = ScheduleLogic.new
+    actual_schedule = logic.save(params, "987654321")
+    actual_schedule_conn_list =  ScheduleConn.find_by_schedule_id(actual_schedule[:id])
+    assert_equal actual_schedule_conn_list.length, 3
+    assert_equal actual_schedule_conn_list[0][:resource_id], 12345
+    assert_equal actual_schedule_conn_list[1][:resource_id], 67890
+    assert_equal actual_schedule_conn_list[2][:resource_id], 4989
+
+  end
+
+  test "saveのテスト 更新 lock_versionエラー" do
+    params = {
+      :schedule => {
+        :id => "10001",
+        :title => "頑張れイチロー",
+        :memo => "お前も頑張れよ",
+        :closed_flg => "1",
+        :start_date => "2012/01/01",
+        :start_time => "1300",
+        :end_date => "2012/01/01",
+        :end_time => "1400",
+        :lock_version => 23
+      },
+      :schedule_conn => ["12345", "67890", "4989"],
+      :repeat => "0"
+    }
+    logic = ScheduleLogic.new
+    begin
+      logic.save(params, "987654321")
+      assert_false
+    rescue CustomException::InvalidVersionException
+      assert true
+    end
+
+  end
+
+  test "saveのテスト 更新 ログインユーザが参照できないスケジュール" do
+    params = {
+      :schedule => {
+        :id => "10003",
+        :title => "頑張れイチロー",
+        :memo => "お前も頑張れよ",
+        :closed_flg => "1",
+        :start_date => "2012/01/01",
+        :start_time => "1300",
+        :end_date => "2012/01/01",
+        :end_time => "1400",
+        :lock_version => 1
+      },
+      :schedule_conn => ["12345", "67890", "4989"],
+      :repeat => "0"
+    }
+    logic = ScheduleLogic.new
+    begin
+      logic.save(params, "987654321")
+      assert_false
+    rescue CustomException::NotFoundException
+      assert true
+    end
+
+  end
+
+  test "saveのテスト 更新 存在しないスケジュール" do
+    params = {
+      :schedule => {
+        :id => "19003",
+        :title => "頑張れイチロー",
+        :memo => "お前も頑張れよ",
+        :closed_flg => "1",
+        :start_date => "2012/01/01",
+        :start_time => "1300",
+        :end_date => "2012/01/01",
+        :end_time => "1400",
+        :lock_version => 1
+      },
+      :schedule_conn => ["12345", "67890", "4989"],
+      :repeat => "0"
+    }
+    logic = ScheduleLogic.new
+    begin
+      logic.save(params, "987654321")
+      assert_false
+    rescue CustomException::NotFoundException
+      assert true
+    end
+  end
+
 end
