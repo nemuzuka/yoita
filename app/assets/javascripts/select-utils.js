@@ -44,15 +44,22 @@ function reWriteSelect(targetId, checkedArray) {
 	$("#" + targetId).css({width:"auto"});
 	$("#" + targetId).empty();
 
+	var maxWidth = 0;
 	for(var i = 0; i < arrayOption.length; i++) {
 		element.options[i] = arrayOption[i];
+		//optionの文字列サイズのうち、最大のものを保持する
+		var width = $("#dummy_ruler").text(arrayOption[i].text).get(0).offsetWidth;
+		$("#dummy_ruler").text("");
+		if (maxWidth < width) {
+			maxWidth = width;
+		}
 	}
 	//指定したvalueのoptionをselectedにする
 	$("#" + targetId).val(checkedArray);
 
-	//selectに何も設定されていない場合、幅を設定
-	if(count == 0) {
-		$("#" + targetId).css({width:"100px"});
+	//一定サイズよりも小さい場合、横幅は固定値とする
+	if(maxWidth < 150) {
+		$("#" + targetId).css({width:"200px"});
 	}
 }
 
