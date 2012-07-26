@@ -22,12 +22,13 @@ class ScheduleService < Service::Base
   # 該当レコード(see. <i>ScheduleService::ScheduleView</i>)
   #
   def create_resource_schedule_view_week(target_date, target_resource_id, action_resource_id)
-    
-    # 基準日から1週間分の日付Listを取得
-    target_dates = DateHelper::create_date_list(target_date, 7)
-    schedule_view = create_resources_schedule_view(target_dates, [target_resource_id], action_resource_id)
-    schedule_view.target_group_resource_id = ""
-    return schedule_view
+    transaction_handler do
+      # 基準日から1週間分の日付Listを取得
+      target_dates = DateHelper::create_date_list(target_date, 7)
+      schedule_view = create_resources_schedule_view(target_dates, [target_resource_id], action_resource_id)
+      schedule_view.target_group_resource_id = ""
+      return schedule_view
+    end
   end
 
   #
@@ -44,35 +45,36 @@ class ScheduleService < Service::Base
   # 該当レコード(see. <i>ScheduleService::ScheduleView</i>)
   #
   def create_group_schedule_view_week(target_date, search_param, action_resource_id)
-    
-    target_resource_id = search_param.group_resource_id.to_i
-    group_logic = GroupLogic.new
-    resource_ids = []
-    if target_resource_id < 0 
-      # 固定グループに紐付くリソースID
-      resource_ids = group_logic.get_all_group_resources(
-        target_resource_id, action_resource_id, search_param)
-    else
-      # 指定グループに紐付くリソースID
-      resource_ids = group_logic.get_group_resources(
-        target_resource_id, action_resource_id, search_param)
-
-      # 該当リソースIDが1件も存在しない場合、無効なグループを指定されたとみなし、
-      # 全てのユーザのデータを取得し直す
-      if search_param.total_count.to_i == 0
-        search_param.group_resource_id = FixGroupResourceIds::ALL_USERS.to_s
-        resource_ids = group_logic.get_all_group_resources(
-          FixGroupResourceIds::ALL_USERS, action_resource_id, search_param)
+    transaction_handler do
+      target_resource_id = search_param.group_resource_id.to_i
+      group_logic = GroupLogic.new
+      resource_ids = []
+      if target_resource_id < 0 
+        # 固定グループに紐付くリソースID
+        resource_ids = group_logic.get_fix_group_resources(
+          target_resource_id, action_resource_id, search_param)
+      else
+        # 指定グループに紐付くリソースID
+        resource_ids = group_logic.get_group_resources(
+          target_resource_id, action_resource_id, search_param)
+  
+        # 該当リソースIDが1件も存在しない場合、無効なグループを指定されたとみなし、
+        # 全てのユーザのデータを取得し直す
+        if search_param.total_count.to_i == 0
+          search_param.group_resource_id = FixGroupResourceIds::ALL_USERS.to_s
+          resource_ids = group_logic.get_fix_group_resources(
+            FixGroupResourceIds::ALL_USERS, action_resource_id, search_param)
+        end
       end
+      
+      # 基準日から1週間分の日付Listを取得
+      target_dates = DateHelper::create_date_list(target_date, 7)
+  
+      # 取得したリソースIDListに対するスケジュール情報を取得する
+      schedule_view = create_resources_schedule_view(target_dates, resource_ids, action_resource_id)
+      schedule_view.target_group_resource_id = search_param.group_resource_id
+      return schedule_view
     end
-    
-    # 基準日から1週間分の日付Listを取得
-    target_dates = DateHelper::create_date_list(target_date, 7)
-
-    # 取得したリソースIDListに対するスケジュール情報を取得する
-    schedule_view = create_resources_schedule_view(target_dates, resource_ids, action_resource_id)
-    schedule_view.target_group_resource_id = search_param.group_resource_id
-    return schedule_view
   end
   
   #
@@ -92,15 +94,18 @@ class ScheduleService < Service::Base
   #
   def create_resources_schedule_view(
     target_dates, target_resource_ids, action_resource_id, target_year_month = nil)
-    schedule_view = ScheduleService::ScheduleView.new
-    schedule_view.view_date_range = create_view_date_range(target_dates)
-    schedule_view.view_date_list = create_view_date_list(target_dates, target_year_month)
-    logic = ScheduleLogic.new
-    schedule_view.view_resource_schedule = 
-      logic.create_resource_schedule(
-        target_dates, target_resource_ids, action_resource_id)
-    schedule_view.group_list = create_all_group_resource_list
-    return schedule_view
+ 
+    transaction_handler do
+      schedule_view = ScheduleService::ScheduleView.new
+      schedule_view.view_date_range = create_view_date_range(target_dates)
+      schedule_view.view_date_list = create_view_date_list(target_dates, target_year_month)
+      logic = ScheduleLogic.new
+      schedule_view.view_resource_schedule = 
+        logic.create_resource_schedule(
+          target_dates, target_resource_ids, action_resource_id)
+      schedule_view.group_list = create_all_group_resource_list
+      return schedule_view
+    end
   end
   
   #
@@ -296,59 +301,12 @@ class ScheduleService < Service::Base
       ret_list.push(Entity::LabelValueBean.new(
         FixGroupResourceIds::ALL_USER_GROUP, FixGroupResourceLabel::ALL_USER_GROUP_LABEL))
       
+      logic = GroupLogic.new
       # ユーザグループを追加
-      ret_list.concat(create_all_user_group)
+      ret_list.concat(logic.create_all_user_group)
       # 設備グループを取得
-      ret_list.concat(create_all_facility_group)
+      ret_list.concat(logic.create_all_facility_group)
       
       return ret_list
-    end
-    
-    #
-    # 全ユーザグループListを作成します
-    # ==== _Return_
-    # 全ユーザグループ情報。<i>Entity::LabelValueBean</i>のlist
-    #
-    def create_all_user_group
-      ret_list = []
-      logic = ResourceLogic.new
-      search_param = Resource::SearchParam.new
-      search_param.resource_type = ResourceType::USER_GROUP
-      user_group_list = logic.find_by_conditions(search_param)
-      add_group(ret_list, user_group_list)
-      return ret_list
-    end
-    
-    #
-    # 全設備グループListを作成します
-    # ==== _Return_
-    # 全設備グループ情報。<i>Entity::LabelValueBean</i>のlist
-    #
-    def create_all_facility_group
-      ret_list = []
-      logic = ResourceLogic.new
-      search_param = Resource::SearchParam.new
-      search_param.resource_type = ResourceType::FACILITY_GROUP
-      facility_group_list = logic.find_by_conditions(search_param)
-      add_group(ret_list, facility_group_list)
-      return ret_list
-    end
-    
-    #
-    # グループ情報追加
-    # グループが1件以上存在する場合、区切り文字を設定します
-    # ==== _Args_
-    # [target_list]
-    #   登録先List
-    # [group_list]
-    #   登録対象List
-    #
-    def add_group(target_list, group_list)
-      if group_list.length != 0
-        target_list.push(Entity::LabelValueBean.new("","--"))
-      end
-      group_list.each do |target|
-        target_list.push(Entity::LabelValueBean.new(target[:resource_id], target[:name]))
-      end
     end
 end

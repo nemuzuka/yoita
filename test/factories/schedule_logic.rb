@@ -14,9 +14,11 @@ FactoryGirl.define do
     repeat_week ""
     repeat_day ""
     repeat_endless ""
-    entry_resource_id 1
-    update_resource_id 1
+    entry_resource_id 100002
+    update_resource_id 100003
     lock_version 1
+    created_at "2010-01-02 12:34:56"
+    updated_at "2010-07-10 23:45:67"
   end
 
   factory :schedule2, :class => Schedule do

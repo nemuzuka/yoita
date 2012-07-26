@@ -80,11 +80,33 @@ module RepeatConditions
 end
 
 #
+# スケジュールの繰り返し条件ラベル
+#
+module RepeatConditionLabel
+  # 毎日
+  EVERY_DAY = "毎日"
+  # 毎日(土日を除く)
+  EVERY_DAY_EXCLUDE_WEEKEND = "毎日(土日を除く)"
+  # 毎週
+  EVERY_WEEK = "毎週"
+  # 毎月
+  EVERY_MONTH = "毎月"
+end
+
+#
 # 繰り返し - 毎月の設定値
 #
 module RepeatMonth
   # 月末
   EndOfMonth = "32"
+end
+
+#
+# 繰り返し - 毎月の設定値ラベル
+#
+module RepeatMonthLabel
+  # 月末
+  EndOfMonth = "月末"
 end
 
 #

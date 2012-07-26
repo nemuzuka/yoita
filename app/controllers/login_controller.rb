@@ -59,6 +59,7 @@ class LoginController < BaseController::HtmlNoLoginController
         user_info.admin_flg = true
       end
       user_info.per_page = user_info_model[:per_page]
+      user_info.default_user_group = user_info_model[:default_user_group]
       
       # Session再作成
       re_create_session(user_info)

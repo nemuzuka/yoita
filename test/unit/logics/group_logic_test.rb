@@ -279,14 +279,14 @@ class GroupLogicTest < ActiveSupport::TestCase
     
   end
 
-  test "get_all_group_resourcesのテスト" do
+  test "get_fix_group_resourcesのテスト" do
     pager_condition = SqlHelper::DefaultPagerCondition.new
     pager_condition.page = 1
     pager_condition.per = 30
     logic = GroupLogic.new
 
     # 全ユーザ
-    actual_list = logic.get_all_group_resources(FixGroupResourceIds::ALL_USERS, 
+    actual_list = logic.get_fix_group_resources(FixGroupResourceIds::ALL_USERS, 
       900002, pager_condition)
     assert_equal actual_list.length, 3
     assert_equal actual_list[0], 100002
@@ -294,7 +294,7 @@ class GroupLogicTest < ActiveSupport::TestCase
     assert_equal actual_list[2], 100004
 
     # 全ユーザ(自分が含まれる)
-    actual_list = logic.get_all_group_resources(FixGroupResourceIds::ALL_USERS, 
+    actual_list = logic.get_fix_group_resources(FixGroupResourceIds::ALL_USERS, 
       100004, pager_condition)
     assert_equal actual_list.length, 3
     assert_equal actual_list[0], 100004
@@ -302,7 +302,7 @@ class GroupLogicTest < ActiveSupport::TestCase
     assert_equal actual_list[2], 100003
 
     # 全設備
-    actual_list = logic.get_all_group_resources(FixGroupResourceIds::ALL_FACILITIES, 
+    actual_list = logic.get_fix_group_resources(FixGroupResourceIds::ALL_FACILITIES, 
       100004, pager_condition)
     assert_equal actual_list.length, 3
     assert_equal actual_list[0], 100007
@@ -310,7 +310,7 @@ class GroupLogicTest < ActiveSupport::TestCase
     assert_equal actual_list[2], 100009
 
     # 全ユーザグループ
-    actual_list = logic.get_all_group_resources(FixGroupResourceIds::ALL_USER_GROUP, 
+    actual_list = logic.get_fix_group_resources(FixGroupResourceIds::ALL_USER_GROUP, 
       100004, pager_condition)
     assert_equal actual_list.length, 2
     assert_equal actual_list[0], 100001
@@ -318,7 +318,7 @@ class GroupLogicTest < ActiveSupport::TestCase
 
     # 固定値以外を指定してしまった
     begin
-      logic.get_all_group_resources(100003, 100003, pager_condition)
+      logic.get_fix_group_resources(100003, 100003, pager_condition)
       assert_fail
     rescue CustomException::IllegalParameterException
       assert true
@@ -329,7 +329,7 @@ class GroupLogicTest < ActiveSupport::TestCase
     pager_condition.page = 1
     pager_condition.per = 2
     
-    actual_list = logic.get_all_group_resources(FixGroupResourceIds::ALL_USERS, 
+    actual_list = logic.get_fix_group_resources(FixGroupResourceIds::ALL_USERS, 
       900002, pager_condition)
     assert_equal pager_condition.total_count.to_i, 3
     assert_equal actual_list.length, 2
@@ -341,7 +341,7 @@ class GroupLogicTest < ActiveSupport::TestCase
     pager_condition.page = 10
     pager_condition.per = 10
     
-    actual_list = logic.get_all_group_resources(FixGroupResourceIds::ALL_USERS, 
+    actual_list = logic.get_fix_group_resources(FixGroupResourceIds::ALL_USERS, 
       900002, pager_condition)
     assert_equal pager_condition.total_count.to_i, 3
     assert_equal actual_list.length, 0

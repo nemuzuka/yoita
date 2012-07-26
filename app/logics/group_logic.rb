@@ -160,32 +160,13 @@ class GroupLogic
   # 
   #
   def get_group_resources(resource_id, self_resource_id, pager_condition)
-    
+    # 指定グループに紐付くリソース一覧を取得
+    resource_conn_list = get_group_resource_list(resource_id, true)
+
     pager_condition.total_count = "0"
-    
-    # 指定されたリソースに紐付くデータを取得
-    search_param = Resource::SearchParam.new
-    search_param.ids = [resource_id]
-    resource_logic = ResourceLogic.new
-    resource_list = resource_logic.find_by_conditions(search_param)
-    if resource_list.length != 1
-      return []
-    end
-    
-    target_group_resource = resource_list[0]
-    # 指定リソースがユーザグループ or 設備グループでない場合、不正なリクエストとする
-    case target_group_resource[:resource_type]
-    when ResourceType::USER_GROUP || ResourceType::FACILITY_GROUP
-    else
-      raise CustomException::IllegalParameterException.new
-    end
-    
-    # 該当グループに紐付くデータを取得
-    detail = get_resource(
-      target_group_resource[:id], target_group_resource[:resource_type], true)
-    pager_condition.total_count = detail.resource_conn_list.length.to_s
+    pager_condition.total_count = resource_conn_list.length.to_s
     resource_all_list = []
-    detail.resource_conn_list.each do |target|
+    resource_conn_list.each do |target|
       if target.key.to_s == self_resource_id.to_s
         # 自分のリソースIDが存在する場合、先頭に移動
         resource_all_list.unshift(target.key)
@@ -198,7 +179,41 @@ class GroupLogic
     PagerHelper::create_slice_list(pager_condition, resource_all_list)
     
   end
-  
+
+  #
+  # グループリソース情報取得
+  # ==== _Args_
+  # [resource_id]
+  #   指定グループのリソースID
+  # [include_parent]
+  #   戻り値に親リソースIDが子リソースIDのものを含める場合、true(ユーザグループの場合のみ有効)
+  # ==== _Return_
+  # グループに紐付くリソースList
+  # <i>Entity::LabelValueBean</i>のlist
+  #
+  def get_group_resource_list(resource_id, include_parent)
+    # 指定されたリソースに紐付くデータを取得
+    search_param = Resource::SearchParam.new
+    search_param.ids = [resource_id]
+    resource_logic = ResourceLogic.new
+    resource_list = resource_logic.find_by_conditions(search_param)
+    if resource_list.length != 1
+      return []
+    end
+    target_group_resource = resource_list[0]
+    # 指定リソースがユーザグループ or 設備グループでない場合、不正なリクエストとする
+    case target_group_resource[:resource_type]
+    when ResourceType::USER_GROUP, ResourceType::FACILITY_GROUP
+    else
+      raise CustomException::IllegalParameterException.new
+    end
+    
+    # 該当グループに紐付くデータを取得
+    detail = get_resource(
+      target_group_resource[:id], target_group_resource[:resource_type], include_parent)
+    return detail.resource_conn_list
+  end
+    
   #
   # 固定グループに紐付くリソース情報取得.
   # 指定した固定グループに紐付くリソース情報を取得します
@@ -216,24 +231,11 @@ class GroupLogic
   # [CustomException::IllegalParameterException]
   #   不正なパラメータを渡された場合
   #
-  def get_all_group_resources(fix_group_resource_id, self_resource_id, pager_condition)
+  def get_fix_group_resources(fix_group_resource_id, self_resource_id, pager_condition)
     
+    list = get_fix_group_resource_list(fix_group_resource_id) 
+       
     pager_condition.total_count = "0"
-
-    search_param = Resource::SearchParam.new
-    case fix_group_resource_id.to_i
-    when FixGroupResourceIds::ALL_USERS
-      search_param.resource_type = ResourceType::USER
-    when FixGroupResourceIds::ALL_FACILITIES
-      search_param.resource_type = ResourceType::FACILITY
-    when FixGroupResourceIds::ALL_USER_GROUP
-      search_param.resource_type = ResourceType::USER_GROUP
-    else
-      raise CustomException::IllegalParameterException.new
-    end
-    
-    logic = ResourceLogic.new
-    list = logic.find_by_conditions(search_param)
     pager_condition.total_count = list.length.to_s
     
     # 戻り値のデータを生成
@@ -249,6 +251,65 @@ class GroupLogic
     
     # 指定ページに紐付くListだけを抽出
     PagerHelper::create_slice_list(pager_condition, resource_all_list)
+  end
+
+  #
+  # 固定グループリソース情報取得
+  # ==== _Args_
+  # [fix_group_resource_id]
+  #   固定グループのリソースID(see. <i>FixGroupResourceIds</i>)
+  # ==== _Return_
+  # 該当する<i>Resource</i>のlist
+  #
+  def get_fix_group_resource_list(fix_group_resource_id)
+    
+    search_param = Resource::SearchParam.new
+    case fix_group_resource_id.to_i
+    when FixGroupResourceIds::ALL_USERS
+      search_param.resource_type = ResourceType::USER
+    when FixGroupResourceIds::ALL_FACILITIES
+      search_param.resource_type = ResourceType::FACILITY
+    when FixGroupResourceIds::ALL_USER_GROUP
+      search_param.resource_type = ResourceType::USER_GROUP
+    else
+      raise CustomException::IllegalParameterException.new
+    end
+    
+    logic = ResourceLogic.new
+    return logic.find_by_conditions(search_param)
+  end
+
+  
+  #
+  # 全ユーザグループListを作成します
+  # index:0のデータは、空行を付与します
+  # ==== _Return_
+  # 全ユーザグループ情報。<i>Entity::LabelValueBean</i>のlist
+  #
+  def create_all_user_group
+    ret_list = []
+    logic = ResourceLogic.new
+    search_param = Resource::SearchParam.new
+    search_param.resource_type = ResourceType::USER_GROUP
+    user_group_list = logic.find_by_conditions(search_param)
+    LabelValueBeanHelper::add_group(ret_list, user_group_list)
+    return ret_list
+  end
+  
+  #
+  # 全設備グループListを作成します
+  # index:0のデータは、空行を付与します
+  # ==== _Return_
+  # 全設備グループ情報。<i>Entity::LabelValueBean</i>のlist
+  #
+  def create_all_facility_group
+    ret_list = []
+    logic = ResourceLogic.new
+    search_param = Resource::SearchParam.new
+    search_param.resource_type = ResourceType::FACILITY_GROUP
+    facility_group_list = logic.find_by_conditions(search_param)
+    LabelValueBeanHelper::add_group(ret_list, facility_group_list)
+    return ret_list
   end
   
   #

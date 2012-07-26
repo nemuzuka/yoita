@@ -130,4 +130,20 @@ module DateHelper
     return true
   end
 
+  #
+  # 時刻文字列生成
+  # ==== _Args_
+  # [time]
+  #   Timeオブジェクト
+  # ==== _Return_
+  # 時刻文字列(該当データが存在しなければ空文字)
+  #
+  def get_format_time(time)
+    if time == nil
+      return ""
+    end
+    
+    return time.strftime("%Y/%m/%d %H:%M")
+  end
+  
 end
