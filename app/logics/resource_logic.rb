@@ -190,4 +190,22 @@ class ResourceLogic
     return result_list
   end
   
+  #
+  # リソースID指定によるリソースデータ取得
+  # ==== _Args_
+  # [resource_ids]
+  #   リソースID指定List
+  # ==== _Return_
+  # <i>Resource</i>のlist
+  #
+  def get_resources(resource_ids)
+    if resource_ids == nil || resource_ids.length == 0
+      return []
+    end
+    
+    search_param = Resource::SearchParam.new
+    search_param.ids = resource_ids
+    Resource.find_by_conditions(search_param)
+  end
+  
 end

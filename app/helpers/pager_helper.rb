@@ -76,6 +76,10 @@ module PagerHelper
       return []
     end
     
+    if pager_condition.per == nil
+      return all_list
+    end
+    
     offset = SqlHelper::calcOffset(pager_condition)
     result = all_list.slice(offset..(offset + pager_condition.per - 1))
     result = [] if result == nil
