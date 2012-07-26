@@ -1,16 +1,37 @@
-<%= javascript_include_tag "schedule_week"  %>
+<%= javascript_include_tag "schedule/scheduleCommon"  %>
+<%= javascript_include_tag "schedule/scheduleWeek"  %>
+<%= javascript_include_tag "schedule/scheduleWeek4User"  %>
 
 <% content_for :extend_sub_menu do %>
 	<%= render :file => 'schedule/_schedule_sub_menu.html.erb' %>
 <% end %>
 
 <div class="widget">
-<form class="form-horizontal">
 
-	<h2 class="title">スケジューラ</h2>
-	
-	<input type="hidden" id="selected_sub_menu" value="sub_menu1" />
+<div class="widget-header">
+	<h2 class="title">週次スケジュール</h2>
+</div>
+<div class="widget-content">
 
-</form>
+<div class="schedule_daycrl">
+	<select id="groupResource"></select><a id="defaultGroupResource" href="javascript:void(0)" title="デフォルトグループのスケジュールを参照します">[*]</a>　
+	<input type="button" class="btn" id="today" value="今日" />　
+	<input type="button" class="btn" id="prev_week" value="先週" />
+	<input type="button" class="btn" id="prev_day" value="先日" />
+	<span id="viewDateRange"></span>
+	<input type="button" class="btn" id="next_day" value="翌日" />
+	<input type="button" class="btn" id="next_week" value="翌週" />
+</div>
+
+<div id="pager"></div>
+
+<table class="schedule_table" id="schedule_area">
+</table>
+
+</div>
+
+<%= render :file => 'schedule/schedule_dialog.erb' %>
+
+<input type="hidden" id="selected_sub_menu" value="sub_menu1" />
 </div>
 

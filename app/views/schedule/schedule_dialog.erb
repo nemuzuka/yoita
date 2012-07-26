@@ -1,0 +1,315 @@
+<%= javascript_include_tag "schedule/scheduleDialog"  %>
+
+<div id="scheduleEditDialog" title="スケジュール" class="dialog-widget" style="display:none;">
+<div class="dialog-container" style="height:400px;">
+<table class="table1 edit_table">
+	<tbody>
+		<tr>
+			<th class="th1">いつ</th>
+			<td class="td1">
+				<div id="schedule_type">
+					<ul>
+						<li><a href="#normal_schedule_area" id="normal_schedule">通常</a></li>
+						<li><a href="#repeat_schedule_area" id="repeat_schedule">繰り返し</a></li>
+					</ul>
+					<div id="normal_schedule_area">
+						<table class="in_table">
+							<tbody>
+							<tr>
+								<th class="th1" width="80px">開始日時<span class="required">(*)</span></th>
+								<td class="td1"><input type="text" id="normal_startDate" size="20" class="date required-input" readOnly="readOnly" />　<input type="text" size="6" id="normal_startTime" /></td>
+							</tr>
+							<tr>
+								<th class="th1">終了日時<span class="required">(*)</span></th>
+								<td class="td1"><input type="text" id="normal_endDate" size="20" class="date required-input" readOnly="readOnly" />　<input type="text" size="6" id="normal_endTime" /></td>
+							</tr>
+							</tbody>
+						</table>
+					</div>
+					<div id="repeat_schedule_area">
+						<table class="in_table">
+							<tbody>
+							<tr>
+								<th class="th1" width="80px">繰り返し<span class="required">(*)</span></th>
+								<td class="td1">
+									<label for="repeat_conditions_1"><input type="radio" name="repeat_conditions" value="1" id="repeat_conditions_1" />毎日</label><br />
+									<label for="repeat_conditions_2"><input type="radio" name="repeat_conditions" value="2" id="repeat_conditions_2" />毎日(土日を除く)</label><br />
+									<label for="repeat_conditions_3"><input type="radio" name="repeat_conditions" value="3" id="repeat_conditions_3" />毎週</label>　<select id="repeatWeek"></select><br />
+									<label for="repeat_conditions_4"><input type="radio" name="repeat_conditions" value="4" id="repeat_conditions_4" />毎月</label>　<select id="repeatDay"></select><br />
+								</td>
+							</tr>
+
+							<tr>
+								<th class="th1">いつから<span class="required">(*)</span></th>
+								<td class="td1"><input type="text" id="repeat_startDate" size="20" class="date required-input" readOnly="readOnly" /></td>
+							</tr>
+							<tr>
+								<th class="th1">いつまで<span class="required">(*)</span></th>
+								<td class="td1">
+									<label for="repeatEndless"><input type="checkbox" id="repeatEndless" name="repeatEndless">無期限</label><br />
+									<input type="text" id="repeat_endDate" size="20" class="date required-input" readOnly="readOnly" />
+								</td>
+							</tr>
+							<tr>
+								<th class="th1">時間指定</th>
+								<td class="td1"><input type="text" size="6" id="repeat_startTime" />～<input type="text" size="6" id="repeat_endTime" /></td>
+							</tr>
+							</tbody>
+						</table>
+					</div>
+				</div>
+			</td>
+		</tr>
+		<tr>
+			<th class="th1">件名<span class="required">(*)</span></th>
+			<td class="td1">
+				<input type="text" size="40" id="title" class="required-input" />
+			</td>
+		</tr>
+		<tr>
+			<th class="th1">メモ</th>
+			<td class="td1">
+				<textarea cols="45" rows="4" id="memo" class="memo"></textarea>
+			</td>
+		</tr>
+		<tr>
+			<th class="th1">閲覧範囲</th>
+			<td class="td1">
+				<label for="ds_closedFlg1"><input id="ds_closedFlg1" type="radio" name="closedFlg" value="0">公開する</label>
+				<label for="ds_closedFlg2"><input id="ds_closedFlg2" type="radio" name="closedFlg" value="1">非公開(参加者と登録者のみ閲覧できます)</label>
+			</td>
+		</tr>
+		<tr>
+			<th class="th1">参加者</th>
+			<td class="td1">
+				<table cellpadding="0" cellspacing="0" border="0" summary="参加メンバーの選択" class="change_table">
+					<tbody>
+						<tr>
+							<td class="center">
+								<input type="button" class="sort_up" id="user_up" value="↑" />
+								<input type="button" class="sort_down" id="user_down" value="↓" />
+							</td>
+							<td class="vtop">
+								<label for="user_to">参加メンバー</label>
+								<select id="user_to" size="7" multiple="multiple">
+								</select><br />
+								<input id="user_remove" type="button" value="参加メンバーから外す" />
+							</td>
+							<td class="center">
+								<input id="user_add" type="button" value="&laquo;参加メンバーに追加" />
+							</td>
+							<td class="vtop">
+								<table>
+									<tr>
+										<td class="vtop">
+											<label for="userGroupList">ユーザグループ</label>
+											<select id="userGroupList">
+											</select>
+										</td>
+									</tr>
+									<tr>
+										<td class="vtop">
+											<label for="user_from">ユーザ</label>
+											<select id="user_from" size="5" multiple="multiple">
+											</select>
+										</td>
+									</tr>
+								</table>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			</td>
+		</tr>
+		<tr>
+			<th class="th1">設備</th>
+			<td class="td1">
+				<table cellpadding="0" cellspacing="0" border="0" summary="参加設備の選択" class="change_table">
+					<tbody>
+						<tr>
+							<td class="center">
+								<input type="button" class="sort_up" id="facilities_up" value="↑" />
+								<input type="button" class="sort_down" id="facilities_down" value="↓" />
+							</td>
+							<td class="vtop">
+								<label for="facilities_to">使用設備</label>
+								<select id="facilities_to" size="7" multiple="multiple">
+								</select><br />
+								<input id="facilities_remove" type="button" value="使用設備から外す" />
+							</td>
+							<td class="center">
+								<input id="facilities_add" type="button" value="&laquo;使用設備に追加" />
+							</td>
+							<td class="vtop">
+								<table>
+									<tr>
+										<td class="vtop">
+											<label for="facilitiesGroupList">設備グループ</label>
+											<select id="facilitiesGroupList">
+											</select>
+										</td>
+									</tr>
+									<tr>
+										<td class="vtop">
+											<label for="facilities_from">設備</label>
+											<select id="facilities_from" size="5" multiple="multiple">
+											</select>
+										</td>
+									</tr>
+								</table>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			</td>
+		</tr>
+	</tbody>
+</table>
+<input type="button" id="checkFreeTime" class="btn" value="空き時間確認" />
+
+<div class="ctrl_line">
+<input type="button" id="scheduleExecute" class="btn success" value="変更する" />
+</div>
+</div>
+<input type="hidden" id="scheduleVersionNo" />
+</div>
+
+
+<div id="scheduleDetailDialog" title="スケジュール詳細" class="dialog-widget" style="display:none;">
+<div class="dialog-container" style="height:400px;">
+<table class="table1 edit_table">
+	<tbody>
+		<tr>
+			<th class="th1">いつ</th>
+			<td class="td1" id="viewDate"></td>
+		</tr>
+		<tr>
+			<th class="th1">件名</th>
+			<td class="td1" id="viewTitle"></td>
+		</tr>
+		<tr>
+			<th class="th1">メモ</th>
+			<td class="td1" id="viewMemo"></td>
+		</tr>
+		<tr>
+			<th class="th1">フォロー</th>
+			<td class="td1">
+				<div id="followViewArea">
+					<textarea id="follow" cols="45" rows="3" class="memo" style="width:634px;"></textarea>
+					<div style="padding-bottom:10px;">
+						<input type="button" id="addFollow" class="btn success" value="フォローを書き込む" />
+					</div>
+					<div id="followListBlock">
+						<table id="followList" class="inner_follow_table"  width="100%">
+						</table>
+					</div>
+				</div>
+			</td>
+		</tr>
+		<tr>
+			<th class="th1">参加者</th>
+			<td class="td1" id="userConnList"></td>
+		</tr>
+		<tr>
+			<th class="th1">設備</th>
+			<td class="td1" id="facilitiesConnList"></td>
+		</tr>
+		<tr>
+			<th class="th1">登録者</th>
+			<td class="td1" id="entryUserName"></td>
+		</tr>
+		<tr>
+			<th class="th1">最終更新者</th>
+			<td class="td1" id="updateUserName"></td>
+		</tr>
+	</tbody>
+</table>
+<div class="ctrl_line">
+<input type="hidden" id="scheduleDetailVersionNo" />
+<span id="moveScheduleEditStatus"><input type="button" id="moveScheduleEdit" class="btn" value="変更画面へ" /></span>
+<span id="deleteStatus"><input type="button" id="scheduleDelete" class="btn success" value="削除する" /></span>
+</div>
+</div>
+</div>
+
+
+<div id="userDetailDialog" title="ユーザ詳細" class="dialog-widget" style="display:none;">
+<div class="dialog-container" style="height:400px;">
+<table class="table1 edit_table">
+	<tbody>
+		<tr>
+			<th class="th1" width="150px">ユーザ名</th>
+			<td class="td1" id="userName"></td>
+		</tr>
+		<tr>
+			<th class="th1">ふりがな</th>
+			<td class="td1" id="readingCharacter"></td>
+		</tr>
+		<tr>
+			<th class="th1">役職</th>
+			<td class="td1" id="managerialPosition"></td>
+		</tr>
+		<tr>
+			<th class="th1">部署名</th>
+			<td class="td1" id="postName"></td>
+		</tr>
+		<tr>
+			<th class="th1">電話番号</th>
+			<td class="td1" id="tel"></td>
+		</tr>
+		<tr>
+			<th class="th1">メールアドレス</th>
+			<td class="td1" id="mail"></td>
+		</tr>
+		<tr>
+			<th class="th1">所属グループ</th>
+			<td class="td1" id="belongingUserGroup"></td>
+		</tr>
+		<tr>
+			<th class="th1">メモ</th>
+			<td class="td1" id="userMemo"></td>
+		</tr>
+	</tbody>
+</table>
+</div>
+</div>
+
+<div id="facilitiesDetailDialog" title="設備詳細" class="dialog-widget" style="display:none;">
+<div class="dialog-container" style="height:400px;">
+<table class="table1 edit_table">
+	<tbody>
+		<tr>
+			<th class="th1" width="150px">設備名</th>
+			<td class="td1" id="facilitiesName"></td>
+		</tr>
+		<tr>
+			<th class="th1">所属グループ</th>
+			<td class="td1" id="belongingFacilitiesGroup"></td>
+		</tr>
+		<tr>
+			<th class="th1">メモ</th>
+			<td class="td1" id="facilitiesMemo"></td>
+		</tr>
+	</tbody>
+</table>
+</div>
+</div>
+
+<div id="userGroupDetailDialog" title="ユーザグループ詳細" class="dialog-widget" style="display:none;">
+<div class="dialog-container" style="height:400px;">
+<table class="table1 edit_table">
+	<tbody>
+		<tr>
+			<th class="th1" width="150px">ユーザグループ名</th>
+			<td class="td1" id="userGroupName"></td>
+		</tr>
+		<tr>
+			<th class="th1">メモ</th>
+			<td class="td1" id="userGroupMemo"></td>
+		</tr>
+	</tbody>
+</table>
+</div>
+</div>
+
+<input type="hidden" id="scheduleId" />

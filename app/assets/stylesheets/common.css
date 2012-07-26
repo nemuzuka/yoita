@@ -61,7 +61,7 @@ td{empty-cells: show;}
 
 
 /* ダイアログテーブル(並べ替え・編集・フォロー) */
-.edit_table {font-size:86%;border-top:2px solid #08C;border-bottom:2px solid #08C;width:100%;border-left:1px solid #08C;}
+.edit_table {border-top:2px solid #08C;border-bottom:2px solid #08C;width:100%;border-left:1px solid #08C;}
 .edit_table th,
 .edit_table td {border-bottom:1px solid #08C;border-right:1px solid #08C;padding:2px 2px}
 .edit_table th {background:#8fecff;}
@@ -148,11 +148,11 @@ a:hover.link{color: #005580;}
     overflow: hidden;
     white-space: nowrap;
 }
-#suggest div.select{ /* キー上下で選択した場合のスタイル */
+#suggest div.select{
     color: #FFFFFF;
     background-color: #3366FF;
 }
-#suggest div.over{ /* マウスオーバ時のスタイル */
+#suggest div.over{
     background-color: #99CCFF;
 }
 
@@ -172,3 +172,32 @@ a:hover.link{color: #005580;}
 .pager-area span.count{width:60px;border:none;text-align:center;margin-top:0;}
 .pager-area b{font-weight:bolder;}
 .pager-area a{display:block;width:20px;line-height:1.5em;float:left;border:1px solid #CCC;margin-right:5px;text-align:center;}
+
+
+/* スケジュール */
+.schedule_daycrl{padding:10px 0;}
+
+.schedule_table{font-size:90%;border-top:2px solid #08C;border-bottom:2px solid #08C;width:100%;border-left:1px solid #0BF;}
+.schedule_table th,.schedule_table td{padding:5px;border-right:1px solid #0BF;border-bottom:1px solid #0BF;}
+.schedule_table thead th{border-top:1px solid #0BF;}
+.schedule_table td{background:#FFF;}
+.schedule_table .days{width:12%;font-weight:normal;background:#FFFFCC;}
+.schedule_table .sche_week_holiday{background:#ffebeb;}
+.schedule_table .sche_week_sunday{background:#ffebeb;}
+.schedule_table .sche_week_saturday{background:#AEF;}
+.schedule_table .sche_week_today{font-weight:bolder;}
+.schedule_table td.td1_schedule{vertical-align: top;padding: 2px;height: 60px;}
+.schedule_table td.td1_userGroup{vertical-align: top;padding: 2px;height: 60px;background: blanchedAlmond;}
+
+.week_schedule_table{font-size:90%;border-top:2px solid #ffa28f;border-bottom:2px solid #ffa28f;width:100%;border-collapse:collapse;}
+.week_schedule_table th,
+.week_schedule_table td{padding:3px;border:1px solid #fcc;}
+.week_schedule_table thead th{border-top:1px solid #fcc;}
+.week_schedule_table td{background:#FFF;width:14%;}
+.week_schedule_table .days{width:12%;}
+.week_schedule_table td{background:#EEE;color:#666;vertical-align:top;}
+.week_schedule_table .sche_week_holiday{background:#ffebeb;}
+.week_schedule_table .sche_week_sunday{background:#ffebeb;}
+.week_schedule_table .sche_week_saturday{background:#AEF;}
+.week_schedule_table .sche_week_today{font-weight:bolder;}
+.week_schedule_table td.sche_terget_month{background:#FFF;}
