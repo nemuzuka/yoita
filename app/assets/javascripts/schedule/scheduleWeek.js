@@ -123,7 +123,7 @@ function openResourceDetailDialog(resourceId) {
 
 			//共通エラーチェック
 			if(errorCheck(data) == false) {
-				if(data.status == -2) {
+				if(data.status_code == -6) {
 					//該当データが存在しない or 参照できない場合、一覧再描画
 					refresh();
 				}

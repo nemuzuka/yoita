@@ -60,6 +60,23 @@ module Ajax #:nodoc:
       end
     end
     
+    #
+    # 指定グループに紐付くリソース一覧情報取得
+    #
+    def get_group_conn_list
+      exeption_handler do
+        selected_group_resource = params[:selected_group_resource]
+        # リクエストパラメータを元に登録・更新
+        service = ScheduleDetailService.new
+        result = service.create_group_conn_list(selected_group_resource, true)
+        p result
+        ajax_result = Entity::JsonResult.new
+        ajax_result.result = result
+        render json: ajax_result
+        
+      end
+    end
+    
   end
 
 end

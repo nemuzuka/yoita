@@ -158,10 +158,8 @@ function scheduleFollowExecute() {
 			//共通エラーチェック
 			if(errorCheck(data) == false) {
 
-				if(data.status == 0) {
-					//validateエラーの場合
-					//Tokenを再発行してもう一度リトライさせる
-					reSetToken();
+				if(data.status_code == -1) {
+					//validateエラーの場合、もう一度リトライさせる
 					return;
 				}
 			} else {
@@ -181,40 +179,10 @@ function scheduleFollowExecute() {
 	}
 }
 
-//スケジュールダイアログ再描画
-function refreshScheduleDetailDialog() {
-	var refreshParams = {};
-	refreshParams["scheduleId"] = $("#scheduleId").val();
-	setAjaxDefault();
-	$.ajax({
-		type: "POST",
-		data: refreshParams,
-		url: contextPath + "/groupware/scheduleEditAjax/getDetailInfo/",
-		success: function(data, status){
-
-			//共通エラーチェック
-			if(errorCheck(data) == false) {
-				if(data.status == -2) {
-					//該当データが存在しない or 参照できない場合、一覧再描画
-					refresh();
-				}
-				return;
-			}
-			var result = data.result;
-			renderScheduleDetailDialog(result);
-		}
-	});
-}
-
 //スケジュール詳細ダイアログ描画
-//フォローは、グループウェアで登録したもの以外はエリア自体表示しない
 function renderScheduleDetailDialog(result) {
 
 	var schedule = result.schedule;
-
-	unBlockLink("#moveScheduleEditStatus");
-	unBlockLink("#deleteStatus");
-	unBlockLink("#followViewArea");
 
 	$("#viewDate").text(result.view_date);
 	$("#viewTitle").text(schedule.title);
@@ -541,43 +509,45 @@ function validate(params) {
 function changeUserGroupList() {
 
 	var params = {};
-	params["selectedUserGroup"] = $("#userGroupList").val();
+	params["selected_group_resource"] = $("#userGroupList").val();
 
 	setAjaxDefault();
 	$.ajax({
-		type: "POST",
+		type: "GET",
 		data: params,
-		url: contextPath + "/groupware/scheduleEditAjax/getUserGroupConnList/",
-		success: function(data, status){
+		url: "/ajax/schedule/get_group_conn_list/"
+	}).then(
+		function(data){
 
 			//共通エラーチェック
 			if(errorCheck(data) == false) {
 				return;
 			}
-			setUserFrom(data.result);
+			setFromResource(data.result, "user_from");
 		}
-	});
+	);
 }
 
 //設備グループSelect変更時の処理
 function changeFacilitiesGroupList() {
 	var params = {};
-	params["selectedFacilitiesGroup"] = $("#facilitiesGroupList").val();
+	params["selected_group_resource"] = $("#facilitiesGroupList").val();
 
 	setAjaxDefault();
 	$.ajax({
-		type: "POST",
+		type: "GET",
 		data: params,
-		url: contextPath + "/groupware/scheduleEditAjax/getFacilitiesGroupConnList/",
-		success: function(data, status){
+		url: "/ajax/schedule/get_group_conn_list/"
+	}).then(
+		function(data){
 
 			//共通エラーチェック
 			if(errorCheck(data) == false) {
 				return;
 			}
-			setFacilitiesFrom(data.result);
+			setFromResource(data.result, "facilities_from");
 		}
-	});
+	);
 }
 
 //無制限チェックボックスの状態によって、終了日付の状態を変更します。
