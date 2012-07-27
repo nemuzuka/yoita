@@ -41,6 +41,24 @@ module Ajax #:nodoc:
         
       end
     end
+
+    #
+    # スケジュール削除
+    #
+    def delete
+      exeption_handler do
+        schedule_id = params[:schedule_id]
+        lock_version = params[:lock_version]
+        # リクエストパラメータを元に登録・更新
+        service = ScheduleService.new
+        service.delete(schedule_id, lock_version, get_user_info.resource_id)
+        
+        result = Entity::JsonResult.new
+        result.info_msgs.push("正常に終了しました");
+        render json: result
+        
+      end
+    end
     
   end
 

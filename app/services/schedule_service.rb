@@ -26,6 +26,29 @@ class ScheduleService < Service::Base
       logic.save(params, action_resource_id)
     end
   end
+
+  #
+  # スケジュール削除
+  # ==== _Args_
+  # [schedule_id]
+  #   スケジュールID
+  # [lock_version]
+  #   バージョンNo
+  # [action_resource_id]
+  #   ログインユーザのリソースID
+  # ==== _Raise_
+  # [CustomException::NotFoundException]
+  #   該当レコードが存在しない場合
+  # [CustomException::InvalidVersionException]
+  #   バージョンが合わない場合
+  #
+  def delete(schedule_id, lock_version, action_resource_id)
+    transaction_handler do
+      logic = ScheduleLogic.new
+      logic.delete(schedule_id, lock_version, action_resource_id)
+    end
+  end
+
   
   #
   # リソース指定週次スケジュール表示データ作成

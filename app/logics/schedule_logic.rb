@@ -28,6 +28,42 @@ class ScheduleLogic
   end
 
   #
+  # スケジュール削除
+  # ==== _Args_
+  # [schedule_id]
+  #   スケジュールID
+  # [lock_version]
+  #   バージョンNo
+  # [action_resource_id]
+  #   ログインユーザのリソースID
+  # ==== _Raise_
+  # [CustomException::NotFoundException]
+  #   該当レコードが存在しない場合
+  # [CustomException::InvalidVersionException]
+  #   バージョンが合わない場合
+  #
+  def delete(schedule_id, lock_version, action_resource_id)
+    
+    # 非公開で自分が参照できないスケジュールのアクセスができないように
+    # logic経由で呼び出す
+    logic = ScheduleDetailLogic.new
+    detail = logic.get_detail(schedule_id, action_resource_id)
+    
+    schedule = detail.schedule
+    schedule[:lock_version] = lock_version
+    
+    begin
+      schedule.destroy
+    rescue ActiveRecord::StaleObjectError
+      raise CustomException::InvalidVersionException.new
+    end
+    
+    # 関連データを削除
+    ScheduleConn.delete_by_schedule_id(schedule_id)
+    ScheduleFollow.delete_by_schedule_id(schedule_id)
+  end
+
+  #
   # リソース毎のスケジュール作成
   # ==== _Args_
   # [target_dates]
@@ -176,7 +212,7 @@ class ScheduleLogic
         detail = logic.get_detail(id, action_resource_id)
         
         schedule = detail.schedule
-        schedule[:title] = nil
+        schedule[:title] << "a"
         
         # 更新するカラムを指定して、更新を行う
         clone_pamam = params[:schedule].clone

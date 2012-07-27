@@ -80,8 +80,6 @@ function initScheduleDetailDialog() {
         hide: 'clip'
 	});
 
-	$("#follow").addClass("ime-active");
-
 	//変更画面遷移ボタンクリック時
 	$("#moveScheduleEdit").click(function(){
 		//自ダイアログクローズ
@@ -90,14 +88,21 @@ function initScheduleDetailDialog() {
 		openEditDialog($("#scheduleId").val(), "", "");
 	});
 
-	$("#addFollow").click(function(){
-		scheduleFollowExecute();
-	});
-
 	//スケジュール削除ボタンクリック時
 	$("#scheduleDelete").click(function(){
 		scheduleDelete();
 	});
+
+	//フォロー追加ボタンクリック時
+	$("#addFollow").click(function(){
+		alert("フォロー追加するでよ");
+	});
+
+	$("#scheduleDetailDialog-cancel").click(function(){
+		//自ダイアログクローズ
+		$("#scheduleDetailDialog").dialog("close");
+	});
+
 }
 
 //スケジュール削除
@@ -107,17 +112,18 @@ function scheduleDelete() {
 	}
 
 	var params={};
-	params["scheduleId"] = $("#scheduleId").val();
-	params["versionNo"] = $("#scheduleDetailVersionNo").val();
-	params["org.apache.struts.taglib.html.TOKEN"] = $("input[type='hidden'][name='org.apache.struts.taglib.html.TOKEN']").get()[0].value;
+	params["schedule_id"] = $("#scheduleId").val();
+	params["lock_version"] = $("#scheduleDetailVersionNo").val();
+	setToken(params);
 
 	setAjaxDefault();
 	$.ajax({
 		type: "POST",
 		data: params,
 		dataType: "json",
-		url: contextPath + '/groupware/scheduleEditAjax/delete/',
-		success: function(data, status){
+		url: '/ajax/schedule/delete/'
+	}).then(
+		function(data){
 
 			//共通エラーチェック
 			errorCheck(data);
@@ -128,8 +134,7 @@ function scheduleDelete() {
 			$("#scheduleDetailDialog").dialog("close");
 			refresh();
 		}
-	});
-
+	);
 }
 
 
@@ -205,66 +210,33 @@ function refreshScheduleDetailDialog() {
 //フォローは、グループウェアで登録したもの以外はエリア自体表示しない
 function renderScheduleDetailDialog(result) {
 
+	var schedule = result.schedule;
+
 	unBlockLink("#moveScheduleEditStatus");
 	unBlockLink("#deleteStatus");
 	unBlockLink("#followViewArea");
 
-	$("#viewDate").text(result.viewDate);
-	$("#viewTitle").text(result.viewTitle);
-	$("#viewMemo").html(result.viewMemo);
-	$("#follow").val("");
-
-	$("#followList").empty();
-	var $tbody = $("<tbody />");
-	$.each(result.followList, function(index){
-
-		var color2 = "";
-		if(index != 0 && index % 2 != 0) {
-			color2 = "color2";
-		}
-
-		var $tr = $("<tr />").addClass(color2);
-		var $td = $("<td />").addClass("td1").text(this.viewEntryTime).attr({width:"80px"}).addClass(color2);
-		$tr = $tr.append($td);
-		var $td2 = $("<td />").addClass("td1").text(this.entryUserName).attr({width:"120px"}).addClass(color2);
-		$tr = $tr.append($td2);
-		var $td3 = $("<td />").addClass("td1").html(this.viewMemo).addClass(color2);
-		$tr = $tr.append($td3);
-		var id = this.id;
-		var $followDel = $("<input />").attr({type:"button", value:"削除"}).addClass("btn x-mini delete");
-		$followDel.click(function(){
-			deleteFollow(id);
-		});
-		var $td4 = $("<td />").addClass("td1").append($followDel).addClass(color2).attr({width:"50px"});
-		$tr = $tr.append($td4);
-		$tbody.append($tr);
-	});
-	$("#followList").append($tbody);
-
+	$("#viewDate").text(result.view_date);
+	$("#viewTitle").text(schedule.title);
+	$("#viewMemo").html(escapeTextArea(schedule.memo));
+	
 	$("#userConnList").text("");
-	$.each(result.userConnList, function() {
-		var $span = $("<span />").text(this.label);
+	$.each(result.schedule_user_conn_list, function() {
+		var $span = $("<span />").text(this.value);
 		$("#userConnList").append($span).append("<br />");
 	});
 	$("#facilitiesConnList").text("");
-	$.each(result.facilitiesConnList, function() {
-		var $span = $("<span />").text(this.label);
+	$.each(result.schedule_facilities_conn_list, function() {
+		var $span = $("<span />").text(this.value);
 		$("#facilitiesConnList").append($span).append("<br />");
 	});
 
-	$("#entryUserName").text(result.entryUserName);
-	$("#updateUserName").text(result.updateUserName);
+	$("#entryUserName").text(result.entry_resource_name);
+	$("#updateUserName").text(result.update_resource_name);
 
-	$("#scheduleDetailVersionNo").val(result.versionNo);
-	$("#scheduleId").val(result.scheduleId);
+	$("#scheduleDetailVersionNo").val(schedule.lock_version);
+	$("#scheduleId").val(schedule.id);
 
-	//グループウェアの利用権限が無い、または
-	//グループウェアで登録したスケジュールでない場合、ボタン非表示
-	if(result.groupWareAddService == false || groupware == false) {
-		blockLink("#moveScheduleEditStatus");
-		blockLink("#deleteStatus");
-		blockLink("#followViewArea");
-	}
 }
 
 
@@ -382,10 +354,9 @@ function initScheduleEditDialog() {
 	//時間入力のタブ化
 	$('#schedule_type').tabs();
 
-	//空き時間確認ボタンクリック
-	$("#checkFreeTime").click(function(){
-		openScheduleFreeTime();
-	})
+	$("#scheduleEditDialog-cancel").click(function(){
+		$("#scheduleEditDialog").dialog("close");
+	});
 }
 
 
@@ -669,10 +640,10 @@ function renderScheduleDialog(result){
 
 	$("#title").val(schedule.title);
 	$("#memo").val(schedule.memo);
-	if(schedule.closedFlg == null || schedule.closedFlg == '') {
-		schedule.closedFlg = '0'
+	if(schedule.closed_flg == null || schedule.closed_flg == '') {
+		schedule.closed_flg = '0'
 	}
-	$("input[type='radio'][name='closedFlg']").val([schedule.closedFlg]);
+	$("input[type='radio'][name='closedFlg']").val([schedule.closed_flg]);
 
 	//スケジュールに紐づくユーザ群
 	$("#user_to").empty();
@@ -700,7 +671,7 @@ function renderScheduleDialog(result){
 	$("#facilitiesGroupList").val(result.selected_facilities_group);
 	setFromResource(result.facilities_group_conn_list, "facilities_from");
 
-	$("#scheduleId").val(schedule.schedule_id);
+	$("#scheduleId").val(schedule.id);
 	$("#scheduleVersionNo").val(schedule.lock_version);
 
 	$("#ui-dialog-title-scheduleEditDialog").empty();
@@ -742,7 +713,7 @@ function openEditDialog(scheduleId, resourceId, targetDate) {
 
 			//共通エラーチェック
 			if(errorCheck(data) == false) {
-				if(data.status == -2) {
+				if(data.status_code == -6) {
 					//該当データが存在しない or 参照できない場合、一覧再描画
 					refresh();
 				}
@@ -761,18 +732,19 @@ function openEditDialog(scheduleId, resourceId, targetDate) {
 //スケジュール詳細画面表示
 function openDetailDialog(scheduleId) {
 	var params = {};
-	params["scheduleId"] = scheduleId;
+	params["schedule_id"] = scheduleId;
 
 	setAjaxDefault();
 	$.ajax({
-		type: "POST",
+		type: "GET",
 		data: params,
-		url: contextPath + "/groupware/scheduleEditAjax/getDetailInfo/",
-		success: function(data, status){
+		url: "/ajax/schedule/get_info/"
+	}).then(
+		function(data){
 
 			//共通エラーチェック
 			if(errorCheck(data) == false) {
-				if(data.status == -2) {
+				if(data.status_code == -6) {
 					//該当データが存在しない or 参照できない場合、一覧再描画
 					refresh();
 				}
@@ -784,7 +756,7 @@ function openDetailDialog(scheduleId) {
 			$("#scheduleDetailDialog").dialog("open");
 			removeDummyText("scheduleDetailDialog");
 		}
-	});
+	);
 }
 //フォロー削除
 function deleteFollow(id) {

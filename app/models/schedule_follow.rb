@@ -20,7 +20,7 @@ class ScheduleFollow < ActiveRecord::Base
   # 該当レコード(存在しない場合、size=0のList)
   #
   def self.find_by_schedule_id(schedule_id)
-    schedule_follow = Arel::Table.new :schedule_follow
+    schedule_follow = Arel::Table.new :schedule_follows
     condition = SqlHelper.add_condition(
       nil,
       schedule_follow[:schedule_id].eq(schedule_id))
@@ -38,7 +38,7 @@ class ScheduleFollow < ActiveRecord::Base
   def self.delete_by_schedule_id(schedule_id)
 
     # 削除条件の設定
-    schedule_follow = Arel::Table.new :schedule_follow
+    schedule_follow = Arel::Table.new :schedule_follows
     condition = SqlHelper.add_condition(
       nil,
       schedule_follow[:schedule_id].eq(schedule_id))

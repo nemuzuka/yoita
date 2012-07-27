@@ -165,11 +165,12 @@
 		</tr>
 	</tbody>
 </table>
-<input type="button" id="checkFreeTime" class="btn" value="空き時間確認" />
 
-<div class="ctrl_line">
-<input type="button" id="scheduleExecute" class="btn success" value="変更する" />
+<div class="edit_ctrl">
+	<input type="button" class="btn btn-primary" id="scheduleExecute" value="変更する" />
+	<input type="button" class="btn" id="scheduleEditDialog-cancel" value="キャンセル" />
 </div>
+
 </div>
 <input type="hidden" id="scheduleVersionNo" />
 </div>
@@ -192,21 +193,6 @@
 			<td class="td1" id="viewMemo"></td>
 		</tr>
 		<tr>
-			<th class="th1">フォロー</th>
-			<td class="td1">
-				<div id="followViewArea">
-					<textarea id="follow" cols="45" rows="3" class="memo" style="width:634px;"></textarea>
-					<div style="padding-bottom:10px;">
-						<input type="button" id="addFollow" class="btn success" value="フォローを書き込む" />
-					</div>
-					<div id="followListBlock">
-						<table id="followList" class="inner_follow_table"  width="100%">
-						</table>
-					</div>
-				</div>
-			</td>
-		</tr>
-		<tr>
 			<th class="th1">参加者</th>
 			<td class="td1" id="userConnList"></td>
 		</tr>
@@ -224,11 +210,17 @@
 		</tr>
 	</tbody>
 </table>
-<div class="ctrl_line">
-<input type="hidden" id="scheduleDetailVersionNo" />
-<span id="moveScheduleEditStatus"><input type="button" id="moveScheduleEdit" class="btn" value="変更画面へ" /></span>
-<span id="deleteStatus"><input type="button" id="scheduleDelete" class="btn success" value="削除する" /></span>
+
+<div class="edit_ctrl">
+	<span id="moveScheduleEditStatus"><input type="button" id="moveScheduleEdit" class="btn" value="変更画面へ" /></span>
+	<span id="followViewArea"><input type="button" id="addFollow" class="btn" value="フォロー追加" /></span>
+	<span id="deleteStatus"><input type="button" id="scheduleDelete" class="btn btn-danger" value="削除する" /></span>
+	<input type="button" class="btn" id="scheduleDetailDialog-cancel" value="キャンセル" />
+	<input type="hidden" id="scheduleDetailVersionNo" />
 </div>
+
+<div id="followViewArea"></div>
+
 </div>
 </div>
 
