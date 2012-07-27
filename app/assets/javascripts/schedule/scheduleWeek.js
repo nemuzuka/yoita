@@ -112,14 +112,15 @@ function renderSchedule(result) {
 //リソース情報表示ダイアログ表示
 function openResourceDetailDialog(resourceId) {
 	var params = {};
-	params["resourceId"] = resourceId;
+	params["resource_id"] = resourceId;
 
 	setAjaxDefault();
 	$.ajax({
-		type: "POST",
+		type: "GET",
 		data: params,
-		url: contextPath + "/groupware/resourceDetailAjax/getInfo/",
-		success: function(data, status){
+		url: "/ajax/schedule/get_resource_detail/"
+	}).then(
+		function(data){
 
 			//共通エラーチェック
 			if(errorCheck(data) == false) {
@@ -132,61 +133,51 @@ function openResourceDetailDialog(resourceId) {
 			var result = data.result;
 			renderResourceDetailDialog(result);
 		}
-	});
+	);
 }
 
 //指定リソースの詳細ダイアログを表示します
 function renderResourceDetailDialog(result) {
-
-	if(result.resourceType == '001') {
+	var resource = result.resource;
+	if(resource.resource_type == '001') {
 		//ユーザの場合
+		$("#userName").text(resource.name);
+		var user_info = result.user_info;
+		$("#readingCharacter").text(user_info.reading_character);
 
-		$("#userName").text(result.name);
-		$("#readingCharacter").text(result.readingCharacter);
-		$("#managerialPosition").text(result.managerialPosition);
-		$("#postName").text(result.postName);
+		$("#tel").text(user_info.tel);
 
-		$("#tel").text("");
-		$.each(result.tel, function(){
-			var $span = $("<span />").text("" + this);
-			$("#tel").append($span).append("<br />");
-		});
-
-		$("#mail").text("");
-		$.each(result.mail, function(){
-			var $span = $("<span />").text("" + this);
-			$("#mail").append($span).append("<br />");
-		});
+		$("#mail").text(user_info.mail);
 
 		$("#belongingUserGroup").text("");
-		$.each(result.belongGroup, function(){
-			var $span = $("<span />").text("" + this);
+		$.each(result.belong_group_list, function(){
+			var $span = $("<span />").text("" + this.value);
 			$("#belongingUserGroup").append($span).append("<br />");
 		});
-		$("#userMemo").html(result.memo);
+		$("#userMemo").html(escapeTextArea(resource.memo));
 
 		prependDummyText("userDetailDialog");
 		$("#userDetailDialog").dialog("open");
 		removeDummyText("userDetailDialog");
 
-	} else if(result.resourceType == '002') {
+	} else if(resource.resource_type == '002') {
 		//設備の場合
-		$("#facilitiesName").text(result.name);
+		$("#facilitiesName").text(resource.name);
 		$("#belongingFacilitiesGroup").text("");
-		$.each(result.belongGroup, function(){
-			var $span = $("<span />").text("" + this);
+		$.each(result.belong_group_list, function(){
+			var $span = $("<span />").text("" + this.value);
 			$("#belongingFacilitiesGroup").append($span).append("<br />");
 		});
-		$("#facilitiesMemo").html(result.memo);
+		$("#facilitiesMemo").html(escapeTextArea(resource.memo));
 
 		prependDummyText("facilitiesDetailDialog");
 		$("#facilitiesDetailDialog").dialog("open");
 		removeDummyText("facilitiesDetailDialog");
 
-	} else if(result.resourceType == '003') {
+	} else if(resource.resource_type == '003') {
 		//ユーザグループの場合
-		$("#userGroupName").text(result.name);
-		$("#userGroupMemo").html(result.memo);
+		$("#userGroupName").text(resource.name);
+		$("#userGroupMemo").html(escapeTextArea(resource.memo));
 
 		prependDummyText("userGroupDetailDialog");
 		$("#userGroupDetailDialog").dialog("open");

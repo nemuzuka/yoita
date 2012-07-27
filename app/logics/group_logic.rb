@@ -313,6 +313,25 @@ class GroupLogic
   end
   
   #
+  # 所属グループ一覧取得
+  # 引数のリソースが所属するグループの一覧を取得します。
+  # ==== _Args_
+  # [resource_id]
+  #   リソースID
+  # ==== _Return_
+  # 所属グループList
+  # <i>Entity::LabelValueBean</i>のlist
+  #
+  def create_group_list(resource_id)
+    list = UserFacilitiesGroupConn.find_parents_by_child_id(resource_id)
+    ret_list = []
+    list.each do |target|
+      ret_list.push(Entity::LabelValueBean.new(target[:id], target[:name]))
+    end
+    return ret_list
+  end
+  
+  #
   # 取得リソース戻り値.
   #
   class Detail

@@ -107,4 +107,36 @@ class UserFacilitiesGroupConn < ActiveRecord::Base
     end
   end
 
+  #
+  # グループ一覧取得
+  # 指定した子リソースIDが所属するグループの一覧を取得します
+  # ==== _Args_
+  # [child_resource_id]
+  #   取得対象リソースID
+  # ==== _Return_
+  # 該当レコード(存在しない場合、size=0のList)
+  #
+  def self.find_parents_by_child_id(child_resource_id)
+    sql = <<-EOS
+      select 
+        A.name,
+        A.id
+      from 
+        resources A,
+        user_facilities_group_conns B
+      where
+        A.id = B.parent_resource_id
+        and B.child_resource_id = :child_resource_id
+      order by A.sort_num, A.id
+    EOS
+    
+    param_hash = {}
+    param_hash[:child_resource_id] = child_resource_id
+    
+    param = SqlHelper::DefaultPagerCondition.new
+    # SQL発行
+    SqlHelper::find_by_sql(sql, param_hash, self, param)
+    
+  end
+
 end

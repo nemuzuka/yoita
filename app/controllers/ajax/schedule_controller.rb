@@ -69,11 +69,28 @@ module Ajax #:nodoc:
         # リクエストパラメータを元に登録・更新
         service = ScheduleDetailService.new
         result = service.create_group_conn_list(selected_group_resource, true)
-        p result
+
         ajax_result = Entity::JsonResult.new
         ajax_result.result = result
         render json: ajax_result
         
+      end
+    end
+    
+    #
+    # リソース詳細情報取得
+    #
+    def get_resource_detail
+      exeption_handler do
+        resource_id = params[:resource_id]
+        # リクエストパラメータを元に登録・更新
+        service = ResourceService.new
+        result = service.get_detail(resource_id)
+
+        ajax_result = Entity::JsonResult.new
+        ajax_result.result = result
+        p ajax_result
+        render json: ajax_result
       end
     end
     

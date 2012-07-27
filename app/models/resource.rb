@@ -18,7 +18,7 @@ class Resource < ActiveRecord::Base
   #
   def as_json(options={})
     options[:except] ||= [:created_at, :updated_at, 
-      :entry_resource_id, :update_resource_id, :sort_num, :resource_type]
+      :entry_resource_id, :update_resource_id, :sort_num]
     super(options)
   end
 
