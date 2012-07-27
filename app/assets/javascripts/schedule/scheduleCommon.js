@@ -36,11 +36,9 @@ function setSchedule(list, td) {
 		$a.click(function(){
 			openDetailDialog(scheduleId);
 		});
-		var $duplicate = null;
+		var $duplicate = $("<span />").addClass("duplicate");
 		if(this.duplicate) {
-			$duplicate = $("<span />").addClass("duplicate").text("×");
-		} else {
-			$duplicate = $("<span />").addClass("duplicate").text("　");
+			$duplicate.text("×");
 		}
 
 		if(scheduleId == null) {
@@ -49,7 +47,8 @@ function setSchedule(list, td) {
 		}
 
 		var $span = $("<span />").append($duplicate).append($a);
-		td.append($span).append($("<br />"));
+		var $div = $("<div />").css({"height":"5px"});
+		td.append($span).append($("<br />")).append($div);
 	});
 }
 

@@ -319,11 +319,18 @@ function initScheduleEditDialog() {
 	for(var i = 0; i < 7; i++) {
 		$("#repeatWeek").append($('<option>').attr({ value: i + 1 }).text(dayName[i]));
 	}
-	$("#repeatMonth").empty();
+	$("#repeatDay").empty();
 	for(var i = 0; i < 31; i++) {
-		$("#repeatMonth").append($('<option>').attr({ value: i + 1 }).text((i+1) + "日"));
+		var dayValue = i + 1;
+		var value = "";
+		if (dayValue < 10) {
+			value = "0" + dayValue;
+		} else {
+			value = "" + dayValue;
+		}
+		$("#repeatDay").append($('<option>').attr({ value: value }).text((i+1) + "日"));
 	}
-	$("#repeatMonth").append($('<option>').attr({ value: 32 }).text("月末"));
+	$("#repeatDay").append($('<option>').attr({ value: 32 }).text("月末"));
 
 	//無制限チェックボックスを変更した時
 	$("#repeatEndless").change(function(){
@@ -401,21 +408,23 @@ function changeRepeatStartDate() {
 function scheduleExecute() {
 	var params = createParams();
 
+	if(validate(params) == false) {
+		return;
+	}
+
 	setAjaxDefault();
 	$.ajax({
 		type: "POST",
 		data: params,
 		dataType: "json",
-		url: contextPath + '/groupware/scheduleEditAjax/execute/',
-		success: function(data, status){
+		url: '/ajax/schedule/save/'
+	}).then(
+		function(data){
 
 			//共通エラーチェック
 			if(errorCheck(data) == false) {
-
-				if(data.status == 0) {
+				if(data.status_code == -1) {
 					//validateエラーの場合
-					//Tokenを再発行してもう一度リトライさせる
-					reSetToken();
 					return;
 				}
 			}
@@ -426,48 +435,134 @@ function scheduleExecute() {
 			$("#scheduleEditDialog").dialog("close");
 			refresh();
 		}
-	});
+	);
 
 }
 
 //リクエストパラメータ生成
 function createParams() {
 	var params={};
+	params["schedule"] = {};
+	var schedule = params["schedule"];
 
 	//どちらの画面を表示しているかによって取得元を変更する
 	if($("#normal_schedule_area").is(".ui-tabs-hide") == false) {
+		params["repeat"] = '0';
+
 		//通常のスケジュール
-		params["scheduleStartDate"] = unFormatDate($("#normal_startDate").val());
-		params["scheduleStartTime"] = unFormatTime($("#normal_startTime").val());
-		params["scheduleEndDate"] = unFormatDate($("#normal_endDate").val());
-		params["scheduleEndTime"] = unFormatTime($("#normal_endTime").val());
+		schedule["start_date"] = $("#normal_startDate").val();
+		schedule["start_time"] = unFormatTime($("#normal_startTime").val());
+		schedule["end_date"] = $("#normal_endDate").val();
+		schedule["end_time"] = unFormatTime($("#normal_endTime").val());
 	} else {
+		params["repeat"] = '1';
+		
 		//繰り返しのスケジュール
-		params["scheduleStartDate"] = unFormatDate($("#repeat_startDate").val());
-		params["scheduleStartTime"] = unFormatTime($("#repeat_startTime").val());
-		params["scheduleEndDate"] = unFormatDate($("#repeat_endDate").val());
-		params["scheduleEndTime"] = unFormatTime($("#repeat_endTime").val());
-		params["repeatConditions"] = $("input[type='radio'][name='repeat_conditions']:checked").val();
-		params["repeatWeek"] = $("#repeatWeek").val();
-		params["repeatMonth"] = $("#repeatMonth").val();
+		schedule["start_date"] = $("#repeat_startDate").val();
+		schedule["start_time"] = unFormatTime($("#repeat_startTime").val());
+		schedule["end_date"] = $("#repeat_endDate").val();
+		schedule["end_time"] = unFormatTime($("#repeat_endTime").val());
+		schedule["repeat_conditions"] = $("input[type='radio'][name='repeat_conditions']:checked").val();
+		schedule["repeat_week"] = $("#repeatWeek").val();
+		schedule["repeat_day"] = $("#repeatDay").val();
 		if($("#repeatEndless").attr("checked") == undefined ) {
-			params["repeatEndless"] = '0';
+			schedule["repeat_endless"] = '0';
 		} else {
-			params["repeatEndless"] = '1';
+			schedule["repeat_endless"] = '1';
 		}
 	}
 
-	params["scheduleId"] = $("#scheduleId").val();
-	params["versionNo"] = $("#scheduleVersionNo").val();
-	params["scheduleTagId"] = $("#scheduleTagId").val();
-	params["title"] = $("#title").val();
-	params["memo"] = $("#memo").val();
-	params["closedFlg"] = $("input[type='radio'][name='closedFlg']:checked").val();
-	params["userConn"] = getSelectArray("user_to");
-	params["facilitiesConn"] = getSelectArray("facilities_to");
-
-	params["org.apache.struts.taglib.html.TOKEN"] = $("input[type='hidden'][name='org.apache.struts.taglib.html.TOKEN']").get()[0].value;
+	schedule["id"] = $("#scheduleId").val();
+	schedule["lock_version"] = $("#scheduleVersionNo").val();
+	schedule["title"] = $("#title").val();
+	schedule["memo"] = $("#memo").val();
+	schedule["closed_flg"] = $("input[type='radio'][name='closedFlg']:checked").val();
+	var user_conn = getSelectArray("user_to");
+	var facilities_conn = getSelectArray("facilities_to");
+	params["schedule_conn"] = user_conn.concat(facilities_conn);
+	setToken(params);
 	return params;
+}
+
+//登録validate
+function validate(params) {
+	var v = new Validate();
+	var schedule = params["schedule"];
+
+	v.addRules({value:schedule["start_date"],option:'required',error_args:"スケジュール開始日"});
+	v.addRules({value:schedule["start_date"],option:'date',error_args:"スケジュール開始日"});
+	v.addRules({value:schedule["start_time"],option:'time',error_args:"スケジュール開始時刻"});
+	v.addRules({value:schedule["end_date"],option:'date',error_args:"スケジュール終了日"});
+	v.addRules({value:schedule["end_time"],option:'time',error_args:"スケジュール終了時刻"});
+	
+	v.addRules({value:schedule["title"],option:'required',error_args:"件名"});
+	v.addRules({value:schedule["title"],option:'maxLength',error_args:"件名", size:64});
+	v.addRules({value:schedule["memo"],option:'maxLength',error_args:"メモ", size:1024});
+
+	if (v.execute() == false){
+		return false;
+	}
+	
+	//どちらかの時刻のみの入力はNG
+	if ((schedule["start_time"] == '' && schedule["end_time"] != '') || 
+		(schedule["start_time"] != '' && schedule["end_time"] == '')) {
+		alert("時刻を設定する場合はスケジュール開始時刻とスケジュール終了時刻を入力してください。");
+		return false;
+	}
+	
+	if(params["repeat"] == '0') {
+		//繰り返しでない場合
+		
+		//終了日が必須
+		if(schedule["end_date"] == '') {
+			alert("スケジュール終了日は必須です。");
+			return false;
+		}
+		
+		if(schedule["start_date"] > schedule["end_date"]) {
+			alert("終了日は開始日以降の日付を指定して下さい。");
+			return false;
+		}
+		
+		//開始日＝終了日で、時刻の入力がある場合、開始時刻<=終了時刻でなければエラー
+		if(schedule["start_date"] == schedule["end_date"] && schedule["start_time"] != '') {
+			if(schedule["start_time"] > schedule["end_time"]) {
+				alert("終了時刻は開始時刻以降の時間を指定して下さい。");
+				return false;
+			}
+		}
+		
+	} else {
+		//繰り返しでない場合
+		
+		//無期限でない時は終了日は必須
+		if(schedule["repeat_endless"] != '1') {
+			if(schedule["end_date"] == '') {
+				alert("スケジュール終了日は必須です。");
+				return false;
+			} else {
+				//開始日 <= 終了日の関係であること
+				if(schedule["start_date"] > schedule["end_date"]) {
+					alert("終了日は開始日以降の日付を指定して下さい。");
+					return false;
+				}
+			}
+		}
+		
+		//時刻が入力されている場合、開始時刻<=終了時刻でなければエラー
+		if(schedule["start_time"] != '') {
+			if(schedule["start_time"] > schedule["end_time"]) {
+				alert("終了時刻は開始時刻以降の時間を指定して下さい。");
+				return false;
+			}
+		}
+	}
+	
+	if(params["schedule_conn"] == null || params["schedule_conn"].length == 0) {
+		alert("スケジュールに紐づくユーザもしくは設備を1件以上設定して下さい。");
+		return false;
+	}
+	return true;
 }
 
 
@@ -567,7 +662,7 @@ function renderScheduleDialog(result){
 	var repeatDay = schedule.repeat_day;
 	if(repeatDay == null || repeatDay == "") {
 		//開始日付を元に初期値を設定
-		repeatDay = parseInt(schedule.start_date.substring(6), 10);
+		repeatDay = parseInt(unFormatDate(schedule.start_date).substring(6), 10);
 	}
 	$("#repeatDay").val(repeatDay);
 

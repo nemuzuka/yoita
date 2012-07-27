@@ -117,6 +117,18 @@ Validate.prototype = {
 		return (regex.test(targetValue) == false);
 
 	},
+	//時刻チェック(4桁の数値であることのチェック)
+	//詳細は、サーバ側で行う
+	time:function(value) {
+		if(value == null || value == '') {
+			return false;
+		}
+		
+		var targetValue = unFormatTime(value);
+		var regex = /^\d{4}$/;
+		return (regex.test(targetValue) == false);
+
+	},
 	//日付(List)
 	day4List:function(values){
 		var errorIndex = [];
@@ -275,6 +287,17 @@ Validate.prototype = {
 							this.error_array.push(this.rules_array[i].error.format(
 									(j + 1), this.rules_array[i].error_args));
 						}
+						this.e = false;
+					}
+					break;
+				//時刻(HHmm)
+				case "time":
+					if (this.time(this.rules_array[i].value)){
+						if(this.rules_array[i].error == undefined) {
+							this.rules_array[i].error = "{0}は時刻(HHmm)ではありません。";
+						}
+						this.error_array.push(this.rules_array[i].error.format(
+								this.rules_array[i].error_args));
 						this.e = false;
 					}
 					break;

@@ -58,9 +58,10 @@ function refresh() {
 	//サーバに問い合わせ
 	setAjaxDefault();
 	$.ajax({
-		type: "POST",
-		url: contextPath + "/groupware/scheduleWeek4UserAjax/refresh/",
-		success: function(data, status){
+		type: "GET",
+		url: "/ajax/scheduleWeekUser/refresh/"
+	}).then(
+		function(data){
 
 			//共通エラーチェック
 			if(errorCheck(data) == false) {
@@ -70,9 +71,6 @@ function refresh() {
 			//再描画
 			renderSchedule(result);
 		}
-	});
-
-	//通知履歴の再描画
-	refreshInform(false);
+	);
 }
 

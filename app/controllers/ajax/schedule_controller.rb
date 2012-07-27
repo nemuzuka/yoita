@@ -26,6 +26,22 @@ module Ajax #:nodoc:
       end
     end
     
+    #
+    # スケジュール登録・更新
+    #
+    def save
+      exeption_handler do
+        # リクエストパラメータを元に登録・更新
+        service = ScheduleService.new
+        service.save(params, get_user_info.resource_id)
+        
+        result = Entity::JsonResult.new
+        result.info_msgs.push("正常に終了しました");
+        render json: result
+        
+      end
+    end
+    
   end
 
 end

@@ -19,6 +19,18 @@ module Ajax #:nodoc:
         write_response(target_date)
       end
     end
+
+    #
+    # スケジュールデータ再描画.
+    # Sessionに格納されている基準日を元に、スケジュールデータを再描画します
+    #
+    def refresh
+      exeption_handler do
+        target_date = get_schedule_dto.base_date
+        target_date = ApplicationHelper::get_current_date if target_date == nil
+        write_response(target_date)
+      end
+    end
     
     private
       #

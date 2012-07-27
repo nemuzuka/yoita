@@ -16,12 +16,12 @@
 						<table class="in_table">
 							<tbody>
 							<tr>
-								<th class="th1" width="80px">開始日時<span class="required">(*)</span></th>
-								<td class="td1"><input type="text" id="normal_startDate" size="20" class="date required-input" readOnly="readOnly" />　<input type="text" size="6" id="normal_startTime" /></td>
+								<th class="th1" width="80px">開始日時<span class="important-msg">(*)</span></th>
+								<td class="td1"><input type="text" id="normal_startDate" size="20" class="date required-input" />　<input type="text" size="6" id="normal_startTime" class="input-small" /></td>
 							</tr>
 							<tr>
-								<th class="th1">終了日時<span class="required">(*)</span></th>
-								<td class="td1"><input type="text" id="normal_endDate" size="20" class="date required-input" readOnly="readOnly" />　<input type="text" size="6" id="normal_endTime" /></td>
+								<th class="th1">終了日時<span class="important-msg">(*)</span></th>
+								<td class="td1"><input type="text" id="normal_endDate" size="20" class="date required-input" />　<input type="text" size="6" id="normal_endTime" class="input-small" /></td>
 							</tr>
 							</tbody>
 						</table>
@@ -30,7 +30,7 @@
 						<table class="in_table">
 							<tbody>
 							<tr>
-								<th class="th1" width="80px">繰り返し<span class="required">(*)</span></th>
+								<th class="th1" width="80px">繰り返し<span class="important-msg">(*)</span></th>
 								<td class="td1">
 									<label for="repeat_conditions_1"><input type="radio" name="repeat_conditions" value="1" id="repeat_conditions_1" />毎日</label><br />
 									<label for="repeat_conditions_2"><input type="radio" name="repeat_conditions" value="2" id="repeat_conditions_2" />毎日(土日を除く)</label><br />
@@ -40,19 +40,19 @@
 							</tr>
 
 							<tr>
-								<th class="th1">いつから<span class="required">(*)</span></th>
-								<td class="td1"><input type="text" id="repeat_startDate" size="20" class="date required-input" readOnly="readOnly" /></td>
+								<th class="th1">いつから<span class="important-msg">(*)</span></th>
+								<td class="td1"><input type="text" id="repeat_startDate" size="20" class="date required-input" /></td>
 							</tr>
 							<tr>
-								<th class="th1">いつまで<span class="required">(*)</span></th>
+								<th class="th1">いつまで<span class="important-msg">(*)</span></th>
 								<td class="td1">
 									<label for="repeatEndless"><input type="checkbox" id="repeatEndless" name="repeatEndless">無期限</label><br />
-									<input type="text" id="repeat_endDate" size="20" class="date required-input" readOnly="readOnly" />
+									<input type="text" id="repeat_endDate" size="20" class="date required-input" />
 								</td>
 							</tr>
 							<tr>
 								<th class="th1">時間指定</th>
-								<td class="td1"><input type="text" size="6" id="repeat_startTime" />～<input type="text" size="6" id="repeat_endTime" /></td>
+								<td class="td1"><input type="text" size="6" class="input-small" id="repeat_startTime" />～<input type="text" size="6" class="input-small" id="repeat_endTime" /></td>
 							</tr>
 							</tbody>
 						</table>
@@ -61,7 +61,7 @@
 			</td>
 		</tr>
 		<tr>
-			<th class="th1">件名<span class="required">(*)</span></th>
+			<th class="th1">件名<span class="important-msg">(*)</span></th>
 			<td class="td1">
 				<input type="text" size="40" id="title" class="required-input" />
 			</td>

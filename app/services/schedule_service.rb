@@ -9,6 +9,25 @@ require "model"
 class ScheduleService < Service::Base
   
   #
+  # スケジュール登録・更新
+  # スケジュール情報を登録・更新した後、関連データを登録します
+  # ==== _Args_
+  # [params]
+  #   スケジュール登録・更新情報
+  # [action_resource_id]
+  #   登録・更新処理実行ユーザリソースID
+  # ==== _Return_
+  # 処理スケジュール
+  # see. <i>Schedule</i>
+  #
+  def save(params, action_resource_id)
+    transaction_handler do
+      logic = ScheduleLogic.new
+      logic.save(params, action_resource_id)
+    end
+  end
+  
+  #
   # リソース指定週次スケジュール表示データ作成
   # 指定期間に対する、指定リソースの週次スケジュール表示データを作成します
   # ==== _Args_
