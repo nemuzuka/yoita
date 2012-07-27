@@ -23,9 +23,9 @@ function moveGroupResource(selectedValue) {
 	viewLoadingMsg();
 	var appendstr = "";
 	if(selectedValue != "") {
-		appendstr = "?groupId=" + selectedValue;
+		appendstr = "?group_resource_id=" + selectedValue;
 	}
-	document.location.href = "/groupware/scheduleWeek4Group/" + appendstr;
+	document.location.href = "/scheduleWeekGroup/" + appendstr;
 }
 
 //スケジュール情報追加

@@ -77,7 +77,7 @@ function renderSchedule(result) {
 			openResourceDetailDialog(targetResourceId);
 		});
 		var resourceClass = "td1_schedule";
-		if(this.resourceType == "003") {
+		if(this.resource_type == "003") {
 			resourceClass = "td1_userGroup";
 		}
 		var $td = $("<td />").addClass(resourceClass).append($a).append("<br />");
@@ -92,7 +92,7 @@ function renderSchedule(result) {
 		//日付情報表示
 		var daySchedules = this.schedule_list;
 		$.each(daySchedules, function(index){
-			$td = $("<td />").addClass("td1_schedule");
+			$td = $("<td />").addClass(resourceClass);
 
 			//時刻指定無しListを表示
 			setSchedule(this.no_time_list, $td);
@@ -198,6 +198,6 @@ function renderResourceDetailDialog(result) {
 function moveMonthResource(resourceId) {
 	//選択リソースに対して月次予定を表示
 	viewLoadingMsg();
-	document.location.href = contextPath + "/groupware/scheduleMonth4Resource/?resourceId=" + resourceId;
+	document.location.href = contextPath + "/groupware/scheduleMonth4Resource/?group_resource_id=" + resourceId;
 }
 

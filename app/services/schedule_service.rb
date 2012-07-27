@@ -115,6 +115,12 @@ class ScheduleService < Service::Base
       # 取得したリソースIDListに対するスケジュール情報を取得する
       schedule_view = create_resources_schedule_view(target_dates, resource_ids, action_resource_id)
       schedule_view.target_group_resource_id = search_param.group_resource_id
+      
+      # ページング情報を作成
+      schedule_view.link = PagerHelper.crate_page_link(
+          search_param, "turnResources", "/ajax/scheduleWeekGroup/turn")
+      schedule_view.total_count = search_param.total_count
+
       return schedule_view
     end
   end
@@ -167,6 +173,17 @@ class ScheduleService < Service::Base
     # 表示スケジュール(1要素が1リソース分のデータ)
     # <i>ScheduleLogic::ResourceSchedule</i>のlist
     attr_accessor :view_resource_schedule
+
+
+    #
+    # グループの週次スケジュール表示時に設定する
+    #
+    
+    # リンク文字列(Htmlタグ)
+    attr_accessor :link
+    # トータル件数
+    attr_accessor :total_count
+
   end
   
   #

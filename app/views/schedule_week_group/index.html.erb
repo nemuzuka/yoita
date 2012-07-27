@@ -1,0 +1,16 @@
+<%= javascript_include_tag "schedule/scheduleCommon"  %>
+<%= javascript_include_tag "schedule/scheduleWeek"  %>
+<%= javascript_include_tag "schedule/scheduleWeek4Group"  %>
+
+<% content_for :extend_sub_menu do %>
+	<%= render :file => 'schedule/_schedule_sub_menu.html.erb' %>
+<% end %>
+
+<%= render :file => 'schedule/_schedule_week.html.erb' %>
+
+<%= render :file => 'schedule/schedule_dialog.html.erb' %>
+
+<%= hidden_field_tag :group_resource_id, @group_resource_id %>
+<input type="hidden" id="selected_sub_menu" value="sub_menu1" />
+</div>
+
