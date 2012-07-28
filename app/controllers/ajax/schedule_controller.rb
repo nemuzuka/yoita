@@ -49,7 +49,6 @@ module Ajax #:nodoc:
       exeption_handler do
         schedule_id = params[:schedule_id]
         lock_version = params[:lock_version]
-        # リクエストパラメータを元に登録・更新
         service = ScheduleService.new
         service.delete(schedule_id, lock_version, get_user_info.resource_id)
         
@@ -66,7 +65,6 @@ module Ajax #:nodoc:
     def get_group_conn_list
       exeption_handler do
         selected_group_resource = params[:selected_group_resource]
-        # リクエストパラメータを元に登録・更新
         service = ScheduleDetailService.new
         result = service.create_group_conn_list(selected_group_resource, true)
 
@@ -83,17 +81,61 @@ module Ajax #:nodoc:
     def get_resource_detail
       exeption_handler do
         resource_id = params[:resource_id]
-        # リクエストパラメータを元に登録・更新
         service = ResourceService.new
         result = service.get_detail(resource_id)
 
         ajax_result = Entity::JsonResult.new
         ajax_result.result = result
-        p ajax_result
         render json: ajax_result
       end
     end
     
+    #
+    # スケジュールフォロー取得
+    #
+    def get_schedule_follows
+      exeption_handler do
+        schedule_id = params[:schedule_id]
+        service = ScheduleFollowService.new
+        result = service.get_follow_list(schedule_id, get_user_info.resource_id)
+
+        ajax_result = Entity::JsonResult.new
+        ajax_result.result = result
+        render json: ajax_result
+      end
+    end
+    
+    #
+    # スケジュールフォロー追加
+    #
+    def save_follow
+      exeption_handler do
+        service = ScheduleFollowService.new
+        service.save(params, get_user_info.resource_id)
+
+        result = Entity::JsonResult.new
+        result.info_msgs.push("正常に終了しました");
+        render json: result
+      end
+    end
+
+    #
+    # スケジュールフォロー削除
+    #
+    def delete_follow
+      exeption_handler do
+        schedule_id = params[:schedule_id]
+        schedule_follow_id = params[:schedule_follow_id]
+        
+        service = ScheduleFollowService.new
+        service.delete(schedule_id, schedule_follow_id, get_user_info.resource_id)
+
+        result = Entity::JsonResult.new
+        result.info_msgs.push("正常に終了しました");
+        render json: result
+      end
+    end
+
   end
 
 end
