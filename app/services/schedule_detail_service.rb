@@ -225,9 +225,9 @@ class ScheduleDetailService < Service::Base
       ret.update_resource_name = get_resource_name(ret.schedule[:update_resource_id], resource_hash)
       
       # 登録時刻の設定
-      ret.entry_time = DateHelper::get_format_time(ret.schedule[:created_at])
+      ret.entry_time = DateHelper::get_formated_time(ret.schedule[:created_at])
       # 更新時刻の設定
-      ret.update_time = DateHelper::get_format_time(ret.schedule[:updated_at])
+      ret.update_time = DateHelper::get_formated_time(ret.schedule[:updated_at])
       
       # 表示用期間の設定
       ret.view_date = create_view_date(ret.schedule)

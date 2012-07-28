@@ -135,15 +135,17 @@ module DateHelper
   # ==== _Args_
   # [time]
   #   Timeオブジェクト
+  # [format]
+  #   format文字列
   # ==== _Return_
   # 時刻文字列(該当データが存在しなければ空文字)
   #
-  def get_format_time(time)
+  def get_formated_time(time, format = "%Y/%m/%d %H:%M")
     if time == nil
       return ""
     end
     
-    return time.strftime("%Y/%m/%d %H:%M")
+    return time.strftime(format)
   end
   
 end

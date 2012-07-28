@@ -143,5 +143,15 @@ module SetupMethods
     FactoryGirl.create(:schedule_conn16)
     
   end
+
+  #
+  # ScheduleFollowLogicテスト用
+  #
+  def create_schedule_follow_logic
+    create_schedule_logic
+    FactoryGirl.create(:schedule_follow1)
+    FactoryGirl.create(:schedule_follow2)
+    FactoryGirl.create(:schedule_follow3)
+  end
   
 end

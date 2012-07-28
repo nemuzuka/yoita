@@ -208,4 +208,22 @@ class ResourceLogic
     Resource.find_by_conditions(search_param)
   end
   
+  #
+  # リソースID指定によるリソースデータ取得
+  # ==== _Args_
+  # [resource_ids]
+  #   リソースID指定List
+  # ==== _Return_
+  # keyがid,
+  # valueが<i>Resource</i>のhash
+  #
+  def get_resources_hash(resource_ids)
+    list = get_resources(resource_ids)
+    hash = {}
+    list.each do |target|
+      hash[target[:id]] = target
+    end
+    return hash
+  end
+  
 end

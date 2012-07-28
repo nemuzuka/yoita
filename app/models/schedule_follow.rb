@@ -24,7 +24,7 @@ class ScheduleFollow < ActiveRecord::Base
     condition = SqlHelper.add_condition(
       nil,
       schedule_follow[:schedule_id].eq(schedule_id))
-    orders = [schedule_follow[:id]];
+    orders = [schedule_follow[:id].desc];
     self.where(condition).order(orders)
   end
 
