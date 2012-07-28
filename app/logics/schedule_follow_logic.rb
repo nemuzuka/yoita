@@ -50,9 +50,11 @@ class ScheduleFollowLogic
         entity.entry_resource_name = resource[:name]
       end
       entity.entry_time = DateHelper::get_formated_time(target[:created_at], "%m/%d %H:%M")
-      entity.delete = false
+
+      # フォロー削除可能の設定
+      entity.delete_follow = false
       if entry_user == true || target[:entry_resource_id] == action_resource_id
-        entity.delete = true
+        entity.delete_follow = true
       end
       ret_list.push(entity)
     end
@@ -133,7 +135,7 @@ class ScheduleFollowLogic
     attr_accessor :entry_time
     
     # 削除可能なフォローの場合、true
-    attr_accessor :delete
+    attr_accessor :delete_follow
   end
   
 end

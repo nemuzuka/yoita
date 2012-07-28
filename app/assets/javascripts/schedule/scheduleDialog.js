@@ -5,8 +5,35 @@ $(function(){
 	initUserDetailDialog();
 	initFacilitiesDetailDialog();
 	initUserGroupDetailDialog();
+	initFollowDialog();
 
 });
+
+//フォロー登録ダイアログの初期化
+function initFollowDialog(){
+	$("#followEditDialog").dialog({
+		modal: true,
+		autoOpen: false,
+		width: 600,
+		resizable: false,
+		open:function (event) {
+			openModalDialog();
+		},
+		close:function (event) {
+			closeModelDialog();
+		},
+		show: 'clip',
+        hide: 'clip'
+	});
+	
+	$("#followExecute").click(function(){
+		followExecute();
+	});
+	
+	$("#followEditDialog-cancel").click(function(){
+		$("#followEditDialog").dialog("close");
+	});
+}
 
 //ユーザグループ詳細ダイアログの初期化
 function initUserGroupDetailDialog(){
@@ -95,7 +122,7 @@ function initScheduleDetailDialog() {
 
 	//フォロー追加ボタンクリック時
 	$("#addFollow").click(function(){
-		alert("フォロー追加するでよ");
+		openFollowEditDialog();
 	});
 
 	$("#scheduleDetailDialog-cancel").click(function(){
@@ -138,47 +165,6 @@ function scheduleDelete() {
 }
 
 
-//スケジュールフォロー追加
-function scheduleFollowExecute() {
-	var params={};
-	params["scheduleId"] = $("#scheduleId").val();
-	params["memo"] = $("#follow").val();
-	params["org.apache.struts.taglib.html.TOKEN"] = $("input[type='hidden'][name='org.apache.struts.taglib.html.TOKEN']").get()[0].value;
-
-	var isRefresh = false;
-
-	setAjaxDefault();
-	$.ajax({
-		type: "POST",
-		data: params,
-		dataType: "json",
-		url: contextPath + '/groupware/scheduleFollowAddAjax/execute/',
-		success: function(data, status){
-
-			//共通エラーチェック
-			if(errorCheck(data) == false) {
-
-				if(data.status_code == -1) {
-					//validateエラーの場合、もう一度リトライさせる
-					return;
-				}
-			} else {
-				//正常終了時はダイアログを再描画する
-				isRefresh = true;
-			}
-
-			//メッセージを表示し、スケジュールを再描画
-			infoCheck(data);
-			refresh();
-		}
-	});
-
-	//フォロー追加成功時は、ダイアログを再描画する
-	if(isRefresh) {
-		refreshScheduleDetailDialog();
-	}
-}
-
 //スケジュール詳細ダイアログ描画
 function renderScheduleDetailDialog(result) {
 
@@ -199,8 +185,17 @@ function renderScheduleDetailDialog(result) {
 		$("#facilitiesConnList").append($span).append("<br />");
 	});
 
-	$("#entryUserName").text(result.entry_resource_name);
-	$("#updateUserName").text(result.update_resource_name);
+	var entryUserName = result.entry_resource_name;
+	if(entryUserName != '') {
+		entryUserName = entryUserName + "(" + result.entry_time + ")";
+	}
+	$("#entryUserName").text(entryUserName);
+	
+	var updateUserName = result.update_resource_name;
+	if(updateUserName != '') {
+		updateUserName = updateUserName + "(" + result.update_time + ")";
+	}
+	$("#updateUserName").text(updateUserName);
 
 	$("#scheduleDetailVersionNo").val(schedule.lock_version);
 	$("#scheduleId").val(schedule.id);
@@ -722,12 +717,134 @@ function openDetailDialog(scheduleId) {
 			}
 			var result = data.result;
 			renderScheduleDetailDialog(result);
-			prependDummyText("scheduleDetailDialog");
-			$("#scheduleDetailDialog").dialog("open");
-			removeDummyText("scheduleDetailDialog");
+			
+			refreshFollowList().pipe(
+				function() {
+					prependDummyText("scheduleDetailDialog");
+					$("#scheduleDetailDialog").dialog("open");
+					removeDummyText("scheduleDetailDialog");
+				}
+			);
 		}
 	);
 }
+
+//フォロー一覧再描画
+function refreshFollowList() {
+
+	var params = {};
+	params["schedule_id"] = $("#scheduleId").val();
+	$("#followViewArea").empty();
+
+	setAjaxDefault();
+	return $.ajax({
+		type: "GET",
+		data: params,
+		url: "/ajax/schedule/get_schedule_follows/"
+	}).then(
+		function(data) {
+			var result = data.result;
+			if(result.length == 0) {
+				return;
+			}
+			
+			var $h2 = $("<h2 />").addClass("title small").text("コメント").css({"margin-top":"1em"});
+			var $table = $("<table />").addClass("table table-bordered result_table comment_list_table");
+			var $tbody = $("<tbody />");
+			$.each(result, function(){
+				
+				var entry_time = this.entry_time;
+				var follow = this.schedule_follow.memo;
+				var follow_id = this.schedule_follow.id;
+				var delete_follow = this.delete_follow;
+				var entry_resource_name = this.entry_resource_name;
+		
+				var $delBtn = $("<input />").attr({type:"button", value:"削"}).addClass("btn btn-danger btn-mini");
+				$delBtn.click(function(){
+					deleteFollow(follow_id);
+				});
+				
+				var $tr = $("<tr />");
+				$tr.append($("<td />").html(escapeTextArea(follow)))
+				    .append($("<td />").text(entry_resource_name).attr({width:"120px"}))
+					.append($("<td />").text(entry_time).attr({width:"120px"}))
+					.append($("<td />").append($delBtn).attr({width:"50px"}));
+				$tbody.append($tr)
+			});
+			$table.append($tbody);
+			$("#followViewArea").append($h2).append($table);
+		}
+	);
+}
+
+//フォロー登録ダイアログ
+function openFollowEditDialog() {
+	$("#follow_memo").val("");
+	$("#followEditDialog").dialog("open");
+}
+
+//スケジュールフォロー追加
+function followExecute() {
+	var params={};
+	params["schedule_follow"] = {};
+	var schedule_follow = params["schedule_follow"];
+	schedule_follow["schedule_id"] = $("#scheduleId").val();
+	schedule_follow["memo"] = $("#follow_memo").val();
+	schedule_follow["parent_schedule_follow_id"] = "";
+	setToken(params);
+
+	if(validateFollow(params) == false) {
+		return;
+	}
+
+	setAjaxDefault();
+	$.ajax({
+		type: "POST",
+		data: params,
+		dataType: "json",
+		url: '/ajax/schedule/save_follow/'
+	}).then(
+		function(data){
+
+			//共通エラーチェック
+			if(errorCheck(data) == false) {
+
+				if(data.status_code == -1) {
+					//validateエラーの場合、もう一度リトライさせる
+					return;
+				} else {
+					//該当スケジュールが存在しない場合、本ダイアログをクローズし、詳細ダイアログをクローズし、
+					//画面を再描画する
+					closeScheduleAndFollowDialog();
+				}
+				return;
+			}
+
+			//メッセージを表示し、スケジュールフォローを再描画
+			$("#followEditDialog").dialog("close");
+			infoCheck(data);
+			refreshFollowList();
+		}
+	);
+}
+
+//Follow登録validate
+function validateFollow(params) {
+	var v = new Validate();
+	var schedule_follow = params["schedule_follow"];
+
+	v.addRules({value:schedule_follow["memo"],option:'required',error_args:"フォロー"});
+	v.addRules({value:schedule_follow["memo"],option:'maxLength',error_args:"フォロー", size:1024});
+	return v.execute();
+}
+
+//スケジュール、スケジュールフォローダイアログクローズ
+function closeScheduleAndFollowDialog() {
+	$("#followEditDialog").dialog("close");
+	$("#scheduleDetailDialog").dialog("close");
+	refresh();
+}
+
 //フォロー削除
 function deleteFollow(id) {
 	if(window.confirm('フォローを削除します。本当によろしいですか？') == false) {
@@ -735,28 +852,34 @@ function deleteFollow(id) {
 	}
 
 	var params={};
-	params["id"] = id;
-	params["org.apache.struts.taglib.html.TOKEN"] = $("input[type='hidden'][name='org.apache.struts.taglib.html.TOKEN']").get()[0].value;
+	params["schedule_id"] = $("#scheduleId").val();
+	params["schedule_follow_id"] = id;
+	setToken(params);
 
 	setAjaxDefault();
 	$.ajax({
 		type: "POST",
 		data: params,
 		dataType: "json",
-		url: contextPath + '/groupware/scheduleFollowAjax/delete/',
-		success: function(data, status){
+		url: '/ajax/schedule/delete_follow/'
+	}).then(
+		function(data){
 
 			//共通エラーチェック
-			errorCheck(data);
+			if(errorCheck(data) == false) {
 
-			//メッセージを表示して、スケジュール詳細を再描画
+				//エラーが存在する場合、ダイアログクローズ
+				closeScheduleAndFollowDialog();
+				return;
+			}
+
+			//メッセージを表示し、スケジュールフォローを再描画
 			infoCheck(data);
-			reSetToken();
-
-			refreshScheduleDetailDialog();
+			refreshFollowList();
 		}
-	});
+	);
 }
+
 
 //空き時間確認画面表示
 //・hidden情報に選択済みのリソース、選択状態のりソースIDを設定
