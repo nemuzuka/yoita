@@ -2,6 +2,7 @@
 
 FactoryGirl.define do
   factory :schedule_follow1, :class => ScheduleFollow do
+    id 1234567
     schedule_id 10001
     parent_schedule_follow_id nil
     memo "ふぉろー"
@@ -11,6 +12,7 @@ FactoryGirl.define do
   end
 
   factory :schedule_follow2, :class => ScheduleFollow do
+    id 1234568
     schedule_id 10001
     parent_schedule_follow_id nil
     memo "ふぉろーその2"
@@ -20,6 +22,7 @@ FactoryGirl.define do
   end
 
   factory :schedule_follow3, :class => ScheduleFollow do
+    id 1234569
     schedule_id 10001
     parent_schedule_follow_id nil
     memo "ふぉろーその3"

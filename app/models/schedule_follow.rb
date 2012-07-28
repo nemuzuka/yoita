@@ -7,7 +7,9 @@ class ScheduleFollow < ActiveRecord::Base
   attr_accessible :entry_resource_id, :memo, :parent_schedule_follow_id, :schedule_id, :update_resource_id
   
   # validate
-  validates :memo, :length => { :maximum  => 1024 }
+  validates :schedule_id, :presence => true
+  validates :memo, :length => { :maximum  => 1024 }, :presence => true
+
 
   #
   # スケジュールフォローデータ取得.

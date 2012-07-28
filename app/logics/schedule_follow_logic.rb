@@ -60,6 +60,65 @@ class ScheduleFollowLogic
   end
   
   #
+  # スケジュールフォロー追加
+  # ==== _Args_
+  # [params]
+  #   登録情報
+  # [action_resource_id]
+  #   登録・更新処理実行ユーザリソースID
+  #
+  def save(params, action_resource_id)
+    
+    schedule_id = params[:schedule_follow][:schedule_id]
+    # スケジュールの存在チェック、参照チェック
+    logic = ScheduleDetailLogic.new
+    logic.get_detail(schedule_id, action_resource_id)
+    
+    # スケジュールフォローの登録
+    schedule_follow = ScheduleFollow.new(params[:schedule_follow])
+    schedule_follow[:entry_resource_id] = action_resource_id
+    schedule_follow[:update_resource_id] = action_resource_id
+    
+    begin
+      schedule_follow.save!
+    rescue ActiveRecord::RecordInvalid => e
+      raise CustomException::ValidationException.new(e.record.errors.full_messages)
+    end
+  end
+  
+  #
+  # スケジュールフォロー削除
+  # ==== _Args_
+  # [schedule_id]
+  #   スケジュールID
+  # [schedule_follow_id]
+  #   スケジュールフォローID
+  # [action_resource_id]
+  #   登録・更新処理実行ユーザリソースID
+  #
+  def delete(schedule_id, schedule_follow_id, action_resource_id)
+    # スケジュールの存在チェック、参照チェック
+    logic = ScheduleDetailLogic.new
+    schedule_detail = logic.get_detail(schedule_id, action_resource_id)
+    
+    schedule_follow = ScheduleFollow.find_by_id(schedule_follow_id)
+    if schedule_follow == nil
+      raise CustomException::NotFoundException
+    end
+    
+    # フォローを削除する権限が無ければ、エラー
+    schedule = schedule_detail.schedule
+    if schedule[:entry_resource_id] != action_resource_id && 
+      schedule_follow[:entry_resource_id] != action_resource_id
+
+      raise CustomException::NotFoundException
+    end
+    
+    schedule_follow.destroy
+  end
+  
+  
+  #
   # スケジュールFollowの表示用データ保持クラス
   #
   class ScheduleFollowEntity
