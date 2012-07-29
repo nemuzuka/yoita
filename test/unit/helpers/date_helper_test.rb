@@ -61,4 +61,21 @@ class DateHelperTest < ActionView::TestCase
     assert_equal time_string?("2359"), true
     assert_equal time_string?("2400"), false
   end
+  
+  test "create_month_date_listのテスト" do
+    actual_list = create_month_date_list("201207")
+    assert_equal actual_list.length, 35
+    assert_equal actual_list[0], Date.strptime("20120701","%Y%m%d")
+    assert_equal actual_list[actual_list.length - 1], Date.strptime("20120804","%Y%m%d")
+
+    actual_list = create_month_date_list("201208")
+    assert_equal actual_list[0], Date.strptime("20120729","%Y%m%d")
+    assert_equal actual_list[actual_list.length - 1], Date.strptime("20120901","%Y%m%d")
+
+    actual_list = create_month_date_list("201206")
+    assert_equal actual_list[0], Date.strptime("20120527","%Y%m%d")
+    assert_equal actual_list[actual_list.length - 1], Date.strptime("20120630","%Y%m%d")
+    
+  end
+  
 end

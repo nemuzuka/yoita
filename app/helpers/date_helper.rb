@@ -29,6 +29,37 @@ module DateHelper
   end
 
   #
+  # 日付List作成
+  # 基準年月を元に、1ヶ月分のDateのListを作成します。
+  # Listの先頭は日曜日で、Listの末尾は土曜日とし、不足分は先月、翌月の日付データを追加します
+  # ==== _Args_
+  # [target_month]
+  #   基準年月
+  # ==== _Return_
+  # 生成DateList
+  #
+  def create_month_date_list(target_month)
+    # 開始日の取得
+    date = Date.strptime(target_month + "01", "%Y%m%d")
+    start_date = date - date.wday
+    
+    # 終了日の取得
+    date = create_end_of_month(date)
+    wday = date.wday
+    if wday != 0
+      end_date = date + (6 - wday)
+    else
+      end_date = date
+    end
+    ret_date = []
+    while start_date <= end_date do
+      ret_date.push(start_date)
+      start_date = start_date + 1
+    end
+    return ret_date
+  end
+
+  #
   # 時刻フォーマット処理
   # ==== _Args_
   # [target_time]

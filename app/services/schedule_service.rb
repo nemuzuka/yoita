@@ -124,6 +124,32 @@ class ScheduleService < Service::Base
       return schedule_view
     end
   end
+
+  #
+  # リソース指定月次スケジュール表示データ作成
+  # 指定期間に対する、指定リソースの月次スケジュール表示データを作成します
+  # ==== _Args_
+  # [target_month]
+  #   表示対象年月
+  # [target_resource_id]
+  #   表示対象リソースID
+  # [action_resource_id]
+  #   ログインユーザのリソースID
+  # ==== _Return_
+  # 該当レコード(see. <i>ScheduleService::ScheduleView</i>)
+  #
+  def create_resource_schedule_view_month(target_month, target_resource_id, action_resource_id)
+    transaction_handler do
+      
+      # 基準年月の日付Listを取得
+      target_dates = DateHelper::create_month_date_list(target_month)
+      
+      schedule_view = create_resources_schedule_view(target_dates, [target_resource_id], 
+        action_resource_id, target_month)
+      schedule_view.target_group_resource_id = ""
+      return schedule_view
+    end
+  end
   
   #
   # 複数リソース指定スケジュール表示データ作成

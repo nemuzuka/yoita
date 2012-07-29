@@ -12,6 +12,7 @@ module Ajax #:nodoc:
     # Session上に格納しているスケジュール情報を取得します
     # ==== _Return_
     # スケジュール表示情報
+    # see. <i></i>
     #
     def get_schedule_dto
       schedule_dto =  session[:schedule_dto]
