@@ -14,7 +14,7 @@ function initFollowDialog(){
 	$("#followEditDialog").dialog({
 		modal: true,
 		autoOpen: false,
-		width: 600,
+		width: 800,
 		resizable: false,
 		open:function (event) {
 			openModalDialog();
@@ -51,6 +51,9 @@ function initUserGroupDetailDialog(){
 		show: 'clip',
         hide: 'clip'
 	});
+	$("#userGroupDetailDialog-cancel").click(function(){
+		$("#userGroupDetailDialog").dialog("close");
+	})
 }
 
 //設備詳細ダイアログの初期化
@@ -69,6 +72,9 @@ function initFacilitiesDetailDialog() {
 		show: 'clip',
         hide: 'clip'
 	});
+	$("#facilitiesDetailDialog-cancel").click(function(){
+		$("#facilitiesDetailDialog").dialog("close");
+	})
 }
 
 //ユーザ詳細ダイアログの初期化
@@ -87,6 +93,11 @@ function initUserDetailDialog() {
 		show: 'clip',
         hide: 'clip'
 	});
+	
+	$("#userDetailDialog-cancel").click(function(){
+		$("#userDetailDialog").dialog("close");
+	})
+	
 }
 
 
@@ -95,7 +106,7 @@ function initScheduleDetailDialog() {
 	$("#scheduleDetailDialog").dialog({
 		modal: true,
 		autoOpen: false,
-		width: 800,
+		width: 850,
 		resizable: false,
 		open:function (event) {
 			openModalDialog();
@@ -187,13 +198,13 @@ function renderScheduleDetailDialog(result) {
 
 	var entryUserName = result.entry_resource_name;
 	if(entryUserName != '') {
-		entryUserName = entryUserName + "(" + result.entry_time + ")";
+		entryUserName = entryUserName + " (" + result.entry_time + ")";
 	}
 	$("#entryUserName").text(entryUserName);
 	
 	var updateUserName = result.update_resource_name;
 	if(updateUserName != '') {
-		updateUserName = updateUserName + "(" + result.update_time + ")";
+		updateUserName = updateUserName + " (" + result.update_time + ")";
 	}
 	$("#updateUserName").text(updateUserName);
 
@@ -208,7 +219,7 @@ function initScheduleEditDialog() {
 	$("#scheduleEditDialog").dialog({
 		modal: true,
 		autoOpen: false,
-		width: 800,
+		width: 850,
 		resizable: false,
 		open:function(event) {
 			openModalDialog();
@@ -767,7 +778,7 @@ function refreshFollowList() {
 				var $tr = $("<tr />");
 				$tr.append($("<td />").html(escapeTextArea(follow)))
 				    .append($("<td />").text(entry_resource_name).attr({width:"120px"}))
-					.append($("<td />").text(entry_time).attr({width:"120px"}))
+					.append($("<td />").text(entry_time).attr({width:"100px"}))
 					.append($("<td />").append($delBtn).attr({width:"50px"}));
 				$tbody.append($tr)
 			});

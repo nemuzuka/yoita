@@ -40,17 +40,6 @@ td{empty-cells: show;}
 .search_ctrl{margin-top:10px;}
 .search_ctrl .btn {margin-right:5px;}
 
-/* 登録・更新テーブル. */
-.edit_main_table{font-size:100%;border-top:2px solid #08C;border-bottom:2px solid #08C;}
-.edit_main_table th,.edit_main_table td{padding:2px 2px;border-bottom:1px solid #08C;}
-.edit_main_table th{background:#8fecff;width:100px;}
-.edit_main_table td{background:#FFF;width:150px;}
-.edit_main_table td:last-child{width:auto;}
-.edit_main_table td[colspan]{width:auto;}
-.edit_main_ctrl{margin-top:10px;}
-.edit_main_ctrl .btn {margin-right:5px;}
-
-
 .result{margin-top:15px;}
 /* 検索結果テーブル */
 .result_table {font-size: 100%; margin-top:5px}
@@ -63,11 +52,12 @@ td{empty-cells: show;}
 /* ダイアログテーブル(並べ替え・編集・フォロー) */
 .edit_table {border-top:2px solid #08C;border-bottom:2px solid #08C;width:100%;border-left:1px solid #08C;}
 .edit_table th,
-.edit_table td {border-bottom:1px solid #08C;border-right:1px solid #08C;padding:2px 2px}
+.edit_table td {border-bottom:1px solid #08C;border-right:1px solid #08C;padding:10px}
 .edit_table th {background:#8fecff;}
 .edit_table td {background:#FFF;}
 .edit_ctrl{margin-top:10px;margin-left:120px;}
 .edit_ctrl .btn {margin-right:5px;}
+.edit_table td.small {font-size: 86%}
 
 
 /* ダイアログ. */
@@ -212,4 +202,8 @@ a:hover.link{color: #005580;}
 .ui-tabs .ui-widget-header{
 	border: 1px solid #EAF6FD;
 	background: #EAF6FD;
+}
+
+a.link {
+  color: #0088cc;
 }
