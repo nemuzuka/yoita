@@ -5,6 +5,7 @@ Yoita::Application.routes.draw do
   resources :logout
   resources :schedule
   resources :scheduleWeekUser
+  resources :userCreate
   
   namespace :admin do
     resources :facilities
