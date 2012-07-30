@@ -192,10 +192,11 @@ a:hover.link{color: #005580;}
 .schedule_table td.td1_userGroup{vertical-align: top;padding: 2px;height: 60px;background: blanchedAlmond;}
 
 
-.week_schedule_table{font-size:90%;border-top:2px solid #ffa28f;border-bottom:2px solid #ffa28f;width:100%;border-collapse:collapse;}
+.week_schedule_table{font-size:90%;border-top:2px solid #08C;border-bottom:2px solid #08C;width:100%;border-collapse:collapse;}
+.week_schedule_table .days{width:12%;font-weight:normal;background:#FFFFCC;}
 .week_schedule_table th,
-.week_schedule_table td{padding:3px;border:1px solid #fcc;}
-.week_schedule_table thead th{border-top:1px solid #fcc;}
+.week_schedule_table td{padding:3px;border:1px solid #0BF;}
+.week_schedule_table thead th{border-top:1px solid #0BF;}
 .week_schedule_table td{background:#FFF;width:14%;}
 .week_schedule_table .days{width:12%;}
 .week_schedule_table td{background:#EEE;color:#666;vertical-align:top;}

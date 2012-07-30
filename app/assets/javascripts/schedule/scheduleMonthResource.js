@@ -112,13 +112,13 @@ function renderSchedule(result) {
 
 	//ヘッダ部分描画
 	var $thead = $("<tr />")
-		.append($("<th />").text("日").addClass("sche_week_sunday"))
-		.append($("<th />").text("月").addClass("sche_week_monday"))
-		.append($("<th />").text("火").addClass("sche_week_tuesday"))
-		.append($("<th />").text("水").addClass("sche_week_wednesday"))
-		.append($("<th />").text("木").addClass("sche_week_theseday"))
-		.append($("<th />").text("金").addClass("sche_week_friday"))
-		.append($("<th />").text("土").addClass("sche_week_saturday"));
+		.append($("<th />").text("日").addClass("sche_week_sunday days"))
+		.append($("<th />").text("月").addClass("sche_week_monday days"))
+		.append($("<th />").text("火").addClass("sche_week_tuesday days"))
+		.append($("<th />").text("水").addClass("sche_week_wednesday days"))
+		.append($("<th />").text("木").addClass("sche_week_theseday days"))
+		.append($("<th />").text("金").addClass("sche_week_friday days"))
+		.append($("<th />").text("土").addClass("sche_week_saturday days"));
 	$table.append($thead);
 
 	//body部分作成
