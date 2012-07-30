@@ -745,7 +745,6 @@ function refreshFollowList() {
 
 	var params = {};
 	params["schedule_id"] = $("#scheduleId").val();
-	$("#followViewArea").empty();
 
 	setAjaxDefault();
 	return $.ajax({
@@ -756,6 +755,7 @@ function refreshFollowList() {
 		function(data) {
 			var result = data.result;
 			if(result.length == 0) {
+				$("#followViewArea").empty();
 				return;
 			}
 			
@@ -783,6 +783,7 @@ function refreshFollowList() {
 				$tbody.append($tr)
 			});
 			$table.append($tbody);
+			$("#followViewArea").empty();
 			$("#followViewArea").append($h2).append($table);
 		}
 	);
