@@ -22,11 +22,23 @@ module Ajax #:nodoc:
     # リクエストパラメータの日付指定に従って基準日を変更し、
     # 表示対象のスケジュールデータを1週間分取得します。
     #
-    def move_date
+    def move_month
       exeption_handler do
+        search_param = get_search_param
+        
+        # 表示対象の年月を算出して、スケジュール表示
+        view_type = params[:view_type]
+        target_month = nil
+        case view_type
+        when ViewType::TODAY
+          target_month = ApplicationHelper::get_current_date.strftime("%Y%m")
+        when ViewType::NEXT
+          target_month = DateHelper::add_month(search_param.target_month, 1)
+        when ViewType::PREV
+          target_month = DateHelper::add_month(search_param.target_month, -1)
+        end
+        search_param.target_month = target_month
 
-        target_date = calc_base_date
-        get_schedule_dto.base_date = target_date
         write_response
       end
       
@@ -51,24 +63,35 @@ module Ajax #:nodoc:
       def write_response
 
         # 検索条件をSessionより取得
-        search_param = session[:schedule_month_dto]
-        if search_param == nil
-          search_param = Ajax::ScheduleMonthResourceController::ScheduleDto.new
-          schedule_month_dto.target_month = 
-            ApplicationHelper::get_current_date.strftime("%Y%m")
-          schedule_month_dto.resource_id = get_user_info.resrouce_id
-        end
+        search_param = get_search_param
         
         service = ScheduleService.new
         result = service.create_resource_schedule_view_month(
-          search_param.target_month, schedule_month_dto.resource_id, 
-          get_user_info.resrouce_id)
+          search_param.target_month, search_param.resource_id, 
+          get_user_info.resource_id)
         
         json_result = Entity::JsonResult.new
         json_result.result = result
 
         render json: json_result
       end
+      
+      #
+      # 検索条件取得
+      # Sessionに存在しない場合、初期値を設定します
+      #
+      def get_search_param
+        search_param = session[:schedule_month_dto]
+        if search_param == nil
+          search_param = Ajax::ScheduleMonthResourceController::ScheduleDto.new
+          search_param.target_month = 
+            ApplicationHelper::get_current_date.strftime("%Y%m")
+          search_param.resource_id = get_user_info.resource_id
+          session[:schedule_month_dto] = search_param
+        end
+        return search_param
+      end
+      
   end
 
 end

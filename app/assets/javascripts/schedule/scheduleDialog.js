@@ -252,7 +252,7 @@ function initScheduleEditDialog() {
 	//繰り返しの日付を設定
 	$("#repeatWeek").empty();
 	for(var i = 0; i < 7; i++) {
-		$("#repeatWeek").append($('<option>').attr({ value: i + 1 }).text(dayName[i]));
+		$("#repeatWeek").append($('<option>').attr({ value: i }).text(dayName[i]));
 	}
 	$("#repeatDay").empty();
 	for(var i = 0; i < 31; i++) {

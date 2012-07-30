@@ -1,0 +1,30 @@
+<%= javascript_include_tag "schedule/scheduleCommon"  %>
+<%= javascript_include_tag "schedule/scheduleMonthResource"  %>
+
+<% content_for :extend_sub_menu do %>
+	<%= render :file => 'schedule/_schedule_sub_menu.html.erb' %>
+<% end %>
+
+<div class="widget">
+<div class="widget-header"><h2 class="title"><span id="targetResourceName"></span> の月次スケジュール</h2></div>
+<div class="widget-content">
+
+<div class="schedule_daycrl">
+<select id="groupResource"></select><a id="defaultGroupResource" href="javascript:void(0)" title="デフォルトグループのスケジュールを参照します">[*]</a>　
+<input type="button" class="btn" id="thisMonth" value="今月">　
+<input type="button" class="btn" id="prev" value="先月">
+<span id="viewMonth"></span>
+<input type="button" class="btn" id="next" value="翌月">
+</div>
+
+<table class="week_schedule_table" id="schedule_area">
+</table>
+</div>
+</div>
+
+<%= render :file => 'schedule/schedule_dialog.html.erb' %>
+
+<%= hidden_field_tag :group_resource_id, @group_resource_id %>
+<input type="hidden" id="selected_sub_menu" value="sub_menu1" />
+</div>
+

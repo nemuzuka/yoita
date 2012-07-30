@@ -179,4 +179,19 @@ module DateHelper
     return time.strftime(format)
   end
   
+  #
+  # 月加算
+  # ==== _Args_
+  # [target_month]
+  #   対象年月文字列(yyyyMM形式)
+  # [amount]
+  #   加算日数(負数の場合、減算)
+  # ==== _Return_
+  # 加算結果年月(yyyyMM形式)
+  #
+  def add_month(target_month, amount)
+    target_date = Date.strptime(target_month + "01", "%Y%m%d") >> amount
+    target_date.strftime("%Y%m")
+  end
+  
 end

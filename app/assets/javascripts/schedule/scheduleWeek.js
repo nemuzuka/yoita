@@ -189,6 +189,6 @@ function renderResourceDetailDialog(result) {
 function moveMonthResource(resourceId) {
 	//選択リソースに対して月次予定を表示
 	viewLoadingMsg();
-	document.location.href = "/groupware/scheduleMonthResource/?resource_id=" + resourceId;
+	document.location.href = "/scheduleMonthResource/?resource_id=" + resourceId;
 }
 

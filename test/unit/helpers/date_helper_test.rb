@@ -78,4 +78,10 @@ class DateHelperTest < ActionView::TestCase
     
   end
   
+  test "add_monthのテスト" do
+    assert_equal add_month("201001", 1), "201002"
+    assert_equal add_month("201001", -1), "200912"
+    assert_equal add_month("201012", 1), "201101"
+  end
+  
 end

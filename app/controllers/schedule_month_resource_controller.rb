@@ -6,7 +6,7 @@ require "base_controller"
 # 月次のグループスケジューラのTOP画面を表示するController
 # Sessionの初期化処理は行わない
 #
-class ScheduleMonthGroupController < BaseController::HtmlController
+class ScheduleMonthResourceController < BaseController::HtmlController
   def index
       exeption_handler do
         

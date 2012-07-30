@@ -144,9 +144,13 @@ class ScheduleService < Service::Base
       # 基準年月の日付Listを取得
       target_dates = DateHelper::create_month_date_list(target_month)
       
-      schedule_view = create_resources_schedule_view(target_dates, [target_resource_id], 
+      schedule_view = create_resources_schedule_view(target_dates, [target_resource_id.to_i], 
         action_resource_id, target_month)
       schedule_view.target_group_resource_id = ""
+
+      # view_date_rangeの再設定
+      target_date = Date.strptime(target_month + "01", "%Y%m%d");
+      schedule_view.view_date_range = target_date.strftime("%Y年%m月")
       return schedule_view
     end
   end
@@ -209,6 +213,11 @@ class ScheduleService < Service::Base
     attr_accessor :link
     # トータル件数
     attr_accessor :total_count
+
+    #
+    # 月次スケジュール表示時に設定する
+    #
+    
 
   end
   
