@@ -10,7 +10,7 @@ module ApplicationHelper
   # システム日付
   #
   def get_current_date
-    Date.today
+    Time.now.to_date
   end
 
 
