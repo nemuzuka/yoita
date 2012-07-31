@@ -107,6 +107,7 @@ function validate(params) {
 <div id="container">
 
 	<h1>Group Scheduler [Yoita]</h1>
+	<span class="important-msg"><%= flash[:notice] %></span>
 	<form>
 		<label>ログインID
 		<input type="text" class="required-input" id="loginId" />
@@ -115,7 +116,7 @@ function validate(params) {
 		<input type="password" class="required-input" id="password" />
 		</label>
 		<input type="button" value="ログイン" id="login_button" class="btn btn-primary"/>
-		<%= hidden_field_tag :referer, @referer %>
+		<%= hidden_field_tag :referer, flash[:referer] %>
 	</form>
 
 	<div class="system">

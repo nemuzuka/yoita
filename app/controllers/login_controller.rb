@@ -13,7 +13,6 @@ class LoginController < BaseController::HtmlNoLoginController
   # ログイン画面を表示します
   #
   def index
-      @referer = flash[:referer].to_s
   end
   
   #

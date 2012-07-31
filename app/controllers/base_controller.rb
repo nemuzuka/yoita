@@ -29,7 +29,6 @@ module BaseController
             yield
           rescue => e
             logger.error e.message if logger
-            #TODO ログイン画面へリダイレクト
             redirect_to :controller => "/login", :action => "index"
           end
           
@@ -55,7 +54,6 @@ module BaseController
       def token_check
         if verified_request? == false
           # →今回の使い方では発生しないはず
-          #TODO ログイン画面へリダイレクト
           redirect_to :controller => "/login", :action => "index"
           return false
         end
@@ -68,10 +66,9 @@ module BaseController
       #
       def login_check
         if logined? == false
-          p "not loggin"
           reset_session
           flash[:referer] = request.fullpath
-          # TODO ログイン画面へリダイレクト
+          flash[:notice] = "一定時間操作されなかったのでタイムアウトしました。"
           redirect_to :controller => "/login", :action => 'index'
           return false
         end
@@ -143,7 +140,6 @@ module BaseController
       #
       def token_check
         if verified_request? == false
-          # TODO エラーメッセージをプロパティ化したい
           render json: createJsonResult(Entity::JsonResult::TOKEN_ERROR, 
             ["「戻る」ボタンを押されたか、他のブラウザによって変更されている可能性があります。もう一度読み込みなおしてから処理を行ってください。"])
           return false
@@ -157,7 +153,6 @@ module BaseController
       #
       def login_check
         if logined? == false
-          # TODO エラーメッセージをプロパティ化したい
           render json: createJsonResult(Entity::JsonResult::SESSION_TIMEOUT, 
             ["一定時間操作されなかったのでタイムアウトしました。"])
           return false
