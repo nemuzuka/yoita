@@ -25,5 +25,4 @@ module LabelValueBeanHelper
       target_list.push(Entity::LabelValueBean.new(target[:id], target[:name]))
     end
   end
-
 end
