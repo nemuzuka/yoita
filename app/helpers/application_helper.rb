@@ -10,7 +10,8 @@ module ApplicationHelper
   # システム日付
   #
   def get_current_date
-    Time.now.to_date
+    date_str = Time.now.strftime("%Y%m%d")
+    Date.strptime(date_str, "%Y%m%d")
   end
 
 
