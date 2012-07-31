@@ -81,7 +81,7 @@ function renderSchedule(result) {
 			resourceClass = "td1_userGroup";
 		}
 		var $td = $("<td />").addClass(resourceClass).append($a).append("<br />");
-		var $img = $("<img />").attr({src:"/images/calendar.png"}).css('cursor','pointer');
+		var $img = $("<img />").attr({src:calender_img_path}).css('cursor','pointer');
 		$img.attr({"alt":"月の予定を表示します","title":"月の予定を表示します"});
 		$img.click(function(){
 			moveMonthResource(targetResourceId);

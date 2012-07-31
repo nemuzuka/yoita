@@ -1,6 +1,6 @@
 //スケジュール追加image追加
 function setAddImage(td, targetResourceId, targetDate) {
-	var $img = $("<img />").attr({src:"/images/write20.gif"}).css('cursor','pointer');
+	var $img = $("<img />").attr({src:schedule_add_img_path}).css('cursor','pointer');
 	$img.attr({"alt":"スケジュールを追加します","title":"スケジュールを追加します"});
 	$img.click(function(){
 		openEditDialog("", targetResourceId, targetDate);
