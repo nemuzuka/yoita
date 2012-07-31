@@ -45,12 +45,8 @@ module DateHelper
     
     # 終了日の取得
     date = create_end_of_month(date)
-    wday = date.wday
-    if wday != 0
-      end_date = date + (6 - wday)
-    else
-      end_date = date
-    end
+    end_date = date + (6 - date.wday)
+    
     ret_date = []
     while start_date <= end_date do
       ret_date.push(start_date)

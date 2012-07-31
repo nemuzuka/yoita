@@ -75,6 +75,10 @@ class DateHelperTest < ActionView::TestCase
     actual_list = create_month_date_list("201206")
     assert_equal actual_list[0], Date.strptime("20120527","%Y%m%d")
     assert_equal actual_list[actual_list.length - 1], Date.strptime("20120630","%Y%m%d")
+
+    actual_list = create_month_date_list("201209")
+    assert_equal actual_list[0], Date.strptime("20120826","%Y%m%d")
+    assert_equal actual_list[actual_list.length - 1], Date.strptime("20121006","%Y%m%d")
     
   end
   
