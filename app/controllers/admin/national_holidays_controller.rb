@@ -12,7 +12,7 @@ module Admin #:nodoc:
     # TOP画面を表示します
     #
     def index
-      exeption_handler do
+      exeption_handler([Authentication::SCHEDULER_ADMIN]) do
         user_info = get_user_info
         # Sessionに格納する
         re_create_session(user_info)

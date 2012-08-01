@@ -59,6 +59,9 @@ class LoginController < BaseController::HtmlNoLoginController
       end
       user_info.per_page = user_info_model[:per_page]
       user_info.default_user_group = user_info_model[:default_user_group]
+      # 権限設定
+      user_info.authentications = Set.new
+      user_info.authentications.add(Authentication::SCHEDULER_ADMIN) if user_info.admin? == true
       
       # Session再作成
       re_create_session(user_info)

@@ -131,3 +131,20 @@ module AmountType
   WEEK = "week"
 end
 
+#
+# アプリケーション参照権限
+#
+module Authentication
+  # スケジューラ管理者
+  SCHEDULER_ADMIN = "scheduler_admin"
+end
+
+#
+# アプリケーション参照権限比較方法
+#
+module AuthenticationCheckType
+  # or
+  OR = "or"
+  # and
+  AND = "and"
+end

@@ -11,7 +11,7 @@ module Ajax #:nodoc:
     # リクエストパラメータを元に削除を行います
     #
     def destroy
-      exeption_handler do
+      exeption_handler([Authentication::SCHEDULER_ADMIN]) do
         service = get_service
         service.delete(params)
         
@@ -26,7 +26,7 @@ module Ajax #:nodoc:
     # 登録されている全ての情報を取得します
     #
     def get_sort_info
-      exeption_handler do
+      exeption_handler([Authentication::SCHEDULER_ADMIN]) do
         # ページング無しで全件取得
         service = get_service
         list = service.get_all_users

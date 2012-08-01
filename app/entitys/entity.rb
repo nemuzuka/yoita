@@ -23,6 +23,8 @@ module Entity
     DUPLICATE_ERR = -5
     # 該当データ無し
     NO_DATA = -6
+    # 権限無し
+    AUTHENTICATION_ERR = -7
     # Sessionタイムアウト
     SESSION_TIMEOUT = -99;
 
@@ -67,6 +69,9 @@ module Entity
     attr_accessor :admin_flg
     # デフォルト表示ユーザグループ
     attr_accessor :default_user_group
+
+    # 保有権限
+    attr_accessor :authentications
 
     # 1ページあたりの表示件数
     attr_accessor :per_page

@@ -20,10 +20,34 @@ module BaseController
       #       ...Controller本体の処理...
       #     end
       #   end
+      # 権限チェックを行う場合、引数に設定します。
+      # チェック対象権限と比較方法を元に、呼び出し許可を有するかチェックします。
       #
-      def exeption_handler
-        if block_given?
+      #   def something_method
+      #     exeption_handler([Authentication::SCHEDULER_ADMIN], AuthenticationCheckType::AND) do
+      #       ...Controller本体の処理...
+      #     end
+      #   end
+      #
+      # ==== _Args_
+      # [authentications]
+      #   チェック対象権限List(see. <i>Authentication</i>)
+      # [authentication_check_type]
+      #   比較方法(<i>AuthenticationCheckType::AND</i>:全て有さなければエラー、<i>AuthenticationCheckType::OR</i>:1つ以上有さなければエラー)
+      #
+      def exeption_handler(authentications = [], authentication_check_type = AuthenticationCheckType::AND)
+        
+        begin
+          check_authentication(authentications, authentication_check_type)
+        rescue CustomException::IllegalAuthenticationException => e
+          # 使用権限無し
+          reset_session
+          flash[:notice] = "この機能は利用不可能です。"
+          redirect_to :controller => "/login", :action => "index"
+          return
+        end
 
+        if block_given?
           begin
             expires_now
             yield
@@ -91,8 +115,32 @@ module BaseController
       #       ...Controller本体の処理...
       #     end
       #   end
+      # 権限チェックを行う場合、引数に設定します。
+      # チェック対象権限と比較方法を元に、呼び出し許可を有するかチェックします。
       #
-      def exeption_handler
+      #   def something_method
+      #     exeption_handler([Authentication::SCHEDULER_ADMIN], AuthenticationCheckType::AND) do
+      #       ...Controller本体の処理...
+      #     end
+      #   end
+      #
+      # ==== _Args_
+      # [authentications]
+      #   チェック対象権限List(see. <i>Authentication</i>)
+      # [authentication_check_type]
+      #   比較方法(<i>AuthenticationCheckType::AND</i>:全て有さなければエラー、<i>AuthenticationCheckType::OR</i>:1つ以上有さなければエラー)
+      #
+      def exeption_handler(authentications = [], authentication_check_type = AuthenticationCheckType::AND)
+
+        begin
+          check_authentication(authentications, authentication_check_type)
+        rescue CustomException::IllegalAuthenticationException => e
+          # 使用権限無し
+          render json: createJsonResult(Entity::JsonResult::AUTHENTICATION_ERR, 
+            ["この機能は利用不可能です"])
+          return
+        end
+
         if block_given?
 
           begin

@@ -12,7 +12,7 @@ module Ajax #:nodoc:
     # 指定された対象年に紐付く登録情報を取得します
     #
     def get_holidays_info
-      exeption_handler do
+      exeption_handler([Authentication::SCHEDULER_ADMIN]) do
         target_year = params[:target_year]
         service = NationalHolidaysService.new
         result = service.find_by_target_year(target_year)
@@ -28,7 +28,7 @@ module Ajax #:nodoc:
     # 指定された対象年に紐付く祝日情報を登録します
     #
     def update
-      exeption_handler do
+      exeption_handler([Authentication::SCHEDULER_ADMIN]) do
         target_year = params[:target_year]
         target_day_list = params[:target_day_list]
         memo_list = params[:memo_list]

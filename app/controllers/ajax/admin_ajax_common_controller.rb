@@ -16,7 +16,7 @@ module Ajax #:nodoc:
     # Session上に格納されている検索条件を取得します
     #
     def get_serch_info
-      exeption_handler do
+      exeption_handler([Authentication::SCHEDULER_ADMIN]) do
         search_param = session[get_search_param_symble]
         search_param = create_search_param if search_param == nil
         result = Entity::JsonResult.new
@@ -30,7 +30,7 @@ module Ajax #:nodoc:
     # リクエストパラメータに該当する検索結果の一覧を取得します
     #
     def list
-      exeption_handler do
+      exeption_handler([Authentication::SCHEDULER_ADMIN]) do
         search_param = session[get_search_param_symble]
         search_param = create_search_param if search_param == nil
         
@@ -52,7 +52,7 @@ module Ajax #:nodoc:
     # Sessionに格納されている検索条件を元に、再検索を行い、一覧を取得します
     #
     def refresh
-      exeption_handler do
+      exeption_handler([Authentication::SCHEDULER_ADMIN]) do
         search_param = session[get_search_param_symble]
         search_param = create_search_param if search_param == nil
         
@@ -79,7 +79,7 @@ module Ajax #:nodoc:
     # Sessionに格納された検索条件を元に、検索し、検索条件に合致するデータを取得します。
     #
     def turn
-      exeption_handler do
+      exeption_handler([Authentication::SCHEDULER_ADMIN]) do
         search_param = session[get_search_param_symble]
         search_param = create_search_param.new if search_param == nil
         
@@ -99,7 +99,7 @@ module Ajax #:nodoc:
     # そうでなければ新規データとしてレスポンスを返却します
     #
     def show
-      exeption_handler do
+      exeption_handler([Authentication::SCHEDULER_ADMIN]) do
         resource_id = params[:resource_id]
         service = get_service
           
@@ -114,7 +114,7 @@ module Ajax #:nodoc:
     # リクエストパラメータを元に登録/更新を行います。
     #
     def save
-      exeption_handler do
+      exeption_handler([Authentication::SCHEDULER_ADMIN]) do
         
         # リクエストパラメータを元に登録・更新
         service = get_service
@@ -131,7 +131,7 @@ module Ajax #:nodoc:
     # リクエストパラメータを元に削除を行います
     #
     def destroy
-      exeption_handler do
+      exeption_handler([Authentication::SCHEDULER_ADMIN]) do
         service = get_service
         resource_id = params[:resource_id]
         lock_version = params[:lock_version]
@@ -148,7 +148,7 @@ module Ajax #:nodoc:
     # 登録されている全ての情報を取得します
     #
     def get_sort_info
-      exeption_handler do
+      exeption_handler([Authentication::SCHEDULER_ADMIN]) do
         # ページング無しで全件取得
         search_param = Resource::SearchParam.new
         service = get_service
@@ -168,7 +168,7 @@ module Ajax #:nodoc:
     # 指定されているリソースIDの順番でソート順を更新します
     #
     def update_sort_order
-      exeption_handler do
+      exeption_handler([Authentication::SCHEDULER_ADMIN]) do
         ids = params[:ids]
         service = get_service
         service.update_sort_num(ids)

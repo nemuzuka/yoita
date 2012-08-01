@@ -45,4 +45,10 @@ module CustomException
     end
   end
 
+  #
+  # 参照権限が無い場合の例外
+  #
+  class IllegalAuthenticationException < StandardError
+  end
+
 end

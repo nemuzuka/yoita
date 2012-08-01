@@ -17,7 +17,7 @@ module Admin #:nodoc:
     # TOP画面を表示します
     #
     def index
-      exeption_handler do
+      exeption_handler([Authentication::SCHEDULER_ADMIN]) do
         user_info = get_user_info
 
         # 検索条件の初期値を設定

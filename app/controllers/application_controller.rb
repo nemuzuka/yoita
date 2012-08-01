@@ -81,5 +81,46 @@ class ApplicationController < ActionController::Base
     def get_user_info
       return session[:user_info]
     end
+    
+    #
+    # 権限チェック.
+    # ==== _Args_
+    # [authentications]
+    #   チェック対象権限List(see. <i>Authentication</i>)
+    # [authentication_check_type]
+    #   比較方法(<i>AuthenticationCheckType::AND</i>:全て有さなければエラー、<i>AuthenticationCheckType::OR</i>:1つ以上有さなければエラー)
+    # ==== _Raise_
+    # [CustomException::IllegalAuthenticationException]
+    #   権限が無いのに呼び出された場合
+    #
+    def check_authentication(authentications, authentication_check_type)
+      if authentications == nil || authentications.length == 0
+        return
+      end
+      my_authentications = get_user_info.authentications
+      result = nil
+      authentications.each do |target|
+        if my_authentications.member?(target) == false
+          # 権限を保有していない場合
+          result = false
+          if authentication_check_type == AuthenticationCheckType::AND
+            # ANDの場合、1つでも有していなければ例外をthrowさせる
+            break
+          end
+        else
+          # 権限を保有している場合
+          result = true
+          if authentication_check_type == AuthenticationCheckType::OR
+            # ORの場合、1つでも存在すれば正常終了
+            break
+          end
+        end
+      end
+      
+      if result == false
+        raise CustomException::IllegalAuthenticationException.new
+      end
+      
+    end
 
 end
