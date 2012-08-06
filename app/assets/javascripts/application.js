@@ -25,3 +25,8 @@
 //= require suggest
 //= require i18n/jquery.ui.timepicker-ja
 //= require i18n/ui.datepicker-ja
+
+//= require format-utils
+//= require select-utils
+//= require validate-utils
+//= require jquery-common
