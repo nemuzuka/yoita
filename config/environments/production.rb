@@ -17,8 +17,7 @@ Yoita::Application.configure do
   config.assets.compress = true
 
   # Don't fallback to assets pipeline if a precompiled asset is missed
-  # TODO とりあえずtrue
-  config.assets.compile = true
+  config.assets.compile = false
 
   # Generate digests for assets URLs
   config.assets.digest = true
@@ -49,7 +48,12 @@ Yoita::Application.configure do
   # config.action_controller.asset_host = "http://assets.example.com"
 
   # Precompile additional assets (application.js, application.css, and all non-JS/CSS are already added)
-  # config.assets.precompile += %w( search.js )
+  config.assets.precompile += %w( html5.js
+    schedule/scheduleCommon.js schedule/scheduleMonthResource.js schedule/scheduleWeek4Group.js
+    schedule/scheduleDialog.js schedule/scheduleWeek.js schedule/scheduleWeek4User.js
+    admin/facilities.js admin/facility_groups.js admin/national_holidays.js
+    admin/user_groups.js admin/user_infos.js
+  )
 
   # Disable delivery errors, bad email addresses will be ignored
   # config.action_mailer.raise_delivery_errors = false
