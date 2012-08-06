@@ -10,6 +10,18 @@
 // WARNING: THE FIRST BLANK LINE MARKS THE END OF WHAT'S TO BE PROCESSED, ANY BLANK LINE SHOULD
 // GO AFTER THE REQUIRES BELOW.
 //
-//= require jquery
-//= require jquery_ujs
-//= require_tree .
+//= require jquery-1.7.1.min
+//= require bootstrap.min
+//= require date
+//= require dateformat
+//= require jquery.blockUI
+//= require jquery.effects.core
+//= require jquery.effects.clip
+//= require jquery.elastic
+//= require jquery.toaster.min
+//= require jquery.ui.timepicker
+//= require jquery-ui-1.8.18.custom.min
+//= require jquery-ui-effects.min
+//= require suggest
+//= require i18n/jquery.ui.timepicker-ja
+//= require i18n/ui.datepicker-ja
