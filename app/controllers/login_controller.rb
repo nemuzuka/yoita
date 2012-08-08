@@ -48,20 +48,7 @@ class LoginController < BaseController::HtmlNoLoginController
       end
       
       # 認証成功時
-      user_info = Entity::UserInfo.new
-      user_info.login_id = login[:login_id]
-      user_info.name = resource[:name]
-      user_info.resource_id = resource[:id]
-      if user_info_model[:admin_flg].to_s != '1'
-        user_info.admin_flg = false
-      else
-        user_info.admin_flg = true
-      end
-      user_info.per_page = user_info_model[:per_page]
-      user_info.default_user_group = user_info_model[:default_user_group]
-      # 権限設定
-      user_info.authentications = Set.new
-      user_info.authentications.add(Authentication::SCHEDULER_ADMIN) if user_info.admin? == true
+      user_info = create_user_info(service_detail)
       
       # Session再作成
       re_create_session(user_info)

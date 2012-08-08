@@ -122,5 +122,34 @@ class ApplicationController < ActionController::Base
       end
       
     end
+    
+    #
+    # UserInfo生成
+    # ==== _Args_
+    # [service_detail]
+    #   設定情報<i>UserInfosService::Detail</i>
+    # ==== _Return_
+    # ユーザ情報(存在しない場合、nil see. <i>Entity::UserInfo</i>)
+    #
+    def create_user_info(service_detail)
+      resource = service_detail.detail.resource
+      user_info_model = service_detail.detail.user_info
+
+      user_info = Entity::UserInfo.new
+      user_info.login_id = service_detail.detail.login[:login_id]
+      user_info.name = resource[:name]
+      user_info.resource_id = resource[:id]
+      if user_info_model[:admin_flg].to_s != '1'
+        user_info.admin_flg = false
+      else
+        user_info.admin_flg = true
+      end
+      user_info.per_page = user_info_model[:per_page]
+      user_info.default_user_group = user_info_model[:default_user_group]
+      # 権限設定
+      user_info.authentications = Set.new
+      user_info.authentications.add(Authentication::SCHEDULER_ADMIN) if user_info.admin? == true
+      return user_info
+    end
 
 end

@@ -27,8 +27,12 @@ module Ajax #:nodoc:
       exeption_handler do
         
         # リクエストパラメータを元に登録・更新
-        p get_user_info
         get_service.save_self(params, get_user_info.login_id, get_user_info.resource_id)
+        
+        # 更新後の情報でUserInfo更新
+        service_detail = get_service.get_resource(get_user_info.resource_id)
+        user_info = create_user_info(service_detail)
+        session[:user_info] = user_info
         
         result = Entity::JsonResult.new
         result.info_msgs.push("正常に終了しました");
