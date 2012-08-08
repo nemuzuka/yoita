@@ -78,7 +78,7 @@ class UserInfosService < Service::Base
   def save(params, action_resource_id)
     transaction_handler do
       logic = UserInfoLogic.new
-      logic.save(params, ResourceType::USER, action_resource_id)
+      logic.save(params, action_resource_id)
     end
   end
   

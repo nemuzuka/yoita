@@ -38,7 +38,7 @@ class UserInfoLogicTest < ActiveSupport::TestCase
     }
     
     logic = UserInfoLogic.new
-    resource = logic.save(params, ResourceType::USER, 4989)
+    resource = logic.save(params, 4989)
     
     actual_user_info = UserInfo.find_by_resource_id(resource.id)
     assert_equal actual_user_info[:reading_character], "ゆーざA"
@@ -77,7 +77,7 @@ class UserInfoLogicTest < ActiveSupport::TestCase
     }
     
     logic = UserInfoLogic.new
-    resource = logic.save(params, ResourceType::USER, 4989)
+    resource = logic.save(params, 4989)
     
     actual_user_info = UserInfo.find_by_resource_id(resource.id)
     assert_equal actual_user_info[:validity_start_date], Date.strptime("2010/01/01", "%Y/%m/%d")
@@ -117,7 +117,7 @@ class UserInfoLogicTest < ActiveSupport::TestCase
     
     logic = UserInfoLogic.new
     begin
-      logic.save(params, ResourceType::USER, 4989)
+      logic.save(params, 4989)
       assert_fail
     rescue CustomException::ValidationException => e
       assert_equal e.msgs.length, 1
@@ -147,7 +147,7 @@ class UserInfoLogicTest < ActiveSupport::TestCase
     
     logic = UserInfoLogic.new
     begin
-      logic.save(params, ResourceType::USER, 4989)
+      logic.save(params, 4989)
       assert_fail
     rescue CustomException::ValidationException => e
       assert_equal e.msgs.length, 1
@@ -177,7 +177,7 @@ class UserInfoLogicTest < ActiveSupport::TestCase
     
     logic = UserInfoLogic.new
     begin
-      logic.save(params, ResourceType::USER, 4989)
+      logic.save(params, 4989)
       assert_fail
     rescue CustomException::ValidationException => e
       assert_equal e.msgs.length, 1
@@ -207,7 +207,7 @@ class UserInfoLogicTest < ActiveSupport::TestCase
     
     logic = UserInfoLogic.new
     begin
-      logic.save(params, ResourceType::USER, 4989)
+      logic.save(params, 4989)
       assert_fail
     rescue CustomException::ValidationException => e
       assert_equal e.msgs.length, 1
@@ -254,7 +254,7 @@ class UserInfoLogicTest < ActiveSupport::TestCase
     }
     
     logic = UserInfoLogic.new
-    resource = logic.save(params, ResourceType::USER, 4989)
+    resource = logic.save(params, 4989)
     
     actual_user_info = UserInfo.find_by_resource_id(resource.id)
     assert_equal actual_user_info[:resource_id], 100001
@@ -317,7 +317,7 @@ class UserInfoLogicTest < ActiveSupport::TestCase
     }
     
     logic = UserInfoLogic.new
-    resource = logic.save(params, ResourceType::USER, 4989)
+    resource = logic.save(params, 4989)
     
     actual_user_info = UserInfo.find_by_resource_id(resource.id)
     assert_equal actual_user_info[:resource_id], 100001
@@ -386,7 +386,7 @@ class UserInfoLogicTest < ActiveSupport::TestCase
     
     logic = UserInfoLogic.new
     begin
-      logic.save(params, ResourceType::USER, 4989)
+      logic.save(params, 4989)
       assert_fail
     rescue CustomException::InvalidVersionException
       assert true
@@ -426,7 +426,7 @@ class UserInfoLogicTest < ActiveSupport::TestCase
     
     logic = UserInfoLogic.new
     begin
-      logic.save(params, ResourceType::USER, 4989)
+      logic.save(params, 4989)
       assert_fail
     rescue CustomException::InvalidVersionException
       assert true
@@ -474,7 +474,7 @@ class UserInfoLogicTest < ActiveSupport::TestCase
     
     logic = UserInfoLogic.new
     begin
-      logic.save(params, ResourceType::USER, 4989)
+      logic.save(params, 4989)
       assert_fail
     rescue CustomException::ValidationException => e
       assert_equal e.msgs.length, 1
@@ -523,7 +523,7 @@ class UserInfoLogicTest < ActiveSupport::TestCase
     
     logic = UserInfoLogic.new
     begin
-      logic.save(params, ResourceType::USER, 4989)
+      logic.save(params, 4989)
       assert_fail
     rescue CustomException::ValidationException => e
       assert_equal e.msgs.length, 1
@@ -571,7 +571,7 @@ class UserInfoLogicTest < ActiveSupport::TestCase
     # パスワードと確認パスワードが違う
     logic = UserInfoLogic.new
     begin
-      logic.save(params, ResourceType::USER, 4989)
+      logic.save(params, 4989)
       assert_fail
     rescue CustomException::ValidationException => e
       assert_equal e.msgs.length, 1

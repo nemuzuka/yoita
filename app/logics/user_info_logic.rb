@@ -47,8 +47,6 @@ class UserInfoLogic
   # ==== _Args_
   # [params]
   #   ユーザ登録・更新情報
-  # [resource_type]
-  #   リソース区分(see. <i>ResourceType</i>)
   # [action_resource_id]
   #   登録・更新処理実行ユーザリソースID
   # ==== _Return_
@@ -65,14 +63,14 @@ class UserInfoLogic
   # [CustomException::InvalidVersionException]
   #   バージョンが合わない場合(更新時)
   #
-  def save(params, resource_type, action_resource_id)
+  def save(params, action_resource_id)
     
     # 共通validate
     common_validate(params)
 
     # リソース情報を登録・更新
     resource_logic = ResourceLogic.new
-    resource = resource_logic.save(params, resource_type, action_resource_id)
+    resource = resource_logic.save(params, ResourceType::USER, action_resource_id)
 
     id = params[:resource][:id]
     if id.to_s == ''
