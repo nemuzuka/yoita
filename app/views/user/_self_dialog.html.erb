@@ -1,0 +1,79 @@
+<%= javascript_include_tag "user/selfUserDialog"  %>
+
+<!-- ログインユーザ更新ダイアログ -->
+<div id="selfUserDialog" class="dialog-widget">
+<div class="dialog-container form-horizontal" style="height:400px;">
+<fieldset>
+	<div class="control-group">
+		<label class="control-label" for="self_resource_name">ユーザ名</label>
+		<div class="controls">
+			<input type="text" class="input-xlarge required-input" id="self_resource_name">
+		</div>
+	</div>
+
+	<div class="control-group">
+		<label class="control-label" for="self_reading_character">ふりがな</label>
+		<div class="controls">
+			<input type="text" class="input-xlarge" id="self_reading_character">
+		</div>
+	</div>
+
+	<div class="control-group">
+		<label class="control-label" for="self_confirm_password">パスワード</label>
+		<div class="controls">
+			<input type="password" class="input-xlarge" id="self_confirm_password">(変更前)
+			<input type="password" class="input-xlarge" id="self_update_password">(変更)
+			<p class="important-msg"> ※変更する場合、6文字以上で設定して下さい。</p>
+			<input type="password" class="input-xlarge" id="self_update_confirm_password">(変更:確認用)
+		</div>
+	</div>
+
+	<div class="control-group">
+		<label class="control-label" for="self_tel">TEL</label>
+		<div class="controls">
+			<input type="text" class="input-xlarge" id="self_tel">
+		</div>
+	</div>
+
+	<div class="control-group">
+		<label class="control-label" for="self_mail">メールアドレス</label>
+		<div class="controls">
+			<input type="text" class="input-xlarge" id="self_mail">
+		</div>
+	</div>
+
+	<div class="control-group">
+		<label class="control-label" for="self_default_user_group">デフォルト<br />ユーザグループ</label>
+		<div class="controls">
+			<select id="self_default_user_group"></select>
+		</div>
+	</div>
+
+	<div class="control-group">
+		<label class="control-label" for="self_per_page">1ページ辺りの<br />表示件数</label>
+		<div class="controls">
+			<select id="self_per_page">
+				<option value="10">10</option>
+				<option value="20">20</option>
+				<option value="50">50</option>
+			</select>
+		</div>
+	</div>
+
+	<div class="control-group">
+		<label class="control-label" for="self_resource_memo">メモ</label>
+		<div class="controls">
+			<textarea class="input-xlarge" cols="10" rows="10" id="self_resource_memo"></textarea>
+		</div>
+	</div>
+		
+	<div class="edit_ctrl">
+		<input type="button" class="btn btn-primary" id="selfUserDialog-add" value="登録する" />
+		<input type="button" class="btn" id="selfUserDialog-cancel" value="キャンセル" />
+		<input type="hidden" id="self_resource_lock_version" />
+		<input type="hidden" id="self_user_info_lock_version" />
+		<input type="hidden" id="self_login_lock_version" />
+	</div>
+</fieldset>
+</div>
+</div>

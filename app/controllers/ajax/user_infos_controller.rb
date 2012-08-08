@@ -7,6 +7,36 @@ module Ajax #:nodoc:
   class UserInfosController < Ajax::AdminAjaxCommonController
 
     #
+    # ログインユーザ情報取得
+    #
+    def show_self
+      exeption_handler do
+        resource_id = get_user_info.resource_id
+          
+        result = Entity::JsonResult.new
+        result.result = get_service.get_resource(resource_id)
+        render json: result
+      end
+    end
+
+    #
+    # 更新
+    # リクエストパラメータを元にログインユーザの情報を更新します。
+    #
+    def save_self
+      exeption_handler do
+        
+        # リクエストパラメータを元に登録・更新
+        p get_user_info
+        get_service.save_self(params, get_user_info.login_id, get_user_info.resource_id)
+        
+        result = Entity::JsonResult.new
+        result.info_msgs.push("正常に終了しました");
+        render json: result
+      end
+    end
+
+    #
     # 削除
     # リクエストパラメータを元に削除を行います
     #

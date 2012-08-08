@@ -52,7 +52,7 @@ Yoita::Application.configure do
     schedule/scheduleCommon.js schedule/scheduleMonthResource.js schedule/scheduleWeek4Group.js
     schedule/scheduleDialog.js schedule/scheduleWeek.js schedule/scheduleWeek4User.js
     admin/facilities.js admin/facility_groups.js admin/national_holidays.js
-    admin/user_groups.js admin/user_infos.js
+    admin/user_groups.js admin/user_infos.js user/selfUserDialog.js
   )
 
   # Disable delivery errors, bad email addresses will be ignored

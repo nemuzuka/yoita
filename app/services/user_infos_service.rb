@@ -83,6 +83,57 @@ class UserInfosService < Service::Base
   end
   
   #
+  # ユーザ更新
+  # ログインユーザ情報を更新します。
+  # DBの整合性に合致しない場合、不正な入力値の場合、例外をthrowします 
+  # ==== _Args_
+  # [params]
+  #   ユーザ登録・更新情報
+  # [login_id]
+  #   更新処理実行ログインID
+  # [action_resource_id]
+  #   更新処理実行ユーザリソースID
+  # ==== _Raise_
+  # [CustomException::ValidationException]
+  #   validate時の例外
+  # [CustomException::IllegalParameterException]
+  #   不正なパラメータを渡された場合
+  # [CustomException::NotFoundException]
+  #   該当レコードが存在しない場合
+  # [CustomException::InvalidVersionException]
+  #   バージョンが合わない場合(更新時)
+  #
+  def save_self(params, login_id, action_resource_id)
+    transaction_handler do
+      logic = UserInfoLogic.new
+      before_confirm_password = params[:login][:before_confirm_password]
+      password = params[:login][:password]
+      if before_confirm_password != '' || password.to_s != ''
+        if before_confirm_password == '' || password.to_s == ''
+          raise CustomException::ValidationException.new(["変更前・変更後パスワードを入力して下さい"])
+        end
+        
+        # パスワードが入力されている場合、認証する
+        login = logic.auth(login_id, before_confirm_password)
+        if login == nil
+          raise CustomException::ValidationException.new(["変更前パスワードが合致しません。"])
+        end
+      else
+        params[:login][:password] = ""
+      end
+      
+      # 更新しないデータを上書き
+      user_info = logic.get_detail(action_resource_id).user_info
+      params[:user_info][:validity_start_date] = user_info[:validity_start_date].strftime("%Y/%m/%d")
+      params[:user_info][:validity_end_date] = user_info[:validity_end_date].strftime("%Y/%m/%d")
+      params[:user_info][:admin_flg] = user_info[:admin_flg]
+      params[:resource][:id] = action_resource_id
+
+      logic.save(params, action_resource_id)
+    end
+  end
+  
+  #
   # ユーザ削除
   # ユーザを削除します。
   # ==== _Args_

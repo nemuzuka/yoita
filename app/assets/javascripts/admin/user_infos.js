@@ -438,6 +438,7 @@ function createExecuteParams() {
 		login["password"] = $("#update_password").val();
 	}
 	login["confirm_password"] = $("#confirm_password").val();
+	login["lock_version"] = $("#login_lock_version").val();
 	setToken(params)
 	return params;
 }
@@ -472,7 +473,7 @@ function validate(params) {
 			//6文字以上であること
 			v.addRules({value:login["password"],option:'minLength',error_args:"パスワード", size:6});
 			//確認用パスワードと一致すること
-			v.addRules({value:login["password"], value:login["confirm_password"],
+			v.addRules({value1:login["password"], value2:login["confirm_password"],
 				option:'eachValue',error_args:"パスワード", error_args2:"パスワード(確認用)"});
 		}
 	}

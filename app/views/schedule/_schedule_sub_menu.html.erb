@@ -1,6 +1,7 @@
 <ul class="nav nav-list">
   <li class="nav-header"></li>
   <li id="sub_menu1"><a href="javascript:void(0)" title="スケジュールを確認します">スケジューラ</a></li>
+  <li id="sub_menu2"><a href="javascript:void(0)" title="あなたの情報を確認します">ユーザ情報</a></li>
 </ul>
 
 <script type="text/javascript">
@@ -9,8 +10,12 @@ $(function(){
 	$("#sub_menu1").click(function(){
 		moveUrl("/schedule");
 	});
+	$("#sub_menu2").click(function(){
+		openSelfUserDialog();
+	});
 });
 //-->
 </script>
+<%= render :file => 'user/_self_dialog.html.erb' %>
 
 <input type="hidden" id="selected_main_menu" value="main_menu1" />
