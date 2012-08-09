@@ -14,5 +14,6 @@
 /log/*.log
 /tmp
 doc
+public/asserts
 
 .DS_Store
