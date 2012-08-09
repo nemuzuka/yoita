@@ -152,6 +152,11 @@ module SetupMethods
     FactoryGirl.create(:schedule_follow1)
     FactoryGirl.create(:schedule_follow2)
     FactoryGirl.create(:schedule_follow3)
+    FactoryGirl.create(:schedule_follow4)
+    FactoryGirl.create(:schedule_follow5)
+    FactoryGirl.create(:schedule_follow6)
+    FactoryGirl.create(:schedule_follow7)
+    FactoryGirl.create(:schedule_follow8)
   end
   
 end

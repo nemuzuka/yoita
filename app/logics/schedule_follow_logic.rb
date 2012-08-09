@@ -27,10 +27,8 @@ class ScheduleFollowLogic
     list = ScheduleFollow.find_by_schedule_id(schedule_id)
 
     # スケジュールに紐付くリソース情報を取得
-    resource_id_set = SortedSet.new
-    list.each do |target|
-      resource_id_set.add(target[:entry_resource_id])
-    end
+    resource_id_set, list, add_comment_follow_is_set = create_set_and_list(list)
+    
     resource_logic = ResourceLogic.new
     resrouce_hash = resource_logic.get_resources_hash(resource_id_set)
     
@@ -56,6 +54,11 @@ class ScheduleFollowLogic
       if entry_user == true || target[:entry_resource_id] == action_resource_id
         entity.delete_follow = true
       end
+      
+      # コメント追加ボタンの表示判断
+      entity.add_comment = false
+      entity.add_comment = true if add_comment_follow_is_set.include?(target[:id])
+      
       ret_list.push(entity)
     end
     return ret_list
@@ -136,6 +139,74 @@ class ScheduleFollowLogic
     
     # 削除可能なフォローの場合、true
     attr_accessor :delete_follow
+
+    # コメント追加するボタンを表示するフォローの場合、true
+    attr_accessor :add_comment
+
   end
+  
+  private
+  
+    #
+    # フォローに紐付くリソースと、フォロー関連を参照してソートを変更します
+    # 変更後フォローのソート順は、
+    # 親フォロー1
+    #   小フォロー1-1
+    #   小フォロー1-2
+    # 親フォロー2
+    #   小フォロー2-1
+    # 親フォロー3
+    # という関係になります。
+    # 親フォロー1[:id] > 親フォロー2[:id]
+    # であること、
+    # 小フォロー1-1[:id] < 小フォロー1-2[:id]
+    # の関係となります。
+    # ==== _Args_
+    # [list]
+    #   <i>ScheduleFollow</i>のList
+    # ==== _Return_
+    # index:0 リソースIDSet
+    # index:1 変更後フォローList<i>ScheduleFollow</i>のList
+    # index:2 コメント追加対象フォローIDSet
+    #
+    def create_set_and_list(list)
+      parent_list = []
+      child_hash = {}
+      resource_id_set = SortedSet.new
+      list.each do |target|
+        resource_id_set.add(target[:entry_resource_id])
+        
+        # TOPのフォローか、配下のフォローか設定し分ける
+        if target[:parent_schedule_follow_id] == nil
+          parent_list.push(target)
+        else
+          child_list = child_hash[target[:parent_schedule_follow_id]]
+          if child_list == nil
+            child_list = []
+            child_hash[target[:parent_schedule_follow_id]] = child_list
+          end
+          child_list.unshift(target)
+        end
+      end
+      
+      # 戻り値のフォローListと、コメント追加対象フォローIDSet生成
+      ret_list = []
+      add_comment_follow_is_set = SortedSet.new
+      parent_list.each do |target|
+        ret_list.push(target)
+        # 配下のフォローを追加
+        child_list = child_hash[target[:id]]
+        if child_list != nil
+          ret_list.concat(child_list)
+          # 配下のフォローが存在する場合、最後の行
+          add_comment_follow_is_set.add(child_list[-1][:id])
+        else
+          # 配下のフォローが無い場合、親フォローID
+          add_comment_follow_is_set.add(target[:id])
+        end
+      end
+      
+      return resource_id_set, ret_list, add_comment_follow_is_set
+    end
   
 end

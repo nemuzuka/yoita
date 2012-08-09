@@ -18,14 +18,17 @@ class ScheduleFollowLogicTest < ActiveSupport::TestCase
     assert_equal actual_list[0].schedule_follow[:id], 1234569
     assert_equal actual_list[0].delete_follow, true
     assert_equal actual_list[0].entry_time, "03/01 00:12"
+    assert_equal actual_list[0].add_comment, true
 
     assert_equal actual_list[1].schedule_follow[:id], 1234568
     assert_equal actual_list[1].delete_follow, true
     assert_equal actual_list[1].entry_time, "02/23 23:45"
+    assert_equal actual_list[1].add_comment, true
 
     assert_equal actual_list[2].schedule_follow[:id], 1234567
     assert_equal actual_list[2].delete_follow, true
     assert_equal actual_list[2].entry_time, "01/23 12:34"
+    assert_equal actual_list[2].add_comment, true
     
   end
 
@@ -131,6 +134,28 @@ class ScheduleFollowLogicTest < ActiveSupport::TestCase
     rescue CustomException::NotFoundException => e
       assert true
     end
+  end
+  
+  test "get_follow_listのテスト 親子関係あり" do
+    logic = ScheduleFollowLogic.new
+    actual_list = logic.get_follow_list("10005", 100002)
+    
+    assert_equal actual_list.length, 5
+    assert_equal actual_list[0].schedule_follow[:id], 1234572
+    assert_equal actual_list[0].add_comment, false
+
+    assert_equal actual_list[1].schedule_follow[:id], 1234574
+    assert_equal actual_list[1].add_comment, true
+
+    assert_equal actual_list[2].schedule_follow[:id], 1234570
+    assert_equal actual_list[2].add_comment, false
+
+    assert_equal actual_list[3].schedule_follow[:id], 1234571
+    assert_equal actual_list[3].add_comment, false
+
+    assert_equal actual_list[4].schedule_follow[:id], 1234573
+    assert_equal actual_list[4].add_comment, true
+    
   end
   
 end
