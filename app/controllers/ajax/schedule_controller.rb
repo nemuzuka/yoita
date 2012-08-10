@@ -111,10 +111,11 @@ module Ajax #:nodoc:
     def save_follow
       exeption_handler do
         service = ScheduleFollowService.new
-        service.save(params, get_user_info.resource_id)
+        entity = service.save(params, get_user_info.resource_id)
 
         result = Entity::JsonResult.new
         result.info_msgs.push("正常に終了しました");
+        result.result = entity
         render json: result
       end
     end

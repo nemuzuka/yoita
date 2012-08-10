@@ -32,6 +32,8 @@ class ScheduleFollowService < Service::Base
   #   登録情報
   # [action_resource_id]
   #   登録・更新処理実行ユーザリソースID
+  # ==== _Return_
+  # 対象レコード
   #
   def save(params, action_resource_id)
     transaction_handler do

@@ -324,4 +324,25 @@
 </div>
 </div>
 
+<div id="followCommentEditDialog" title="コメント登録" class="dialog-widget" style="display:none;">
+<div class="dialog-container">
+<table class="edit_table">
+	<tbody>
+		<tr>
+			<th width="100px">コメント<span class="important-msg">(*)</span></th>
+			<td>
+				<textarea cols="45" rows="4" id="follow_comment_memo" class="input-xxlarge required-input"></textarea>
+			</td>
+		</tr>
+	</tbody>
+</table>
+<div class="edit_ctrl">
+	<input type="button" class="btn btn-primary" id="followCommentExecute" value="登録する" />
+	<input type="button" class="btn" id="followCommentEditDialog-cancel" value="キャンセル" />
+	<input type="hidden" id="follow_comment_target_id" />
+</div>
+</div>
+</div>
+
+
 <input type="hidden" id="scheduleId" />

@@ -33,6 +33,31 @@ function initFollowDialog(){
 	$("#followEditDialog-cancel").click(function(){
 		$("#followEditDialog").dialog("close");
 	});
+
+	//フォローコメント追加ダイアログ
+	$("#followCommentEditDialog").dialog({
+		modal: true,
+		autoOpen: false,
+		width: 800,
+		resizable: false,
+		open:function (event) {
+			openModalDialog();
+		},
+		close:function (event) {
+			closeModelDialog();
+		},
+		show: 'clip',
+        hide: 'clip'
+	});
+	
+	$("#followCommentExecute").click(function(){
+		followCommentExecute();
+	});
+	
+	$("#followCommentEditDialog-cancel").click(function(){
+		$("#followCommentEditDialog").dialog("close");
+	});
+
 }
 
 //ユーザグループ詳細ダイアログの初期化
@@ -769,17 +794,39 @@ function refreshFollowList() {
 				var follow_id = this.schedule_follow.id;
 				var delete_follow = this.delete_follow;
 				var entry_resource_name = this.entry_resource_name;
-		
-				var $delBtn = $("<input />").attr({type:"button", value:"削"}).addClass("btn btn-danger btn-mini");
+				var add_comment = this.add_comment;
+				var parent_schedule_follow_id = this.schedule_follow.parent_schedule_follow_id;
+				var target_follow_id = null
+				var parent = false;
+				if(parent_schedule_follow_id == null) {
+					target_follow_id = follow_id;
+					parent = true;
+				} else {
+					target_follow_id = parent_schedule_follow_id;
+				}
+				
+				var $delBtn = $("<input />").attr({type:"button", value:"削"}).addClass("btn btn-danger btn-mini").css({"margin-right":"5px"});
 				$delBtn.click(function(){
 					deleteFollow(follow_id);
 				});
+				var $addCommentBtn = $("<input />").attr({type:"button", value:"コメント"}).addClass("btn btn-mini");
+				$addCommentBtn.click(function(){
+					openAddFollowCommentDialog(target_follow_id);
+				});
+				if(add_comment == false) {
+					$addCommentBtn = "";
+				}
+				
+				var $followDiv = $("<div/>").html(escapeTextArea(follow));
+				if(parent == false) {
+					$followDiv = $followDiv.css({"margin-left":"20px"});
+				}
 				
 				var $tr = $("<tr />");
-				$tr.append($("<td />").html(escapeTextArea(follow)))
+				$tr.append($("<td />").append($followDiv))
 				    .append($("<td />").text(entry_resource_name).attr({width:"120px"}))
 					.append($("<td />").text(entry_time).attr({width:"100px"}))
-					.append($("<td />").append($delBtn).attr({width:"50px"}));
+					.append($("<td />").append($delBtn).append($addCommentBtn).attr({width:"100px"}));
 				$tbody.append($tr)
 			});
 			$table.append($tbody);
@@ -789,23 +836,54 @@ function refreshFollowList() {
 	);
 }
 
+//コメント追加ダイアログ表示
+function openAddFollowCommentDialog(target_follow_id) {
+	$("#follow_comment_memo").val("");
+	$("#follow_comment_target_id").val(target_follow_id);
+	$("#followCommentEditDialog").dialog("open");
+}
+
 //フォロー登録ダイアログ
 function openFollowEditDialog() {
 	$("#follow_memo").val("");
 	$("#followEditDialog").dialog("open");
 }
 
+//フォローコメント追加
+function followCommentExecute() {
+	var params = createFollowParam($("#follow_comment_memo").val(), 
+		$("#follow_comment_target_id").val());
+
+	if(validateFollow(params, "コメント") == false) {
+		return;
+	}
+
+	setAjaxDefault();
+	$.ajax({
+		type: "POST",
+		data: params,
+		dataType: "json",
+		url: '/ajax/schedule/save_follow/'
+	}).then(
+		function(data){
+
+			//共通エラーチェック
+			if(errorCheck(data) == false) {
+				return;
+			}
+			//メッセージを表示し、スケジュールフォローを再描画
+			$("#followCommentEditDialog").dialog("close");
+			infoCheck(data);
+			refreshFollowList();
+		}
+	);
+}
+
 //スケジュールフォロー追加
 function followExecute() {
-	var params={};
-	params["schedule_follow"] = {};
-	var schedule_follow = params["schedule_follow"];
-	schedule_follow["schedule_id"] = $("#scheduleId").val();
-	schedule_follow["memo"] = $("#follow_memo").val();
-	schedule_follow["parent_schedule_follow_id"] = "";
-	setToken(params);
+	var params = createFollowParam($("#follow_memo").val(), "");
 
-	if(validateFollow(params) == false) {
+	if(validateFollow(params, "フォロー") == false) {
 		return;
 	}
 
@@ -831,7 +909,6 @@ function followExecute() {
 				}
 				return;
 			}
-
 			//メッセージを表示し、スケジュールフォローを再描画
 			$("#followEditDialog").dialog("close");
 			infoCheck(data);
@@ -840,13 +917,26 @@ function followExecute() {
 	);
 }
 
+//フォロー登録パラメータ生成
+function createFollowParam(follow_memo, parent_schedule_follow_id) {
+	var params={};
+	params["schedule_follow"] = {};
+	var schedule_follow = params["schedule_follow"];
+	schedule_follow["schedule_id"] = $("#scheduleId").val();
+	schedule_follow["memo"] = follow_memo;
+	schedule_follow["parent_schedule_follow_id"] = parent_schedule_follow_id;
+	setToken(params);
+	return params;
+}
+
+
 //Follow登録validate
-function validateFollow(params) {
+function validateFollow(params, label) {
 	var v = new Validate();
 	var schedule_follow = params["schedule_follow"];
 
-	v.addRules({value:schedule_follow["memo"],option:'required',error_args:"フォロー"});
-	v.addRules({value:schedule_follow["memo"],option:'maxLength',error_args:"フォロー", size:1024});
+	v.addRules({value:schedule_follow["memo"],option:'required',error_args:label});
+	v.addRules({value:schedule_follow["memo"],option:'maxLength',error_args:label, size:1024});
 	return v.execute();
 }
 
