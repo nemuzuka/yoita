@@ -76,4 +76,7 @@ Yoita::Application.routes.draw do
   match ':controller(/:action(/:id))', :controller => /ajax\/[^\/]+/
   match ':controller(/:action(/:id))(.:format)'
 
+  #OmniAuth
+  match "/auth/:provider/callback" => "sessions#callback"
+
 end

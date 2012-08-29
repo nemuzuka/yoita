@@ -148,3 +148,13 @@ module AuthenticationCheckType
   # and
   AND = "and"
 end
+
+#
+# ユーザの認証プロバイダ区分
+#
+module ProviderType
+  # アプリ登録ユーザ
+  YOITA = "Y"
+  # Facebook
+  FACEBOOK = "F"
+end

@@ -189,6 +189,7 @@ FactoryGirl.define do
   factory :login1, :class => Login do
     resource_id 100001
     login_id "hohohoge1"
+    provider "Y"
     password "意味なしパスワード"
     entry_resource_id 3335
     update_resource_id 45678
@@ -198,6 +199,7 @@ FactoryGirl.define do
   factory :login2, :class => Login do
     resource_id 100002
     login_id "hohohoge2"
+    provider "Y"
     password "意味なしパスワード2"
     entry_resource_id 87654
     update_resource_id 12345678
@@ -207,6 +209,7 @@ FactoryGirl.define do
   factory :login3, :class => Login do
     resource_id 100003
     login_id "user1-1"
+    provider "Y"
     password "password"
     entry_resource_id 3335
     update_resource_id 45678
@@ -216,6 +219,7 @@ FactoryGirl.define do
   factory :login4, :class => Login do
     resource_id 100004
     login_id "user2-1"
+    provider "Y"
     password "password"
     entry_resource_id 3335
     update_resource_id 45678
@@ -225,6 +229,7 @@ FactoryGirl.define do
   factory :login5, :class => Login do
     resource_id 100005
     login_id "user3-1"
+    provider "Y"
     password "password"
     entry_resource_id 3335
     update_resource_id 45678
@@ -234,6 +239,7 @@ FactoryGirl.define do
   factory :login6, :class => Login do
     resource_id 100006
     login_id "user3-2"
+    provider "Y"
     password "password"
     entry_resource_id 3335
     update_resource_id 45678

@@ -193,8 +193,63 @@ class UserInfosService < Service::Base
   # 該当レコード(存在しない場合、nil)
   #
   def auth(login_id, password)
-    logic = UserInfoLogic.new
-    logic.auth(login_id, password)
+    transaction_handler do
+      logic = UserInfoLogic.new
+      logic.auth(login_id, password)
+    end
+  end
+
+  #
+  # Login情報取得.
+  # Facebook経由で登録されたユーザ情報を取得します
+  # ==== _Args_
+  # [uid]
+  #   UID
+  # ==== _Return_
+  # 該当レコード(存在しない場合、nil)
+  #
+  def get_login(uid)
+    transaction_handler do
+      logic = UserInfoLogic.new
+      logic.get_login(uid)
+    end
+  end
+  
+  #
+  # ユーザ強制作成
+  # 引数の情報のみで、ユーザ情報を登録します
+  # ==== _Args_
+  # [login_id]
+  #   ログインID
+  # [password]
+  #   パスワード
+  # [provider]
+  #   認証区分 see.<i>ProviderType</i>
+  # [admin_flg]
+  #   管理者権限を付与する場合、"1"/一般の場合、"0"
+  #
+  def force_save(login_id, password, provider, admin_flg)
+    transaction_handler do
+      params = {}
+      params[:resource] = {}
+      params[:resource][:name] = "自動生成"
+      params[:resource][:memo] = "auto added."
+      
+      params[:user_info] = {}
+      params[:user_info][:reading_character] = ""
+      params[:user_info][:tel] = ""
+      params[:user_info][:mail] = ""
+      params[:user_info][:admin_flg] = admin_flg
+      params[:user_info][:per_page] = "10"
+      params[:user_info][:validity_start_date] = ApplicationHelper::get_current_date.strftime("%Y/%m/%d")
+  
+      params[:login] = {}
+      params[:login][:login_id] = login_id
+      params[:login][:provider] = provider
+      params[:login][:password] = password
+      params[:login][:confirm_password] = password
+      self.save(params, -1)
+    end
   end
   
   #

@@ -6,7 +6,7 @@ require 'digest/sha2'
 # loginsテーブルのmodel
 #
 class Login < ActiveRecord::Base
-  attr_accessible :entry_resource_id, :lock_version, :login_id, :password, :resource_id, :update_resource_id
+  attr_accessible :entry_resource_id, :lock_version, :login_id, :password, :resource_id, :update_resource_id, :provider
   
   # validates
   validates :login_id, :length => { :maximum  => 256 }, :presence => true
@@ -25,6 +25,7 @@ class Login < ActiveRecord::Base
   #
   # 認証.
   # 入力されたユーザIDとパスワードが合致するloginsテーブルの情報を取得します
+  # アプリ認証のユーザのみ処理対象になります
   # ==== _Args_
   # [login_id]
   #   ログインID
@@ -34,7 +35,8 @@ class Login < ActiveRecord::Base
   # 該当レコード(存在しない場合、nil)
   #
   def self.auth(login_id, password)
-    where(:login_id => login_id,
+    where(:provider => ProviderType::YOITA,
+      :login_id => login_id,
       :password => Digest::SHA512.hexdigest(password)).first
   end
 
@@ -56,6 +58,23 @@ class Login < ActiveRecord::Base
       raise CustomException::NotFoundException.new
     end
     return result
+  end
+
+  #
+  # ログインIDによる取得
+  # 入力されたログインIDと認証プロバイダ区分に紐付くloginsテーブルの情報を取得します
+  # Facebookによる認証の際に使用することを想定しています。
+  # ==== _Args_
+  # [login_id]
+  #   ログインID(FacebookのUID)
+  # [provider]
+  #   ユーザの認証プロバイダ区分 see.<i>ProviderType</i>
+  # ==== _Return_
+  # 該当レコード(存在しない場合、nil)
+  #
+  def self.find_by_login_id(login_id, provider)
+    where(:provider => provider,
+      :login_id => login_id).first
   end
 
 end

@@ -35,6 +35,10 @@ $(function(){
 		}
 	});
 	
+	$("#facebook_login_button").click(function(){
+		moveUrl("/auth/facebook");
+	});
+	
 });
 
 function checkEnterKey(ev) {
@@ -118,7 +122,13 @@ function validate(params) {
 		<input type="button" value="ログイン" id="login_button" class="btn btn-primary"/>
 		<%= hidden_field_tag :referer, flash[:referer] %>
 	</form>
+	
+	<hr />
+	<div>
+		<input type="button" value="Login with Facebook" id="facebook_login_button" title="Facebookのユーザ情報でログインします。" class="btn btn-primary"/>
+	</div>
 
+	<hr />
 	<div class="system">
 		<p class="note" id="jsNg" title="JavaScriptを有効にしてください">
 		本システムを使用するには、JavaScriptを有効にする必要があります。<br />
@@ -129,7 +139,7 @@ function validate(params) {
 	
 		<p class="note" id="jsOk" style="display:none;">
 		本システムを使用するには、ユーザ認証が必要です。<br />
-		ログインIDとパスワードを入力してログインボタンをクリックしてください。<br />
+		ログインIDとパスワードを入力してログインボタンをクリックするか、Facebookのユーザ情報を使用してログインしてください。<br />
 		</p>
 	</div>
 

@@ -96,6 +96,11 @@ class UserInfoLogic
       login[:resource_id] = resource.id
       login[:entry_resource_id] = action_resource_id
       login[:update_resource_id] = action_resource_id
+      login[:provider] = params[:login][:provider]
+      if login[:provider].to_s == ''
+        # 未設定の場合、アプリ認証
+        login[:provider] = ProviderType::YOITA
+      end
       begin
         login.save!
       rescue ActiveRecord::RecordNotUnique
@@ -130,6 +135,20 @@ class UserInfoLogic
   #
   def auth(login_id, password)
     Login.auth(login_id, password)
+  end
+
+  #
+  # 認証.
+  # 入力されたユーザIDが合致するloginsテーブルの情報を取得します
+  # Facebookで登録されたユーザ情報を取得する為に使用します
+  # ==== _Args_
+  # [login_id]
+  #   ログインID
+  # ==== _Return_
+  # 該当レコード(存在しない場合、nil)
+  #
+  def get_login(login_id)
+    Login.find_by_login_id(login_id, ProviderType::FACEBOOK)
   end
   
   #

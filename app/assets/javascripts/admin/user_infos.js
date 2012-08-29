@@ -198,7 +198,6 @@ function render(data) {
 	//ヘッダ部分作成
 	var $thead = $("<thead />")
 		.append($("<tr />")
-			.append($("<th />").text("ログインID"))
 			.append($("<th />").text("ユーザ名").attr({width:"35%"}))
 			.append($("<th />").text("ふりがな"))
 			.append($("<th />").text("管理者").attr({width:"50px"}))
@@ -230,7 +229,7 @@ function render(data) {
 			addClassName = "disableColor";
 		}
 
-		var $a = $("<a />").attr({href: "javascript:void(0)"}).text(login_id);
+		var $a = $("<a />").attr({href: "javascript:void(0)"}).text(name);
 		$a.click(function(){
 			openEditDialog(resourceId);
 		});
@@ -243,7 +242,6 @@ function render(data) {
 		//※memo、エスケープしているので、html出力可
 		var $tr = $("<tr />");
 		$tr.append($("<td />").append($a))
-			.append($("<td />").text(name))
 			.append($("<td />").text(reading_character))
 			.append($("<td />").text(admin).attr({align:"center"}))
 			.append($("<td />").html(memo))
@@ -353,7 +351,12 @@ function openEditDialog(resourceId) {
 				//更新の場合
 				$(".ins_area").hide();
 				$(".upd_area").show();
-				$("#view_login_id").text(login.login_id);
+				
+				if(login.provider == "Y") {
+					$("#view_login_id").text(login.login_id);
+				} else {
+					$("#view_login_id").text("(for Facebook)");
+				}
 			}
 			$("#login_lock_version").val(login.lock_version);
 

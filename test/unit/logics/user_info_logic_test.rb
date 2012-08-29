@@ -90,6 +90,42 @@ class UserInfoLogicTest < ActiveSupport::TestCase
   end
 
   #
+  # saveメソッド-登録(Facebook)のテスト
+  #
+  test "save4facebook" do
+
+    params = {
+      :resource => {
+        :name => "ユーザA",
+        :memo => "メモリん",
+        :lock_version => ""
+      },
+      :user_info => {
+        :reading_character => "ゆーざA",
+        :tel => "123-4567-8901",
+        :mail => "hoge@hige.hage",
+        :admin_flg => "1",
+        :per_page => "10",
+        :validity_start_date => "2010/01/01",
+        :validity_end_date => "2010/12/31"
+      },
+      :login => {
+        :login_id => "hoge1",
+        :provider => "F",
+        :password => "hogehogehogeABC",
+        :confirm_password => "hogehogehogeABC"
+      }
+    }
+    
+    logic = UserInfoLogic.new
+    resource = logic.save(params, 4989)
+        
+    # 認証のテスト
+    assert_nil logic.auth("hoge1", "hogehogehogeABC")
+  end
+
+
+  #
   # saveメソッド-共通validateのテスト
   #
   test "save-validate-ng" do

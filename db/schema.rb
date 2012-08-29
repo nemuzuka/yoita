@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120719072713) do
+ActiveRecord::Schema.define(:version => 20120828062959) do
 
   create_table "logins", :force => true do |t|
     t.integer  "resource_id",        :limit => 8
@@ -22,9 +22,10 @@ ActiveRecord::Schema.define(:version => 20120719072713) do
     t.integer  "lock_version",       :limit => 8,   :default => 0
     t.datetime "created_at",                                       :null => false
     t.datetime "updated_at",                                       :null => false
+    t.string   "provider",           :limit => 1
   end
 
-  add_index "logins", ["login_id"], :name => "login_unique_idx_01", :unique => true
+  add_index "logins", ["provider", "login_id"], :name => "login_unique_idx_01", :unique => true
   add_index "logins", ["resource_id"], :name => "login_idx_01"
 
   create_table "national_holidays", :force => true do |t|

@@ -113,6 +113,7 @@ class LoginTest < ActiveSupport::TestCase
     login = Login.new
     login[:resource_id] = 123456
     login[:login_id] = "hogehoge"
+    login[:provider] = "Y"
     login[:password] = Digest::SHA512.hexdigest("password")
     login[:entry_resource_id] = 1002
     login[:update_resource_id] = 1002
@@ -121,6 +122,7 @@ class LoginTest < ActiveSupport::TestCase
     login = Login.new
     login[:resource_id] = 123457
     login[:login_id] = "hogehoge"
+    login[:provider] = "Y"
     login[:password] = Digest::SHA512.hexdigest("password2")
     login[:entry_resource_id] = 1002
     login[:update_resource_id] = 1002
@@ -131,4 +133,29 @@ class LoginTest < ActiveSupport::TestCase
       assert true
     end
   end
+
+  #
+  # 一意制約エラーの確認
+  # 認証区分が違うので、IDが合致しても登録できる
+  #
+  test "UniqueConstraint2" do
+    login = Login.new
+    login[:resource_id] = 123456
+    login[:login_id] = "hogehoge"
+    login[:provider] = "Y"
+    login[:password] = Digest::SHA512.hexdigest("password")
+    login[:entry_resource_id] = 1002
+    login[:update_resource_id] = 1002
+    login.save!
+
+    login = Login.new
+    login[:resource_id] = 123457
+    login[:login_id] = "hogehoge"
+    login[:provider] = "F"
+    login[:password] = Digest::SHA512.hexdigest("password2")
+    login[:entry_resource_id] = 1002
+    login[:update_resource_id] = 1002
+    login.save!
+  end
+
 end
