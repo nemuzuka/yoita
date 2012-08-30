@@ -1,5 +1,7 @@
 Project Yoita
 Yoitaは、RoRで作成したグループスケジューラです。
 
+
 site: https://sites.google.com/site/yoitagroupscheduler/
+
 trial site: http://group-scheduler-yoita.herokuapp.com/
